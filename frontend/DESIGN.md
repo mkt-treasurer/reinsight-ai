@@ -1,6 +1,8 @@
 # InsightRe Design System
 
-Canonical design language for all pages in this app. Derived from the Overview page (`src/app/page.tsx`) — use that file as the living reference implementation.
+Canonical design language for the operational (`/ins`) pages in this app. Derived from the Overview page (`src/app/ins/page.tsx`) — use that file as the living reference implementation.
+
+Out of scope: the public landing page (`src/app/page.tsx`, built from `src/components/sections/*`) and `/survey`. Those are marketing surfaces with their own look and deliberately do not follow the rules below.
 
 **Principle**: Clean, dense, financial-desk feel. Bloomberg/ECB-adjacent. No cream, no serif display, no decorative gradients, no rounded corners. Data density over whitespace. English UPPERCASE titles paired with small Korean subtext.
 
@@ -109,7 +111,7 @@ Canonical design language for all pages in this app. Derived from the Overview p
 
 ## Reference
 
-When building a new page, start from `src/app/page.tsx` and copy the structure:
+When building a new operational page, start from `src/app/ins/page.tsx` and copy the structure:
 
 1. Masthead strip (slate-900).
 2. KPI row (4 tiles, hairline dividers).
