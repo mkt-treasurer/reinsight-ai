@@ -1,0 +1,228 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-navy-soft: var(--navy-soft);
+  --color-azure: var(--azure);
+  --font-heading: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* InsightRe ops dashboard tokens (default) */
+  --background: #fafafa;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0f172a;
+  --primary-foreground: #fafafa;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #2563eb;
+  --accent-foreground: #ffffff;
+  --destructive: #b91c1c;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: rgba(37, 99, 235, 0.5);
+  --radius: 0.75rem;
+  --surface: #ffffff;
+}
+
+/* ARIA landing scope — overrides tokens for marketing surfaces.
+   Wrap any landing-page tree in this class to opt into the navy palette,
+   Pretendard typography, and ambient gradient background. */
+.aria-scope {
+  --background: oklch(0.975 0.003 250);
+  --foreground: oklch(0.205 0.025 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0.025 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0.025 260);
+  --primary: oklch(0.34 0.07 260);
+  --primary-foreground: oklch(0.99 0.003 250);
+  --secondary: oklch(0.955 0.006 250);
+  --secondary-foreground: oklch(0.205 0.025 260);
+  --muted: oklch(0.955 0.006 250);
+  --muted-foreground: oklch(0.475 0.018 260);
+  --accent: oklch(0.945 0.012 250);
+  --accent-foreground: oklch(0.34 0.07 260);
+  --destructive: oklch(0.58 0.22 25);
+  --border: oklch(0.905 0.008 250);
+  --input: oklch(0.92 0.006 250);
+  --ring: oklch(0.34 0.07 260 / 50%);
+  --navy: oklch(0.34 0.07 260);
+  --navy-deep: oklch(0.24 0.06 260);
+  --navy-soft: oklch(0.50 0.085 255);
+  --azure: oklch(0.62 0.095 250);
+
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.85 0.05 250 / 0.55), transparent 60%),
+    radial-gradient(ellipse 50% 30% at 90% 10%, oklch(0.80 0.06 240 / 0.18), transparent 60%);
+  background-attachment: fixed;
+  color: var(--foreground);
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0;
+  font-size: 16px;
+}
+.aria-scope ::selection {
+  background: oklch(0.34 0.07 260 / 0.18);
+  color: oklch(0.20 0.03 260);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "JetBrains Mono", "Pretendard Variable", "Pretendard", monospace;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+  font-size: 13px;
+}
+
+h1, h2, h3 {
+  font-family: "Montserrat", "JetBrains Mono", sans-serif;
+}
+
+th {
+  font-family: "JetBrains Mono", monospace;
+}
+
+td {
+  font-family: "JetBrains Mono", "Pretendard Variable", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ARIA scope restores natural headings + table typography */
+.aria-scope h1,
+.aria-scope h2,
+.aria-scope h3 {
+  font-family: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+}
+.aria-scope th,
+.aria-scope td {
+  font-family: inherit;
+  font-variant-numeric: normal;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+table tbody tr {
+  transition: background-color 0.1s;
+}
+
+.slip-edit {
+  border-bottom: 1px dashed #cbd5e1;
+  padding: 0 2px;
+  cursor: text;
+  outline: none;
+  transition: background-color 120ms;
+}
+.slip-edit:hover {
+  background-color: #fef9c3;
+  border-bottom-color: #94a3b8;
+}
+.slip-edit:focus {
+  background-color: #fef3c7;
+  border-bottom-color: #0f172a;
+}
+
+@layer utilities {
+  .text-navy {
+    color: var(--navy);
+  }
+  .text-navy-deep {
+    color: var(--navy-deep);
+  }
+  .text-navy-soft {
+    color: var(--navy-soft);
+  }
+  .text-azure {
+    color: var(--azure);
+  }
+  .bg-navy {
+    background-color: var(--navy);
+  }
+  .bg-navy-deep {
+    background-color: var(--navy-deep);
+  }
+  .border-navy {
+    border-color: var(--navy);
+  }
+
+  .grid-pattern {
+    background-image:
+      linear-gradient(to right, oklch(0.34 0.07 260 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.34 0.07 260 / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .shadow-navy {
+    box-shadow:
+      0 1px 2px oklch(0.34 0.07 260 / 0.06),
+      0 12px 32px -16px oklch(0.34 0.07 260 / 0.22);
+  }
+  .shadow-navy-lg {
+    box-shadow:
+      0 1px 2px oklch(0.34 0.07 260 / 0.08),
+      0 24px 60px -24px oklch(0.34 0.07 260 / 0.30);
+  }
+  .ring-navy {
+    --tw-ring-color: var(--navy);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .border-hairline {
+    border-color: oklch(0.34 0.07 260 / 0.10);
+  }
+
+  .bg-hairline {
+    background-color: oklch(0.34 0.07 260 / 0.08);
+  }
+}

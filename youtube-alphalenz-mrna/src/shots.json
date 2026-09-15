@@ -1,0 +1,123 @@
+{
+  "note": "씬별 B-roll 검색어. provider 는 pexels|pixabay|any. 클립은 순서대로 씬 길이를 채운다.",
+  "scenes": {
+    "s1-hook": [
+      {
+        "id": "s1-a",
+        "q": "candlestick chart animation",
+        "alt": "stock graph motion background"
+      },
+      {
+        "id": "s1-b",
+        "q": "stock exchange data board",
+        "alt": "candlestick chart"
+      }
+    ],
+    "s2-spread": [
+      {
+        "id": "s2-a",
+        "q": "stock trading app smartphone",
+        "alt": "man buying stocks phone"
+      },
+      {
+        "id": "s2-b",
+        "q": "trading floor monitors",
+        "alt": "stock market office"
+      }
+    ],
+    "s3-trial": [
+      {
+        "id": "s3-a",
+        "q": "scientist pipette laboratory",
+        "alt": "laboratory research"
+      },
+      {
+        "id": "s3-b",
+        "q": "dna helix animation",
+        "alt": "molecular structure"
+      },
+      {
+        "id": "s3-c",
+        "q": "microscope research lab",
+        "alt": "medical laboratory"
+      }
+    ],
+    "s4-caveat": [
+      {
+        "id": "s4-a",
+        "q": "dark laboratory test tubes",
+        "alt": "laboratory equipment dark"
+      },
+      {
+        "id": "s4-b",
+        "q": "laboratory glassware close up",
+        "alt": "science equipment macro"
+      }
+    ],
+    "s5-why": [
+      {
+        "id": "s5-a",
+        "q": "vaccine vial laboratory",
+        "alt": "medicine vial"
+      },
+      {
+        "id": "s5-b",
+        "q": "pharmaceutical production line",
+        "alt": "medicine factory"
+      },
+      {
+        "id": "s5-c",
+        "q": "cancer cell microscope",
+        "alt": "cell biology"
+      }
+    ],
+    "s6-distance": [
+      {
+        "id": "s6-a",
+        "q": "abstract network connection dark",
+        "alt": "digital particles dark"
+      },
+      {
+        "id": "s6-b",
+        "q": "data flow abstract blue",
+        "alt": "technology background dark"
+      },
+      {
+        "id": "s6-c",
+        "q": "abstract geometric lines dark background",
+        "alt": "digital grid motion dark"
+      }
+    ],
+    "s7-earnings": [
+      {
+        "id": "s7-a",
+        "q": "pharmaceutical factory clean room",
+        "alt": "medicine production machine"
+      },
+      {
+        "id": "s7-b",
+        "q": "financial report documents desk",
+        "alt": "business analytics paper"
+      }
+    ],
+    "s8-alphalenz": [
+      {
+        "id": "s8-a",
+        "q": "person analyzing data laptop",
+        "alt": "business analytics screen"
+      },
+      {
+        "id": "s8-b",
+        "q": "financial dashboard screen",
+        "alt": "computer data analysis"
+      }
+    ],
+    "s9-close": [
+      {
+        "id": "s9-a",
+        "q": "city skyline night aerial",
+        "alt": "seoul skyline night"
+      }
+    ]
+  }
+}

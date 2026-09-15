@@ -1,0 +1,224 @@
+{
+  "clips": {
+    "s1-a": {
+      "scene": "s1-hook",
+      "query": "candlestick chart animation",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/cryptocurrency-market-analysis-on-dual-monitors-38471109/",
+      "author": "Rafael Minguet Delgado",
+      "authorUrl": "https://www.pexels.com/@thales13",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 5,
+      "frames": 177
+    },
+    "s1-b": {
+      "scene": "s1-hook",
+      "query": "stock exchange data board",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/businessman-looking-at-a-screen-8348732/",
+      "author": "Kampus Production",
+      "authorUrl": "https://www.pexels.com/@kampus",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 5,
+      "frames": 177
+    },
+    "s2-a": {
+      "scene": "s2-spread",
+      "query": "stock trading app smartphone",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/analyzing-cryptocurrency-market-trends-34408323/",
+      "author": "Jakub Zerdzicki",
+      "authorUrl": "https://www.pexels.com/@jakubzerdzicki",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.766666666666666,
+      "frames": 263
+    },
+    "s2-b": {
+      "scene": "s2-spread",
+      "query": "trading floor monitors",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/woman-looking-at-the-screen-7580441/",
+      "author": "Tima Miroshnichenko",
+      "authorUrl": "https://www.pexels.com/@tima-miroshnichenko",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 6.65,
+      "frames": 236
+    },
+    "s3-a": {
+      "scene": "s3-trial",
+      "query": "scientist pipette laboratory",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/scientist-adjusting-laboratory-pipette-for-experiment-31767897/",
+      "author": "Dominik Zítka",
+      "authorUrl": "https://www.pexels.com/@dominik-zitka-911305321",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.055555555555555,
+      "frames": 286
+    },
+    "s3-b": {
+      "scene": "s3-trial",
+      "query": "dna helix animation",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/a-video-illustration-of-a-human-deoxyribonucleic-acid-3191420/",
+      "author": "Pressmaster",
+      "authorUrl": "https://www.pexels.com/@pressmaster",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.055555555555555,
+      "frames": 286
+    },
+    "s3-c": {
+      "scene": "s3-trial",
+      "query": "microscope research lab",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/close-up-video-of-woman-wearing-face-mask-while-looking-at-the-eye-piece-6130236/",
+      "author": "RDNE Stock project",
+      "authorUrl": "https://www.pexels.com/@rdne",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.055555555555555,
+      "frames": 286
+    },
+    "s4-a": {
+      "scene": "s4-caveat",
+      "query": "dark laboratory test tubes",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/person-getting-test-tube-in-a-rack-8486024/",
+      "author": "Ivan S",
+      "authorUrl": "https://www.pexels.com/@ivan-s",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 6.366666666666667,
+      "frames": 225
+    },
+    "s4-b": {
+      "scene": "s4-caveat",
+      "query": "laboratory glassware close up",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/glass-slides-and-a-volumetric-flask-8534416/",
+      "author": "Artem Podrez",
+      "authorUrl": "https://www.pexels.com/@artempodrez",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 6.366666666666667,
+      "frames": 225
+    },
+    "s5-a": {
+      "scene": "s5-why",
+      "query": "vaccine vial laboratory",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/vials-on-the-table-8534418/",
+      "author": "Artem Podrez",
+      "authorUrl": "https://www.pexels.com/@artempodrez",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.522222222222222,
+      "frames": 302
+    },
+    "s5-b": {
+      "scene": "s5-why",
+      "query": "pharmaceutical production line",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/macro-shot-of-red-and-white-capsules-7033927/",
+      "author": "Tima Miroshnichenko",
+      "authorUrl": "https://www.pexels.com/@tima-miroshnichenko",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.522222222222222,
+      "frames": 302
+    },
+    "s5-c": {
+      "scene": "s5-why",
+      "query": "cancer cell microscope",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/vibrant-microscopic-particles-in-motion-35637540/",
+      "author": "Nicola Narracci",
+      "authorUrl": "https://www.pexels.com/@nicola-narracci-157460431",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.522222222222222,
+      "frames": 302
+    },
+    "s6-a": {
+      "scene": "s6-distance",
+      "query": "abstract network connection dark",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/abstract-3d-network-structure-animation-35004655/",
+      "author": "Nicola Narracci",
+      "authorUrl": "https://www.pexels.com/@nicola-narracci-157460431",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10,
+      "frames": 354
+    },
+    "s6-b": {
+      "scene": "s6-distance",
+      "query": "data flow abstract blue",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/dynamic-digital-waveform-in-futuristic-setting-34189433/",
+      "author": "Nicola Narracci",
+      "authorUrl": "https://www.pexels.com/@nicola-narracci-157460431",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10,
+      "frames": 354
+    },
+    "s7-a": {
+      "scene": "s7-earnings",
+      "query": "pharmaceutical factory clean room",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/automated-pharmaceutical-tube-filling-machine-39015743/",
+      "author": "Elements Interactive",
+      "authorUrl": "https://www.pexels.com/@elementsinteractive",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10.316666666666666,
+      "frames": 365
+    },
+    "s7-b": {
+      "scene": "s7-earnings",
+      "query": "financial report documents desk",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/charts-and-magnifying-glass-7947448/",
+      "author": "RDNE Stock project",
+      "authorUrl": "https://www.pexels.com/@rdne",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10.316666666666666,
+      "frames": 365
+    },
+    "s8-a": {
+      "scene": "s8-alphalenz",
+      "query": "person analyzing data laptop",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/analyzing-the-stock-market-movement-7580275/",
+      "author": "Tima Miroshnichenko",
+      "authorUrl": "https://www.pexels.com/@tima-miroshnichenko",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 9.383333333333333,
+      "frames": 332
+    },
+    "s8-b": {
+      "scene": "s8-alphalenz",
+      "query": "financial dashboard screen",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/tablet-displaying-financial-data-analytics-36328573/",
+      "author": "Jakub Zerdzicki",
+      "authorUrl": "https://www.pexels.com/@jakubzerdzicki",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 9.383333333333333,
+      "frames": 332
+    },
+    "s9-a": {
+      "scene": "s9-close",
+      "query": "city skyline night aerial",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/aerial-night-view-of-urban-cityscape-32258501/",
+      "author": "Altaf Shah",
+      "authorUrl": "https://www.pexels.com/@altaf-shah-3143825",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10.933333333333332,
+      "frames": 387
+    },
+    "s6-c": {
+      "scene": "s6-distance",
+      "query": "abstract geometric lines dark background",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/abstract-background-with-blue-lines-and-dots-27980029/",
+      "author": "Nicola Narracci",
+      "authorUrl": "https://www.pexels.com/@nicola-narracci-157460431",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10,
+      "frames": 300
+    }
+  }
+}

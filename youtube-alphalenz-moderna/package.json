@@ -1,0 +1,19 @@
+{
+  "name": "youtube-alphalenz-moderna",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "render.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "node-edge-tts": "^1.2.10",
+    "satori": "^0.33.4",
+    "sharp": "^0.35.4"
+  }
+}

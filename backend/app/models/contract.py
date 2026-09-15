@@ -1,0 +1,43 @@
+from sqlalchemy import Column, Integer, String, Numeric, Date, Text, ForeignKey
+from app.database import Base
+
+
+class Contract(Base):
+    __tablename__ = "contracts"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    company_id = Column(Integer, ForeignKey("companies.id"), index=True, nullable=False, default=1)
+    year = Column(Integer, index=True)
+    cont_month = Column(String(50))
+    no = Column(String(50))
+    cover_note_no = Column(String(100), index=True)
+    assured = Column(String(500))
+    project_name = Column(String(500))
+    line = Column(String(100), index=True)
+    line2 = Column(String(100))
+    new_renew = Column(String(20))
+    renewable = Column(String(20))
+    retail = Column(String(20))
+    original_cedant = Column(String(100))
+    cedant = Column(String(100), index=True)
+    period_from = Column(Date)
+    period_to = Column(Date)
+    installment = Column(String(50))
+    ppw = Column(String(100))
+    currency = Column(String(20))
+    gross_prem_100 = Column(Numeric)
+    gross_prem_inst = Column(Numeric)
+    reinsurer = Column(String(100), index=True)
+    share = Column(Numeric)
+    ri_prem = Column(Numeric)
+    ri_commission = Column(Numeric)
+    net_ri_prem = Column(Numeric)
+    net_ri_prem_kwon = Column(Numeric)
+    net_to_uwr = Column(Numeric)
+    rec_date = Column(Date)
+    paid_date = Column(Date)
+    co_brokerage = Column(Numeric)
+    partner = Column(String(200))
+    remarks = Column(Text)
+    workflow_status = Column(String(30), default="booked", index=True)
+    assigned_to = Column(String(100))

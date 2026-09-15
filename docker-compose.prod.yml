@@ -1,0 +1,84 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: reinsai-backend
+    ports:
+      - "5301:8000"
+    env_file: .env.prod
+    environment:
+      # Connect via kbo-stats_default network using the postgres container name
+      - DATABASE_URL=postgresql+asyncpg://reinsai:${POSTGRES_PASSWORD}@kbo-stats-postgres-1:5432/reinsai
+      - REDIS_URL=redis://kbo-stats-redis-1:6379/1
+      # Weekly-dashboard store: /app/data is read-only here, so persist uploads
+      # to a dedicated writable volume instead.
+      - WEEKLY_STORE_DIR=/app/weekly-data
+      - OPS_STORE_DIR=/app/ops-data
+      # News-insights cache: same reason — write the daily feed JSON to a
+      # writable volume rather than the read-only /app/data mount.
+      - NEWS_STORE_DIR=/app/news-data
+      # Satisfaction-survey responses: write to a dedicated writable volume
+      # (same reason — /app/data is read-only here).
+      - SURVEY_STORE_DIR=/app/survey-data
+    networks:
+      - default
+      - shared_db
+    volumes:
+      - ./reference:/app/data:ro
+      - ./weekly-data:/app/weekly-data
+      - ./ops-data:/app/ops-data
+      - ./news-data:/app/news-data
+      - ./survey-data:/app/survey-data
+      # L3 온톨로지 = ins/chat 코파일럿의 그라운딩 컨텍스트. 빌드 컨텍스트가
+      # ./backend 라 이미지에 안 들어간다 — 이 마운트가 없으면 agent._find_l3()
+      # 가 실패해 코파일럿이 그라운딩 없이 동작한다(스키마·데이터품질 함정 소실).
+      - ./ontology:/app/ontology:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: reinsai-worker
+    command: python -m app.worker
+    env_file: .env.prod
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://reinsai:${POSTGRES_PASSWORD}@kbo-stats-postgres-1:5432/reinsai
+      - REDIS_URL=redis://kbo-stats-redis-1:6379/1
+      # News-feed cron writes the daily cache here; backend reads the same
+      # volume, so both must mount ./news-data.
+      - NEWS_STORE_DIR=/app/news-data
+    networks:
+      - default
+      - shared_db
+    volumes:
+      - ./news-data:/app/news-data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        NEXT_PUBLIC_API_URL: https://insightre.ai
+        NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: ${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY}
+    container_name: reinsai-frontend
+    ports:
+      - "5300:3000"
+    env_file: .env.prod
+    environment:
+      - NEXT_PUBLIC_SITE_URL=https://insightre.ai
+    restart: unless-stopped
+
+networks:
+  default:
+  shared_db:
+    name: kbo-stats_default
+    external: true

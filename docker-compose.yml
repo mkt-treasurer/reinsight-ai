@@ -1,0 +1,47 @@
+services:
+  # Postgres and Redis are NOT run locally any more.
+  # They live on the shared EC2 host (kbo-stats-postgres-1 / kbo-stats-redis-1)
+  # and are reached via scripts/ssh-tunnel.sh (local ports 7700 / 7703).
+  # Start the tunnel first:   ./scripts/ssh-tunnel.sh
+
+  backend:
+    build: ./backend
+    ports:
+      - "7601:8000"
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://reinsai:${POSTGRES_PASSWORD}@host.docker.internal:7700/reinsai
+      - REDIS_URL=redis://host.docker.internal:7703/1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./backend/app:/app/app
+      - ./reference:/app/data
+      # L3 온톨로지 = ins/chat 코파일럿의 그라운딩 컨텍스트. 빌드 컨텍스트가
+      # ./backend 라 이미지에 안 들어가므로 마운트로 넣는다 (agent._find_l3 가 탐색).
+      - ./ontology:/app/ontology:ro
+
+  worker:
+    build: ./backend
+    command: python -m app.worker
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://reinsai:${POSTGRES_PASSWORD}@host.docker.internal:7700/reinsai
+      - REDIS_URL=redis://host.docker.internal:7703/1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./backend/app:/app/app
+      - ./reference:/app/data
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "7602:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:7601
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    depends_on:
+      - backend

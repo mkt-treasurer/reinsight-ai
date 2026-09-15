@@ -1,0 +1,17 @@
+# Dataset payload — keep folder structure but never commit the documents.
+# Cedant claim PDFs contain insured names, ref numbers, and amounts that
+# we do NOT want in git history.
+*.pdf
+*.PDF
+*.png
+*.jpg
+*.jpeg
+*.xlsx
+*.xls
+*.csv
+*.json
+
+# Allow the folder skeleton + this file + the README.
+!.gitkeep
+!.gitignore
+!README.md

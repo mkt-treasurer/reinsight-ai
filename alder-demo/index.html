@@ -1,0 +1,3395 @@
+<meta charset="utf-8">
+<title>Treasurer × Alder — Product Demo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+
+<!--
+  ══════════════════════════════════════════════════════════════════════
+  TREASURER × ALDER — 100초 자동 재생 제품 데모
+  ──────────────────────────────────────────────────────────────────────
+  ACT 1  0–20s   다국어 문서 인텔리전스      (Multilingual Parsing)
+  ACT 2 20–42s   커밋먼트 대조 및 검증        (Reconciliation)
+  ACT 3 42–65s   GP 관계 인텔리전스           (Relationship Intelligence)
+  ACT 4 65–88s   내장형 인텔리전스 API + MCP  (Embedded Intelligence) ★정점
+  ACT 5 88–100s  파일럿에서 인프라로          (Pilot to Infrastructure)
+  ── 길이 조정은 CFG.acts[].dur 한 곳에서만 (합계 100,000ms) ──────────
+  조작:  Space=일시정지/재생  ←/→=ACT 이동  1~5=ACT 직접 이동
+         R=처음부터  D=디버그 오버레이(기본 OFF)
+  URL:   ?debug=1          디버그 켜고 시작
+         ?act=3            해당 ACT 부터 자동 재생
+         ?scrub=2,13       ACT2 13초 시점 정적 프레임 (애니메이션 정지)
+                           → 헤드리스 스크린샷 / 자료용 스틸 추출에 사용
+         ?selftest=1       타임라인 무결성 검사 (beat 누락·ACT 리셋·잔상)
+  ──────────────────────────────────────────────────────────────────────
+  DOM 구조:  #appShell (masthead / rail / board / statusbar) — ACT1~4 제품 화면
+             #pullback  — ACT4 에서 #appShell 을 0.20 배로 축소해 감싸는 아키텍처
+             #finale    — ACT5 마감 프레임 (전체 오버레이)
+  ──────────────────────────────────────────────────────────────────────
+  ⚠ 표시되는 모든 펀드·GP·법인·인물·계좌·거래는 전부 가상(fictional) 데이터.
+  ══════════════════════════════════════════════════════════════════════
+-->
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   0. 디자인 토큰 — Treasurer 기존 디자인 시스템 준수
+      (dark-navy 무대 + light financial-desk 제품 화면)
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --navy:#0f172a; --navy-deep:#0d1526; --navy-line:rgba(148,163,184,.16);
+  --ink:#0f172a; --body:#334155; --meta:#64748b; --hint:#94a3b8;
+  --line:#e2e8f0; --line-2:#cbd5e1; --shell:#f8fafc; --white:#fff;
+  --crit:#b91c1c; --crit-bg:#fef2f2; --warn:#b45309; --warn-bg:#fffbeb;
+  --pos:#047857; --pos-bg:#f0fdf4; --link:#1e40af;
+  --f-head:'Montserrat','Segoe UI',sans-serif;
+  --f-mono:'JetBrains Mono','Cascadia Mono',Consolas,monospace;
+  --f-kr:'Noto Sans KR','Malgun Gothic','Segoe UI',sans-serif;
+  --f-jp:'Noto Sans JP','Yu Gothic','Meiryo',sans-serif;
+  --f-jp-s:'Noto Serif JP','Yu Mincho','MS PMincho',serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#05080f}
+body{font-family:var(--f-kr);-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+/* 무대: 항상 1920×1080 으로 그리고, 창 크기에 맞춰 scale */
+#viewport{position:fixed;inset:0;display:grid;place-items:center;background:#05080f}
+#stage{width:1920px;height:1080px;position:relative;transform-origin:center center;
+  background:var(--white);overflow:hidden;flex:none}
+
+/* 카메라 레이어 — 줌/팬은 JS 가 마스터 클럭으로 transform 을 갱신 */
+/* will-change / z-index 를 주지 않는다 — 씬 전체가 상시 별도 레이어(또는 단일
+   스태킹 컨텍스트)로 묶이면 캡처 프레임레이트가 떨어진다. 확대 중에만
+   transform 이 붙는다. 자식들의 z-index(40~90)가 진행바(100)·프리젠터(110)·
+   인트로(120)보다 낮아 순서는 그대로 유지된다. */
+#cam{position:absolute;inset:0;transform-origin:0 0}
+
+/* 애니메이션 전면 정지 (정적 프레임 캡쳐/스크럽용) */
+.no-anim *,.no-anim *::before,.no-anim *::after{
+  transition:none!important;animation:none!important}
+/* 일시정지: 반복 애니메이션 정지 */
+.is-paused #stage *{animation-play-state:paused!important}
+
+/* ═══════════════════════════════════════════════════════════════
+   1. 제품 셸 (masthead / 좌측 레일 / 보드 / 상태바) — 전 ACT 공통
+   ═══════════════════════════════════════════════════════════════ */
+#appShell{position:absolute;inset:0;display:grid;
+  grid-template-rows:52px 1fr 30px;grid-template-columns:216px 1fr;
+  grid-template-areas:"mast mast" "rail board" "stat stat";
+  background:var(--white);transform-origin:center center;
+  transition:transform .9s cubic-bezier(.16,1,.3,1),opacity .6s ease}
+
+/* ── masthead ─────────────────────────────────────────────── */
+#mast{grid-area:mast;background:var(--navy);display:flex;align-items:center;
+  gap:20px;padding:0 20px;color:#e8eef7;border-bottom:1px solid #000}
+.wordmark{font-family:var(--f-head);font-weight:700;font-size:13px;
+  letter-spacing:.28em;color:#fff}
+.wordmark small{display:block;font-family:var(--f-kr);font-weight:400;font-size:9px;
+  letter-spacing:.06em;color:#8ea0bd;margin-top:2px}
+#mast .divide{width:1px;height:22px;background:var(--navy-line)}
+#crumb{display:flex;align-items:center;gap:8px;font-size:11px;color:#8ea0bd}
+#crumb b{color:#e8eef7;font-weight:500}
+#crumb .sep{color:#4a5b78}
+#mast .spacer{flex:1}
+.mast-chip{display:flex;align-items:center;gap:7px;font-size:10px;color:#8ea0bd;
+  border:1px solid var(--navy-line);padding:5px 9px}
+.mast-chip.mono{font-family:var(--f-mono);letter-spacing:.02em}
+.dot-live{width:6px;height:6px;border-radius:50%;background:#34d399;
+  animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.avatar{width:22px;height:22px;background:#1e3a8a;color:#dbeafe;font-size:9px;
+  font-family:var(--f-mono);display:grid;place-items:center;letter-spacing:.02em}
+
+/* ── 좌측 레일 ────────────────────────────────────────────── */
+#rail{grid-area:rail;background:var(--shell);border-right:1px solid var(--line);
+  padding:14px 0;display:flex;flex-direction:column}
+.rail-cap{font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--hint);
+  padding:0 16px 8px;text-transform:uppercase}
+.nav{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:12px;
+  color:var(--body);border-left:2px solid transparent;position:relative;
+  transition:background .18s ease,color .18s ease,border-color .25s ease}
+.nav .ico{width:14px;height:14px;flex:none;opacity:.65}
+.nav .badge{margin-left:auto;font-family:var(--f-mono);font-size:9px;
+  background:var(--line);color:var(--meta);padding:1px 5px}
+.nav.on{background:var(--white);color:var(--ink);font-weight:500;
+  border-left-color:var(--navy);box-shadow:inset -1px 0 0 var(--white)}
+.nav.on .ico{opacity:1}
+.nav.on .badge{background:var(--crit);color:#fff}
+#rail .rail-foot{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--line)}
+.rail-foot .k{font-size:9px;letter-spacing:.16em;color:var(--hint);text-transform:uppercase}
+.rail-foot .v{font-family:var(--f-mono);font-size:11px;color:var(--body);margin-top:3px}
+
+/* ── 보드 / 상태바 ────────────────────────────────────────── */
+#board{grid-area:board;position:relative;background:var(--white);overflow:hidden}
+.act{position:absolute;inset:0;padding:20px;opacity:0;pointer-events:none;
+  transition:opacity .45s ease}
+.act.on{opacity:1;pointer-events:auto}
+#stat{grid-area:stat;background:var(--shell);border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:16px;padding:0 16px;
+  font-family:var(--f-mono);font-size:10px;color:var(--meta)}
+#stat .sep{color:var(--line-2)}
+#stat .spacer{flex:1}
+
+/* ── 공통 카드 / 텍스트 / 배지 ────────────────────────────── */
+.card{border:1px solid var(--line);background:var(--white);display:flex;
+  flex-direction:column;min-height:0}
+.card-hd{padding:0 12px;height:34px;flex:none;border-bottom:1px solid var(--line);
+  background:var(--shell);display:flex;align-items:center;gap:10px}
+.card-hd .t{font-family:var(--f-head);font-size:10px;font-weight:700;
+  letter-spacing:.18em;color:var(--body);text-transform:uppercase}
+.card-hd .s{font-size:10px;color:var(--hint)}
+.card-hd .spacer{flex:1}
+.card-bd{flex:1;min-height:0;overflow:hidden;position:relative}
+.pill{font-size:9px;font-family:var(--f-mono);letter-spacing:.04em;padding:2px 6px;
+  border:1px solid var(--line-2);color:var(--meta);white-space:nowrap}
+.pill.kr{font-family:var(--f-kr);letter-spacing:0}
+.pill.new{border-color:#1e40af;color:#1e40af;background:#eff6ff}
+.pill.jp{border-color:#7c2d12;color:#7c2d12;background:#fff7ed}
+.pill.ok{border-color:var(--pos);color:var(--pos);background:var(--pos-bg)}
+.pill.warnp{border-color:var(--warn);color:var(--warn);background:var(--warn-bg)}
+.pill.critp{border-color:var(--crit);color:var(--crit);background:var(--crit-bg)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.tiny{font-size:10px;color:var(--hint)}
+
+/* ═══════════════════════════════════════════════════════════════
+   2. ACT 1 — 다국어 문서 인텔리전스
+   ═══════════════════════════════════════════════════════════════ */
+#act1{display:grid;grid-template-columns:372px 1fr 548px;gap:14px}
+
+/* 2-1. 문서 수신함 */
+.inbox-row{padding:11px 12px;border-bottom:1px solid var(--line);cursor:default;
+  opacity:0;transform:translateY(6px);transition:opacity .4s ease,transform .4s ease,
+  background .2s ease,box-shadow .2s ease}
+.inbox-row.in{opacity:1;transform:none}
+.inbox-row.sel{background:#f5f8ff;box-shadow:inset 2px 0 0 var(--link)}
+.inbox-row .ln1{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.inbox-row .fn{font-family:var(--f-mono);font-size:11px;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.inbox-row.sel .fn{color:var(--link);font-weight:500}
+.inbox-row .ln2{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--meta)}
+.inbox-row .ln2 .mono{color:var(--hint)}
+.inbox-row .ln3{margin-top:6px;display:flex;gap:5px}
+.ib-foot{padding:9px 12px;font-size:10px;color:var(--hint);display:flex;gap:8px;
+  align-items:center;border-top:1px solid var(--line);background:var(--shell)}
+.drop{margin:12px;border:1px dashed var(--line-2);padding:14px;text-align:center;
+  font-size:10px;color:var(--hint);line-height:1.7}
+.drop b{display:block;color:var(--meta);font-size:11px;font-weight:500;margin-bottom:2px}
+
+/* 2-2. 문서 뷰어 */
+#viewer{position:relative}
+.vw-tools{height:34px;flex:none;border-bottom:1px solid var(--line);background:var(--shell);
+  display:flex;align-items:center;gap:10px;padding:0 12px}
+.vw-tools .fname{font-family:var(--f-mono);font-size:10px;color:var(--body);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vw-tools .spacer{flex:1}
+.vw-body{flex:1;min-height:0;background:#eef1f5;display:grid;place-items:center;
+  padding:12px 12px 46px;position:relative;overflow:hidden}
+.vw-empty{text-align:center;color:var(--hint);font-size:11px;line-height:1.9}
+.vw-empty .big{font-size:26px;color:var(--line-2);margin-bottom:6px;font-family:var(--f-mono)}
+
+/* 종이 */
+.page{width:100%;max-width:600px;height:100%;background:#fdfdfc;
+  border:1px solid var(--line-2);box-shadow:0 1px 0 rgba(15,23,42,.06),0 8px 24px -12px rgba(15,23,42,.28);
+  padding:26px 30px 0;display:flex;flex-direction:column;position:relative;
+  opacity:0;transform:translateY(10px) scale(.985);
+  transition:opacity .5s ease,transform .5s cubic-bezier(.16,1,.3,1)}
+.page.in{opacity:1;transform:none}
+.jp{font-family:var(--f-jp)}
+.pg-hd{display:flex;justify-content:space-between;align-items:flex-start;
+  font-family:var(--f-jp);font-size:9.5px;color:#6b7280;letter-spacing:.02em}
+.pg-to{margin-top:16px;font-family:var(--f-jp-s);font-size:13px;color:#111827}
+.pg-from{margin-top:6px;text-align:right;font-family:var(--f-jp);font-size:10px;
+  color:#374151;line-height:1.75;padding-right:62px}
+.pg-title{margin:16px 0 4px;text-align:center;font-family:var(--f-jp-s);font-size:19px;
+  font-weight:600;color:#111827;letter-spacing:.12em}
+.pg-title span{display:block;font-size:10.5px;letter-spacing:.1em;color:#4b5563;
+  margin-top:4px;font-weight:400}
+.pg-rule{height:1px;background:#d1d5db;margin:12px 0}
+.pg-body{font-family:var(--f-jp);font-size:10.5px;line-height:2;color:#1f2937;
+  text-align:justify}
+.pg-tb{width:100%;border-collapse:collapse;margin-top:12px;table-layout:fixed}
+.pg-tb th,.pg-tb td{border:1px solid #d1d5db;padding:5px 8px;font-size:10px;
+  vertical-align:middle;transition:background .3s ease,box-shadow .3s ease,color .3s ease}
+.pg-tb th{width:150px;background:#f6f6f4;font-family:var(--f-jp);font-weight:400;
+  color:#374151;text-align:left;letter-spacing:.01em}
+.pg-tb td{font-family:var(--f-jp);color:#111827}
+.pg-tb td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;
+  text-align:right;letter-spacing:-.01em}
+.pg-tb tr[data-f] th,.pg-tb tr[data-f] td{position:relative}
+/* 추출 진행 상태 */
+.pg-tb tr.hot th{background:#fef9c3;color:#78350f}
+.pg-tb tr.hot td{background:#fefce8;box-shadow:inset 0 0 0 1.5px #ca8a04}
+.pg-tb tr.done td{background:#f6faf7;box-shadow:inset 0 0 0 1px #bbf7d0}
+.pg-note{font-family:var(--f-jp);font-size:9.5px;line-height:1.9;color:#4b5563;
+  margin-top:10px;padding-left:2px}
+.pg-seal{position:absolute;right:26px;top:82px;width:46px;height:46px;
+  border:2px solid #b91c1c;color:#b91c1c;display:grid;place-items:center;
+  font-family:var(--f-jp-s);font-size:10px;line-height:1.15;text-align:center;
+  transform:rotate(-7deg);opacity:.8;letter-spacing:.02em}
+/* 문서 결문 + 담당자 연락처 */
+.pg-close{margin-top:14px;font-family:var(--f-jp);font-size:9.5px;color:#4b5563;
+  line-height:1.95}
+.pg-close .ijo{text-align:right;font-family:var(--f-jp-s);font-size:11px;color:#1f2937;
+  letter-spacing:.2em;margin-bottom:8px}
+.pg-close .cont{border-top:1px dotted #d1d5db;padding-top:8px;display:flex;
+  justify-content:space-between;gap:14px}
+.pg-ft{margin-top:auto;padding:8px 0 10px;border-top:1px solid #e5e7eb;display:flex;
+  justify-content:space-between;font-family:var(--f-jp);font-size:8.5px;color:#9ca3af}
+/* OCR 스캔 라인 */
+.scan{position:absolute;left:0;right:0;top:0;height:64px;pointer-events:none;opacity:0;
+  background:linear-gradient(180deg,rgba(30,64,175,0) 0%,rgba(30,64,175,.09) 60%,rgba(30,64,175,.5) 99%)}
+.scan.go{animation:scanRun 1.25s cubic-bezier(.4,0,.6,1) 1 both}
+@keyframes scanRun{0%{opacity:0;transform:translateY(-64px)}
+  12%{opacity:1}88%{opacity:1}100%{opacity:0;transform:translateY(820px)}}
+/* 언어 감지 칩 */
+.lang-chip{position:absolute;left:50%;bottom:11px;transform:translate(-50%,8px);
+  background:var(--navy);color:#e8eef7;font-size:10px;padding:6px 12px;display:flex;
+  gap:9px;align-items:center;opacity:0;transition:opacity .35s ease,transform .35s ease;
+  box-shadow:0 6px 18px -8px rgba(0,0,0,.5)}
+.lang-chip.in{opacity:1;transform:translate(-50%,0)}
+.lang-chip .mono{color:#93c5fd}
+
+/* 2-3. 추출 필드 패널 */
+#fieldPanel .card-bd{display:flex;flex-direction:column}
+.fp-sum{flex:none;border-bottom:1px solid var(--line);display:grid;
+  grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
+.fp-sum > div{background:var(--white);padding:9px 11px}
+.fp-sum .k{font-size:9px;letter-spacing:.14em;color:var(--hint);text-transform:uppercase}
+.fp-sum .v{font-family:var(--f-mono);font-size:17px;font-weight:700;color:var(--ink);
+  margin-top:3px;font-variant-numeric:tabular-nums}
+.fp-sum .v.small{font-size:12px;font-weight:500;padding-top:4px}
+.fp-list{flex:1;min-height:0;overflow:hidden}
+.fr{display:grid;grid-template-columns:118px 1fr auto;gap:10px;align-items:center;
+  padding:8px 11px;border-bottom:1px solid #eef2f6;opacity:0;transform:translateX(10px);
+  transition:opacity .34s ease,transform .34s cubic-bezier(.16,1,.3,1),background .3s ease}
+.fr.in{opacity:1;transform:none}
+.fr.land{background:#f5f8ff}
+.fr-ja{font-family:var(--f-jp);font-size:10px;color:var(--hint);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.fr-k{font-size:9.5px;letter-spacing:.06em;color:var(--meta);margin-bottom:2px}
+.fr-v{font-size:12px;color:var(--ink);line-height:1.35;word-break:break-word}
+.fr-v.mono{font-size:12.5px;font-weight:500}
+.fr-meta{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.fr-conf{font-family:var(--f-mono);font-size:10px;color:var(--pos);
+  font-variant-numeric:tabular-nums}
+.fr-conf.low{color:var(--warn)}
+.fr-src{font-size:9px;color:var(--link);border-bottom:1px dotted #93a8d0}
+.fr .tagline{display:flex;gap:4px;margin-top:4px}
+.tag{font-size:8.5px;font-family:var(--f-mono);letter-spacing:.03em;padding:1px 4px;
+  border:1px solid var(--line-2);color:var(--meta)}
+.tag.calc{border-color:#1e40af;color:#1e40af}
+.tag.watch{border-color:var(--warn);color:var(--warn);background:var(--warn-bg)}
+/* 감사 추적 */
+.fp-audit{flex:none;border-top:1px solid var(--line);background:var(--shell);
+  padding:9px 11px 10px;opacity:0;transition:opacity .45s ease}
+.fp-audit.in{opacity:1}
+.fp-audit .k{font-size:9px;letter-spacing:.16em;color:var(--hint);
+  text-transform:uppercase;margin-bottom:6px}
+.fp-audit .ln{display:flex;gap:8px;font-size:10px;color:var(--meta);line-height:1.75;
+  align-items:baseline}
+.fp-audit .ln::before{content:'';width:4px;height:4px;background:var(--pos);flex:none;
+  transform:translateY(-1px)}
+.fp-audit .ln.pend::before{background:var(--warn)}
+.fp-audit .ln .mono{color:var(--body);flex:none}
+/* 패널 하단 액션 */
+.fp-act{flex:none;border-top:1px solid var(--line);background:var(--shell);
+  padding:10px 11px;display:flex;align-items:center;gap:10px;
+  opacity:0;transition:opacity .4s ease}
+.fp-act.in{opacity:1}
+.fp-act .norm{flex:1;font-size:10px;line-height:1.5;color:var(--meta)}
+.fp-act .norm b{display:block;color:var(--ink);font-size:11px;font-weight:500;
+  letter-spacing:.01em;margin-bottom:2px}
+.btn{border:1px solid var(--navy);background:var(--navy);color:#fff;font-size:10px;
+  letter-spacing:.1em;padding:8px 12px;text-transform:uppercase;font-family:var(--f-head);
+  font-weight:600;white-space:nowrap;transition:background .2s ease,transform .12s ease}
+.btn.ghost{background:transparent;color:var(--navy)}
+.btn.busy{background:var(--meta);border-color:var(--meta)}
+.btn:active{transform:translateY(1px)}
+
+/* 배선(문서→필드) SVG */
+#wires{position:absolute;inset:0;pointer-events:none;z-index:40}
+#wires path{fill:none;stroke:#ca8a04;stroke-width:1.25;
+  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  transition:stroke-dashoffset .42s cubic-bezier(.4,0,.2,1),opacity .35s ease}
+#wires path.drawn{stroke-dashoffset:0}
+#wires path.fade{opacity:0}
+#wires circle{fill:#ca8a04;opacity:0;transition:opacity .3s ease}
+#wires circle.drawn{opacity:1}
+#wires path.crit{stroke:#b91c1c;stroke-width:1.4}
+#wires circle.crit{fill:#b91c1c}
+
+/* ═══════════════════════════════════════════════════════════════
+   2B. ACT 2 — 커밋먼트 대조 및 검증
+   ═══════════════════════════════════════════════════════════════ */
+#act2{display:grid;grid-template-rows:150px 1fr 74px;gap:14px}
+
+/* 2B-1. 대조 요약 타일 */
+.a2-sum .card-bd{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--line)}
+.a2-t{background:var(--white);padding:11px 13px;display:flex;flex-direction:column;
+  opacity:0;transform:translateY(5px);transition:opacity .38s ease,transform .38s ease}
+.a2-t.in{opacity:1;transform:none}
+.a2-t .r1{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.a2-t .k{font-size:10px;letter-spacing:.1em;color:var(--meta);text-transform:none}
+.a2-t .r1 .spacer{flex:1}
+.a2-t .v{font-family:var(--f-mono);font-size:23px;font-weight:700;color:var(--ink);
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.15}
+.a2-t .v small{font-size:11px;font-weight:500;color:var(--meta);margin-right:4px}
+.a2-t .sub{margin-top:5px;font-family:var(--f-mono);font-size:10px;color:var(--hint);
+  font-variant-numeric:tabular-nums}
+.a2-t .sub b{color:var(--body);font-weight:500}
+.a2-t.upd .v{color:var(--link)}
+
+/* 2B-2. 3열 본문 */
+.a2-main{display:grid;grid-template-columns:300px 1fr 500px;gap:14px;min-height:0}
+
+/* 원장 레코드 */
+.a2-led{padding:12px 13px;overflow:hidden}
+.a2-led .fund{font-size:14px;color:var(--ink);line-height:1.35;font-weight:500}
+.a2-led .gp{font-size:10px;color:var(--meta);margin-top:3px}
+.a2-led .grp{margin-top:11px;padding-top:10px;border-top:1px solid var(--line)}
+.a2-led .cap{font-size:9px;letter-spacing:.16em;color:var(--hint);text-transform:uppercase;
+  margin-bottom:7px}
+.a2-led .kv{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;
+  line-height:1.9;align-items:baseline}
+.a2-led .kv span:first-child{color:var(--meta);flex:none}
+.a2-led .kv span:last-child{color:var(--ink);text-align:right}
+.a2-led .act-row{display:grid;grid-template-columns:44px 1fr auto;gap:6px;font-size:10px;
+  line-height:1.95;color:var(--body);align-items:baseline}
+.a2-led .act-row .id{color:var(--hint)}
+.a2-led .act-row .amt{font-family:var(--f-mono);font-variant-numeric:tabular-nums;
+  color:var(--ink)}
+.a2-led .more{font-size:10px;color:var(--hint);margin-top:5px;padding-top:5px;
+  border-top:1px dotted var(--line-2)}
+.a2-led .bank{border:1px solid var(--line);background:var(--shell);padding:8px 9px;
+  margin-top:7px}
+.a2-led .bank .b1{font-family:var(--f-jp);font-size:11px;color:var(--ink)}
+.a2-led .bank .b2{font-family:var(--f-mono);font-size:10px;color:var(--meta);margin-top:3px}
+.a2-led .bank.flag{border-color:#fca5a5;background:var(--crit-bg)}
+
+/* 대조 체크리스트 */
+.a2-ck-hd,.ck{display:grid;grid-template-columns:26px 132px 1fr 1fr 96px;gap:9px;
+  align-items:center;padding:0 12px}
+.a2-ck-hd{height:26px;flex:none;border-bottom:1px solid var(--line);
+  font-size:9px;letter-spacing:.13em;color:var(--hint);text-transform:uppercase;
+  background:var(--white)}
+.ck{min-height:62px;border-bottom:1px solid #eef2f6;opacity:.34;
+  border-left:2px solid transparent;
+  transition:opacity .3s ease,background .3s ease,border-color .3s ease}
+.ck.run{opacity:1;background:var(--shell)}
+.ck.pass{opacity:1}
+.ck.fail{opacity:1;background:var(--crit-bg);border-left-color:var(--crit)}
+.ck .idx{font-family:var(--f-mono);font-size:9.5px;color:var(--hint)}
+.ck .nm{font-size:11px;color:var(--ink)}
+.ck .a,.ck .b{font-size:10.5px;color:var(--body);line-height:1.4;
+  overflow:hidden;text-overflow:ellipsis}
+.ck .a.mono,.ck .b.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.ck .b.jp{font-family:var(--f-jp)}
+.ck.fail .a,.ck.fail .b{color:var(--crit)}
+.ck .rs{justify-self:end;display:flex;align-items:center;gap:5px}
+.ck .dots{font-family:var(--f-mono);font-size:11px;color:var(--line-2);letter-spacing:.1em}
+.ck.run .dots{color:var(--link);animation:dotsBlink 1s steps(1) infinite}
+@keyframes dotsBlink{0%,100%{opacity:1}50%{opacity:.25}}
+.ck .verdict{font-size:10px;display:none;align-items:center;gap:4px}
+.ck.pass .verdict.ok{display:flex;color:var(--pos)}
+.ck.fail .verdict.no{display:flex;color:var(--crit);font-weight:500}
+.ck.pass .dots,.ck.fail .dots{display:none}
+/* 원장 반영 결과 (write-back) */
+.a2-upd{flex:none;border-top:1px solid var(--line);padding:10px 12px 11px;
+  background:var(--white)}
+.a2-upd .cap{font-size:9px;letter-spacing:.16em;color:var(--hint);text-transform:uppercase;
+  margin-bottom:7px}
+.a2-upd .ur{display:grid;grid-template-columns:118px 148px 22px 148px auto;gap:8px;
+  align-items:center;font-size:10.5px;color:var(--meta);line-height:2;
+  opacity:0;transform:translateY(3px);transition:opacity .32s ease,transform .32s ease}
+.a2-upd .ur.in{opacity:1;transform:none}
+.a2-upd .ur .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums;
+  color:var(--hint);text-align:right}
+.a2-upd .ur .to{color:var(--ink);font-weight:500}
+.a2-upd .ur .to.hold{color:var(--crit);font-family:var(--f-kr)}
+.a2-upd .ur .ar{text-align:center;color:var(--line-2);font-family:var(--f-mono)}
+.a2-upd .ur .pill{justify-self:start}
+.a2-ck-foot{flex:none;border-top:1px solid var(--line);background:var(--shell);
+  padding:9px 12px;display:flex;align-items:center;gap:10px;font-size:10px;color:var(--meta)}
+.a2-ck-foot .spacer{flex:1}
+.a2-ck-foot .mono{color:var(--body)}
+
+/* 예외 상세 패널 */
+#a2Exc{border-color:var(--line);opacity:0;transform:translateX(10px);
+  transition:opacity .45s ease,transform .45s cubic-bezier(.16,1,.3,1)}
+#a2Exc.in{opacity:1;transform:none}
+#a2Exc .card-hd{background:var(--crit-bg);border-bottom-color:#fca5a5}
+#a2Exc .card-hd .t{color:var(--crit)}
+.a2-exc-bd{padding:12px 13px;overflow:hidden;display:flex;flex-direction:column;gap:10px}
+.a2-exc-ttl{font-size:15px;color:var(--ink);font-weight:500;line-height:1.3}
+.a2-exc-ttl .why{display:block;font-size:10.5px;color:var(--meta);font-weight:400;
+  margin-top:4px}
+/* 계좌 비교 표 */
+.a2-cmp{border:1px solid var(--line);border-collapse:collapse;width:100%}
+.a2-cmp th,.a2-cmp td{border:1px solid var(--line);padding:5px 8px;font-size:10px;
+  text-align:left;vertical-align:middle}
+.a2-cmp thead th{background:var(--shell);font-size:9px;letter-spacing:.1em;
+  color:var(--hint);font-weight:400;text-transform:uppercase}
+.a2-cmp tbody th{width:52px;color:var(--meta);font-weight:400;background:var(--white)}
+.a2-cmp td{font-family:var(--f-jp);color:var(--ink)}
+.a2-cmp td.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.a2-cmp tbody tr{opacity:0;transition:opacity .3s ease}
+.a2-cmp tbody tr.in{opacity:1}
+.a2-cmp tr.diff td:last-child{background:var(--crit-bg);color:var(--crit);font-weight:500}
+.a2-cmp .mk{float:right;font-family:var(--f-mono);font-size:10px}
+.a2-cmp tr.diff .mk{color:var(--crit)}
+.a2-cmp tr.same .mk{color:var(--pos)}
+/* 원문 역추적 */
+.a2-trace{border:1px solid var(--line);background:var(--shell);padding:9px;
+  display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+.a2-thumb{width:74px;flex:none}
+.a2-thumb .tp{height:100px;background:#fdfdfc;border:1px solid var(--line-2);
+  padding:6px 5px;display:flex;flex-direction:column;gap:2px;position:relative}
+.a2-thumb .tp i{display:block;height:2px;background:#e5e7eb}
+.a2-thumb .tp .tt{margin-top:3px;display:flex;flex-direction:column;gap:1.5px}
+.a2-thumb .tp .tt s{display:block;height:3.5px;background:#eef1f5;
+  border-left:14px solid #e5e7eb;text-decoration:none}
+.a2-thumb .tp .tt s.hit{background:#fee2e2;border-left-color:#fca5a5;
+  outline:1.4px solid var(--crit);outline-offset:.5px}
+.a2-thumb .cap{font-family:var(--f-mono);font-size:8.5px;color:var(--hint);
+  margin-top:4px;text-align:center}
+.a2-trace .tr-r .lbl{font-size:9px;letter-spacing:.14em;color:var(--hint);
+  text-transform:uppercase;margin-bottom:5px}
+.a2-snip{border:1px solid var(--crit);background:#fff;display:grid;
+  grid-template-columns:86px 1fr}
+.a2-snip .sk{font-family:var(--f-jp);font-size:10px;padding:5px 7px;background:#f6f6f4;
+  color:#374151;border-right:1px solid var(--line)}
+.a2-snip .sv{font-family:var(--f-jp);font-size:10.5px;padding:5px 7px;color:var(--crit);
+  background:var(--crit-bg)}
+.a2-trace .src{font-size:9.5px;color:var(--meta);margin-top:6px;line-height:1.6}
+.a2-trace .src b{color:var(--link);font-weight:400;border-bottom:1px dotted #93a8d0}
+/* 위험 사유 */
+.a2-risk .lbl{font-size:9px;letter-spacing:.14em;color:var(--hint);text-transform:uppercase;
+  margin-bottom:6px}
+.a2-risk .r{display:grid;grid-template-columns:12px 1fr;gap:7px;font-size:10.5px;
+  color:var(--body);line-height:1.6;margin-bottom:5px;opacity:0;transform:translateY(4px);
+  transition:opacity .3s ease,transform .3s ease}
+.a2-risk .r.in{opacity:1;transform:none}
+.a2-risk .r i{width:5px;height:5px;background:var(--crit);margin-top:6px;
+  font-style:normal}
+.a2-risk .r b{color:var(--ink);font-weight:500}
+/* 권고 조치 */
+.a2-rec{border-top:1px solid var(--line);padding-top:10px;margin-top:auto;
+  opacity:0;transition:opacity .4s ease}
+.a2-rec.in{opacity:1}
+.a2-rec .lbl{font-size:9px;letter-spacing:.14em;color:var(--hint);text-transform:uppercase;
+  margin-bottom:5px}
+.a2-rec .txt{font-size:10.5px;color:var(--body);line-height:1.65}
+.a2-rec .row{display:flex;gap:7px;margin-top:9px;align-items:center}
+.btn.sm{padding:7px 10px;font-size:9.5px;letter-spacing:.08em}
+.btn.crit{background:var(--crit);border-color:var(--crit)}
+.btn.done{background:var(--pos);border-color:var(--pos)}
+.a2-rec .sent{font-size:10px;color:var(--pos);display:none}
+.a2-rec.sent-on .sent{display:inline}
+
+/* 2B-3. 처리시간 대역 (+ 필수 캡션) */
+.a2-band{display:grid;grid-template-columns:322px 1fr 396px;gap:1px;background:var(--line);
+  border:1px solid var(--line);opacity:0;transition:opacity .45s ease}
+.a2-band.in{opacity:1}
+.a2-band > div{background:var(--white);padding:9px 14px;display:flex;flex-direction:column;
+  justify-content:center}
+.a2-band .z1{flex-direction:row;align-items:center;gap:11px}
+.a2-band .z1 .side{display:flex;flex-direction:column}
+.a2-band .z1 .k{font-size:9px;letter-spacing:.12em;color:var(--hint);text-transform:uppercase}
+.a2-band .z1 .v{font-family:var(--f-mono);font-size:16px;font-weight:700;color:var(--ink);
+  margin-top:2px;letter-spacing:-.01em}
+.a2-band .z1 .v.now{color:var(--link)}
+.a2-band .z1 .arw{font-family:var(--f-mono);font-size:14px;color:var(--line-2)}
+.a2-band .cav{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--warn);
+  line-height:1.5}
+.a2-band .cav .ic{width:14px;height:14px;border:1px solid var(--warn);flex:none;
+  display:grid;place-items:center;font-family:var(--f-mono);font-size:9px}
+.a2-band .cav b{font-weight:500}
+.a2-band .obj{font-size:10px;color:var(--meta);margin-top:5px;line-height:1.5;
+  padding-left:21px}
+.a2-band .z3{position:relative}
+.a2-band .z3 .stat,.a2-band .z3 .msg{transition:opacity .5s ease}
+.a2-band .z3 .msg{position:absolute;left:14px;right:14px;opacity:0;
+  font-size:12.5px;color:var(--ink);line-height:1.55}
+.a2-band .z3 .msg b{color:var(--link);font-weight:500}
+.a2-band .z3.msg-on .stat{opacity:0}
+.a2-band .z3.msg-on .msg{opacity:1}
+.a2-band .z3 .stat .k{font-size:9px;letter-spacing:.12em;color:var(--hint);
+  text-transform:uppercase}
+.a2-band .z3 .stat .row{display:flex;gap:16px;margin-top:5px;font-size:11px;
+  color:var(--meta)}
+.a2-band .z3 .stat b{font-family:var(--f-mono);font-size:14px;color:var(--ink);
+  font-weight:700;margin-left:3px}
+.a2-band .z3 .stat b.c{color:var(--crit)}
+
+/* ═══════════════════════════════════════════════════════════════
+   2C. ACT 3 — GP 관계 인텔리전스
+   ═══════════════════════════════════════════════════════════════ */
+#act3{display:grid;grid-template-columns:1fr 520px;gap:14px}
+
+/* 3-1. 그래프 캔버스 */
+.g3-wrap{display:flex;flex-direction:column;min-height:0}
+#g3{position:relative;width:1128px;height:860px;flex:none;overflow:hidden}
+#g3 svg{position:absolute;inset:0;width:1128px;height:860px;z-index:1}
+#g3 svg path{fill:none;stroke:var(--line-2);stroke-width:1.15;
+  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  transition:stroke-dashoffset .55s cubic-bezier(.4,0,.2,1),opacity .4s ease,
+    stroke .3s ease,stroke-width .3s ease}
+#g3 svg path.drawn{stroke-dashoffset:0}
+#g3 svg path.ins.drawn{stroke:var(--link);stroke-width:1.6;
+  stroke-dasharray:5 4;stroke-dashoffset:0}
+#g3 svg path.dbl.on{stroke:var(--warn);stroke-width:2}
+#g3.focus svg path{opacity:.12}
+#g3.focus svg path.hi{opacity:1}
+
+/* 노드 */
+.n3{position:absolute;transform:translate(-50%,-50%);z-index:2;background:var(--white);
+  border:1px solid var(--line-2);padding:7px 10px;opacity:0;
+  transition:opacity .34s ease,box-shadow .3s ease,border-color .3s ease,filter .35s ease}
+.n3.in{opacity:1}
+.n3 .nn{font-size:11.5px;color:var(--ink);line-height:1.25;white-space:nowrap}
+.n3 .ns{font-size:9.5px;color:var(--meta);margin-top:3px;white-space:nowrap;
+  font-family:var(--f-mono);letter-spacing:-.01em}
+#g3.focus .n3{opacity:.2;filter:grayscale(1)}
+#g3.focus .n3.hi{opacity:1;filter:none}
+/* 타입별 */
+.n3.lp{width:176px;background:var(--navy);border-color:var(--navy);padding:9px 11px}
+.n3.lp .nn{color:#fff;font-size:13px;font-weight:500}
+.n3.lp .ns{color:#8ea0bd}
+.n3.gp{width:200px;border-left:3px solid var(--navy)}
+.n3.fd{width:220px;border-left:3px solid var(--link)}
+.n3.pr{width:156px;display:flex;align-items:center;gap:8px;padding:6px 9px}
+.n3.pr .av{width:22px;height:22px;flex:none;background:var(--shell);border:1px solid var(--line);
+  display:grid;place-items:center;font-family:var(--f-jp);font-size:11px;color:var(--body)}
+.n3.co{width:176px;border-left:3px solid var(--line-2);padding:6px 9px}
+.n3.co .nn{font-size:11px}
+.n3.sel{border-color:var(--navy);box-shadow:0 0 0 2px rgba(15,23,42,.16),
+  0 8px 20px -12px rgba(15,23,42,.4)}
+.n3.warn{border-color:var(--warn);box-shadow:0 0 0 2px rgba(180,83,9,.14)}
+
+/* 엣지 라벨 */
+.e3l{position:absolute;transform:translate(-50%,-50%);z-index:2;background:var(--white);
+  border:1px solid var(--line);padding:1px 5px;font-family:var(--f-mono);font-size:9px;
+  color:var(--meta);white-space:nowrap;opacity:0;transition:opacity .35s ease}
+.e3l.in{opacity:1}
+.e3l.ins{border-color:var(--link);color:var(--link)}
+#g3.focus .e3l{opacity:.15}
+#g3.focus .e3l.hi{opacity:1}
+
+/* 범례 */
+.g3-lg{position:absolute;left:14px;top:12px;z-index:3;display:flex;flex-direction:column;
+  gap:5px;background:rgba(255,255,255,.92);border:1px solid var(--line);padding:8px 10px}
+.g3-lg .t{font-size:9px;letter-spacing:.16em;color:var(--hint);text-transform:uppercase}
+.g3-lg .r{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--body)}
+.g3-lg .sw{width:11px;height:11px;border:1px solid var(--line-2);flex:none}
+.g3-lg .sw.lp{background:var(--navy);border-color:var(--navy)}
+.g3-lg .sw.gp{border-left:3px solid var(--navy)}
+.g3-lg .sw.fd{border-left:3px solid var(--link)}
+.g3-lg .sw.pr{border-radius:50%}
+.g3-lg .sw.co{border-left:3px solid var(--line-2)}
+
+/* 그래프 통계 */
+.g3-st{position:absolute;left:14px;top:686px;z-index:3;width:224px;
+  background:rgba(255,255,255,.94);border:1px solid var(--line);padding:9px 11px;
+  opacity:0;transition:opacity .45s ease}
+.g3-st.in{opacity:1}
+.g3-st .t{font-size:9px;letter-spacing:.16em;color:var(--hint);text-transform:uppercase;
+  margin-bottom:6px}
+.g3-st .r{display:flex;justify-content:space-between;gap:8px;font-size:10px;
+  color:var(--meta);line-height:1.85;align-items:baseline}
+.g3-st .r b{color:var(--ink);font-weight:500;font-family:var(--f-mono);font-size:9.5px;
+  text-align:right}
+.g3-st .r.hl b{color:var(--link)}
+
+/* 인사이트 칩 */
+.g3-ins{position:absolute;z-index:4;background:var(--white);border:1px solid var(--link);
+  border-left-width:3px;padding:7px 10px;max-width:262px;opacity:0;transform:translateY(5px);
+  transition:opacity .4s ease,transform .4s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 8px 20px -14px rgba(15,23,42,.45)}
+.g3-ins.in{opacity:1;transform:none}
+.g3-ins .k{font-size:9px;letter-spacing:.13em;color:var(--link);text-transform:uppercase;
+  margin-bottom:4px}
+.g3-ins .v{font-size:11px;color:var(--ink);line-height:1.5}
+.g3-ins .v b{font-weight:500}
+.g3-ins.w{border-color:var(--warn)}
+.g3-ins.w .k{color:var(--warn)}
+
+/* 그래프 하단 바 */
+.g3-bar{flex:1;min-height:0;border-top:1px solid var(--line);background:var(--shell);
+  padding:0 14px;display:flex;align-items:center;gap:14px}
+.g3-bar .msg{font-size:12.5px;color:var(--ink);line-height:1.5;opacity:0;
+  transition:opacity .5s ease}
+.g3-bar .msg.in{opacity:1}
+.g3-bar .msg b{color:var(--link);font-weight:500}
+.g3-bar .spacer{flex:1}
+.g3-bar .meta{font-family:var(--f-mono);font-size:10px;color:var(--hint)}
+
+/* 3-2. GP 상세 사이드 패널 */
+#a3Panel .card-bd{display:flex;flex-direction:column;overflow:hidden}
+.a3-empty{flex:1;display:grid;place-items:center;text-align:center;color:var(--hint);
+  font-size:11px;line-height:1.9;padding:20px}
+.a3-empty .big{font-family:var(--f-mono);font-size:22px;color:var(--line-2);margin-bottom:8px}
+.a3-body{flex:1;min-height:0;overflow:hidden;display:none;flex-direction:column}
+.a3-body.on{display:flex}
+.blk{opacity:0;transform:translateY(5px);
+  transition:opacity .36s ease,transform .36s cubic-bezier(.16,1,.3,1)}
+.blk.in{opacity:1;transform:none}
+.a3-id{padding:12px 13px 11px;border-bottom:1px solid var(--line)}
+.a3-id .nm{font-size:16px;color:var(--ink);font-weight:500}
+.a3-id .sub{font-size:10.5px;color:var(--meta);margin-top:4px;line-height:1.6}
+.a3-id .tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+.a3-sec{padding:11px 13px;border-bottom:1px solid var(--line)}
+.a3-sec .cap{font-size:9px;letter-spacing:.16em;color:var(--hint);text-transform:uppercase;
+  margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.a3-sec .cap .spacer{flex:1}
+.a3-exp{display:flex;align-items:baseline;gap:8px}
+.a3-exp .v{font-family:var(--f-mono);font-size:26px;font-weight:700;color:var(--ink);
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.a3-exp .u{font-family:var(--f-mono);font-size:11px;color:var(--meta)}
+.a3-brk{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  margin-top:9px;border:1px solid var(--line)}
+.a3-brk > div{background:var(--white);padding:6px 8px}
+.a3-brk .k{font-size:9.5px;color:var(--meta)}
+.a3-brk .v{font-family:var(--f-mono);font-size:12px;color:var(--ink);margin-top:2px;
+  font-variant-numeric:tabular-nums}
+.a3-brk .v.c{color:var(--crit)}
+.a3-row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:5px 0;
+  border-bottom:1px solid #f1f5f9;font-size:11px;color:var(--ink);align-items:baseline}
+.a3-row:last-child{border-bottom:none}
+.a3-row .l2{font-size:9.5px;color:var(--hint);margin-top:2px;font-family:var(--f-mono)}
+.a3-row .r{text-align:right}
+.a3-row .amt{font-family:var(--f-mono);font-size:11.5px;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+.a3-row .st{font-size:9.5px;color:var(--meta);margin-top:2px}
+.a3-row .st.c{color:var(--crit)}
+.a3-row .st.p{color:var(--pos)}
+.a3-row.hot{background:var(--crit-bg);box-shadow:inset 2px 0 0 var(--crit);
+  padding-left:7px;margin-left:-7px}
+.a3-ct{display:grid;grid-template-columns:26px 1fr;gap:9px;padding:6px 0;
+  border-bottom:1px solid #f1f5f9;align-items:start}
+.a3-ct:last-child{border-bottom:none}
+.a3-ct .av{width:26px;height:26px;background:var(--shell);border:1px solid var(--line);
+  display:grid;place-items:center;font-family:var(--f-jp);font-size:12px;color:var(--body)}
+.a3-ct .nm{font-size:11.5px;color:var(--ink)}
+.a3-ct .ro{font-size:9.5px;color:var(--meta);margin-top:2px;line-height:1.5}
+.a3-ct .ro em{font-style:normal;color:var(--link)}
+.a3-foot{margin-top:auto;padding:10px 13px;background:var(--shell);
+  border-top:1px solid var(--line)}
+.a3-foot .r{display:flex;justify-content:space-between;gap:8px;font-size:10px;
+  color:var(--meta);line-height:1.8}
+.a3-foot .r b{color:var(--ink);font-weight:500;font-family:var(--f-mono)}
+
+/* ═══════════════════════════════════════════════════════════════
+   2D. ACT 4 — 내장형 인텔리전스 (API + MCP)
+        (1) 인앱 연동 콘솔  →  (2) 화면을 뒤로 당겨 아키텍처 노출
+   ═══════════════════════════════════════════════════════════════ */
+#act4{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* 4-1. 인앱 연동 콘솔 */
+.a4-c{opacity:0;transform:translateY(6px);
+  transition:opacity .4s ease,transform .4s ease}
+.a4-c.in{opacity:1;transform:none}
+.a4-int{padding:0}
+.a4-ir{display:grid;grid-template-columns:16px 1fr auto auto;gap:11px;align-items:center;
+  padding:11px 13px;border-bottom:1px solid var(--line)}
+.a4-ir .dot{width:7px;height:7px;border-radius:50%;background:var(--pos);
+  justify-self:center}
+.a4-ir .dot.w{background:var(--warn)}
+.a4-ir .nm{font-size:12px;color:var(--ink)}
+.a4-ir .nm .d{display:block;font-size:10px;color:var(--meta);margin-top:3px;
+  font-family:var(--f-mono)}
+.a4-usage{padding:12px 13px;border-top:1px solid var(--line);background:var(--shell)}
+.a4-usage .cap{font-size:9px;letter-spacing:.16em;color:var(--hint);text-transform:uppercase;
+  margin-bottom:8px}
+.a4-usage .ub{display:grid;grid-template-columns:38px 1fr 52px;gap:9px;align-items:center;
+  margin-bottom:5px}
+.a4-usage .ub .l{font-family:var(--f-mono);font-size:10px;color:var(--meta)}
+.a4-usage .ub .bar{height:9px;background:var(--line);display:block}
+.a4-usage .ub .bar i{display:block;height:9px;background:var(--navy)}
+.a4-usage .ub .bar i.m{background:var(--link)}
+.a4-usage .ub .v{font-family:var(--f-mono);font-size:10.5px;color:var(--ink);
+  text-align:right;font-variant-numeric:tabular-nums}
+.a4-usage .spark{display:flex;align-items:flex-end;gap:3px;height:58px}
+.a4-usage .spark i{flex:1;background:var(--line-2);display:block}
+.a4-usage .spark i.on{background:var(--navy)}
+.a4-usage .axs{display:flex;justify-content:space-between;font-family:var(--f-mono);
+  font-size:9px;color:var(--hint);margin-top:4px}
+.a4-tools{padding:11px 13px;display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start}
+.a4-tools .pill{font-size:9.5px}
+.p4-idle{font-family:var(--f-mono);font-size:11px;color:#4a5b78;
+  border:1px dashed var(--navy-line);padding:9px 11px}
+.p4-idle.gone{display:none}
+.a4-ir.sel{background:#f5f8ff;box-shadow:inset 2px 0 0 var(--link)}
+.a4-cred{padding:11px 13px}
+.a4-cred .cap{font-size:9px;letter-spacing:.16em;color:var(--hint);text-transform:uppercase;
+  margin-bottom:8px}
+.a4-cred .kv{display:grid;grid-template-columns:104px 1fr;gap:9px;font-size:10.5px;
+  line-height:2;align-items:baseline}
+.a4-cred .kv span:first-child{color:var(--meta)}
+.a4-cred .kv .mono{font-family:var(--f-mono);color:var(--ink);word-break:break-all}
+.a4-log{width:100%;border-collapse:collapse}
+.a4-log th,.a4-log td{padding:6px 10px;font-size:10.5px;text-align:left;
+  border-bottom:1px solid #f1f5f9}
+.a4-log th{font-size:9px;letter-spacing:.12em;color:var(--hint);text-transform:uppercase;
+  border-bottom:1px solid var(--line);font-weight:400}
+.a4-log td{font-family:var(--f-mono);color:var(--body)}
+.a4-log td.p{color:var(--ink)}
+.a4-log td.ok{color:var(--pos)}
+.a4-log tbody tr{opacity:0;transition:opacity .3s ease}
+.a4-log tbody tr.in{opacity:1}
+.a4-scope{padding:11px 13px;border-top:1px solid var(--line);background:var(--shell)}
+.a4-scope .cap{font-size:9px;letter-spacing:.16em;color:var(--hint);text-transform:uppercase;
+  margin-bottom:7px}
+.a4-scope .tags{display:flex;flex-wrap:wrap;gap:5px}
+
+/* 4-2. 뒤로 당긴 아키텍처 오버레이 */
+#appShell.pulled{z-index:70;box-shadow:0 0 0 1px rgba(96,165,250,.5),
+  0 40px 90px -30px rgba(0,0,0,.85)}
+#pullback{position:absolute;inset:0;z-index:60;background:var(--navy-deep);
+  color:#e8eef7;opacity:0;visibility:hidden;
+  transition:opacity .7s ease,visibility .7s}
+#pullback.in{opacity:1;visibility:visible}
+#pullback .grid-bg{position:absolute;inset:0;opacity:.55;
+  background-image:linear-gradient(rgba(59,130,246,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.05) 1px,transparent 1px);
+  background-size:56px 56px}
+.p4{position:absolute}
+.p4-eyebrow{left:56px;top:74px;display:flex;align-items:baseline;gap:14px;
+  opacity:0;transition:opacity .5s ease}
+.p4-eyebrow.in{opacity:1}
+.p4-eyebrow .t{font-family:var(--f-head);font-size:19px;font-weight:600;
+  letter-spacing:.14em;color:#fff}
+.p4-eyebrow .s{font-size:12px;color:#8ea0bd}
+
+/* 레이어 박스 */
+.p4-l{border:1px solid var(--navy-line);background:rgba(255,255,255,.022);
+  opacity:0;transform:translateY(8px);
+  transition:opacity .5s ease,transform .5s cubic-bezier(.16,1,.3,1)}
+.p4-l.in{opacity:1;transform:none}
+.p4-l .hd{padding:8px 13px;border-bottom:1px solid var(--navy-line);display:flex;
+  align-items:center;gap:10px}
+.p4-l .hd .n{font-size:12.5px;color:#e8eef7;font-weight:500}
+.p4-l .hd .x{font-size:10px;color:#4a5b78;font-family:var(--f-mono);margin-left:auto}
+.p4-l .bd{padding:11px 13px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.p4-chip{border:1px solid var(--navy-line);background:rgba(255,255,255,.03);
+  padding:7px 11px;font-size:11px;color:#c3d0e4}
+.p4-chip .s{display:block;font-size:9px;color:#5f7290;margin-top:3px;
+  font-family:var(--f-mono)}
+.p4-l.tr{border-color:rgba(96,165,250,.42);background:rgba(30,64,175,.09)}
+.p4-l.tr .hd{border-bottom-color:rgba(96,165,250,.28)}
+.p4-l.tr .hd .n{color:#bfdbfe}
+.p4-note{font-size:11px;color:#8ea0bd;line-height:1.75}
+.p4-note b{color:#e8eef7;font-weight:500}
+
+/* 층간 화살표 */
+.p4-ar{display:flex;flex-direction:column;align-items:center;gap:3px;
+  opacity:0;transition:opacity .45s ease}
+.p4-ar.in{opacity:1}
+.p4-ar .cap{font-size:8px;color:#3d4d68;line-height:1}
+.p4-ar .bar{width:1px;flex:1;background:var(--navy-line)}
+.p4-ar .lb{font-family:var(--f-head);font-size:10px;font-weight:700;letter-spacing:.14em;
+  color:#5f7290;border:1px solid var(--navy-line);padding:3px 8px;
+  background:var(--navy-deep)}
+.p4-ar.on .bar{background:#3b82f6}
+.p4-ar.on .cap{color:#60a5fa}
+.p4-ar.on .lb{color:#fff;border-color:#3b82f6;background:#1e40af}
+
+/* API / MCP 패널 */
+.p4-p{border:1px solid var(--navy-line);background:rgba(255,255,255,.022);
+  display:flex;flex-direction:column;opacity:0;transform:translateX(10px);
+  transition:opacity .5s ease,transform .5s cubic-bezier(.16,1,.3,1)}
+.p4-p.in{opacity:1;transform:none}
+.p4-p .hd{padding:8px 13px;border-bottom:1px solid var(--navy-line);display:flex;
+  align-items:center;gap:10px}
+.p4-p .hd .k{font-family:var(--f-head);font-size:11px;font-weight:700;letter-spacing:.2em;
+  color:#60a5fa}
+.p4-p .hd .n{font-size:11px;color:#8ea0bd}
+.p4-p .hd .spacer{flex:1}
+.p4-p .hd .r{font-size:9.5px;color:#4a5b78;font-family:var(--f-mono)}
+.p4-p .bd{padding:11px 13px;flex:1;min-height:0;overflow:hidden}
+.p4-flow{display:flex;align-items:center;gap:8px;font-size:10px;color:#5f7290;
+  margin-bottom:9px;flex-wrap:wrap}
+.p4-flow b{color:#c3d0e4;font-weight:500}
+.p4-flow .ar{color:#3b82f6}
+
+/* 코드 / JSON */
+.p4-code{font-family:var(--f-mono);font-size:11.5px;line-height:1.62}
+.p4-code .ln{opacity:0;transition:opacity .22s ease;white-space:pre;color:#a8bcd8}
+.p4-code .ln.in{opacity:1}
+.p4-code .req{color:#7dd3a8}
+.p4-code .dim{color:#4a5b78}
+.p4-code .k{color:#93c5fd}
+.p4-code .v{color:#e8eef7}
+.p4-code .n{color:#fbbf24}
+.p4-code .c{color:#f87171}
+.p4-code .st{display:flex;align-items:center;gap:9px;margin:7px 0;opacity:0;
+  transition:opacity .3s ease}
+.p4-code .st.in{opacity:1}
+.p4-code .st .code{border:1px solid rgba(52,211,153,.4);color:#34d399;padding:2px 7px;
+  font-size:10px}
+.p4-code .st .ms{font-size:10px;color:#4a5b78}
+.p4-consume{margin-top:10px;border-top:1px solid var(--navy-line);padding-top:9px;
+  font-size:10.5px;color:#8ea0bd;opacity:0;transition:opacity .4s ease;
+  display:flex;align-items:center;gap:8px}
+.p4-consume.in{opacity:1}
+.p4-consume b{color:#bfdbfe;font-weight:500}
+.p4-consume .ar{color:#3b82f6}
+
+/* MCP 대화 */
+.p4-msg{margin-bottom:9px;opacity:0;transform:translateY(4px);
+  transition:opacity .35s ease,transform .35s ease}
+.p4-msg.in{opacity:1;transform:none}
+.p4-msg .who{font-size:9.5px;color:#5f7290;margin-bottom:4px;display:flex;
+  align-items:center;gap:7px}
+.p4-msg .who .av{width:18px;height:18px;background:rgba(59,130,246,.16);
+  border:1px solid rgba(96,165,250,.4);display:grid;place-items:center;font-size:8.5px;
+  color:#93c5fd;font-family:var(--f-mono)}
+.p4-msg .q{font-size:13px;color:#fff;line-height:1.5}
+.p4-msg.tool{border:1px solid rgba(96,165,250,.3);background:rgba(30,64,175,.14);
+  padding:8px 10px}
+.p4-msg.tool .tl{font-family:var(--f-mono);font-size:10.5px;color:#93c5fd;
+  line-height:1.7}
+.p4-msg.tool .tl em{font-style:normal;color:#e8eef7}
+.p4-ans{list-style:none}
+.p4-ans li{display:grid;grid-template-columns:13px 1fr;gap:8px;font-size:12px;
+  color:#dbe6f5;line-height:1.5;margin-bottom:7px;opacity:0;transform:translateY(3px);
+  transition:opacity .3s ease,transform .3s ease}
+.p4-ans li.in{opacity:1;transform:none}
+.p4-ans li i{width:4px;height:4px;background:#60a5fa;margin-top:8px;font-style:normal}
+.p4-ans li b{color:#fff;font-weight:500}
+.p4-ans li .c{color:#fca5a5}
+.p4-src{margin-top:8px;font-size:10px;color:#4a5b78;font-family:var(--f-mono);
+  opacity:0;transition:opacity .4s ease}
+.p4-src.in{opacity:1}
+
+/* 하단 전략 메시지 */
+.p4-msg1{left:56px;top:872px;opacity:0;transform:translateY(10px);
+  transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1)}
+.p4-msg1.in{opacity:1;transform:none}
+.p4-msg1 .a{font-size:22px;color:#5f7290;line-height:1.4}
+.p4-msg1 .b{font-family:var(--f-head);font-size:33px;font-weight:600;color:#fff;
+  line-height:1.3;letter-spacing:.01em;margin-top:6px}
+.p4-steps{right:56px;top:892px;display:flex;align-items:stretch;
+  border:1px solid var(--navy-line);opacity:0;
+  transition:opacity .6s ease}
+.p4-steps.in{opacity:1}
+.p4-steps .s{padding:14px 26px;border-right:1px solid var(--navy-line);text-align:center}
+.p4-steps .s:last-child{border-right:none}
+.p4-steps .s .n{font-family:var(--f-head);font-size:9px;letter-spacing:.2em;
+  color:#3d4d68}
+.p4-steps .s .v{font-size:17px;color:#8ea0bd;margin-top:5px}
+.p4-steps .s.on .v{color:#93c5fd}
+.p4-steps .s.on .n{color:#60a5fa}
+
+/* ═══════════════════════════════════════════════════════════════
+   2E. ACT 5 — 파일럿에서 인프라로 (마감 프레임)
+   ═══════════════════════════════════════════════════════════════ */
+#finale{position:absolute;inset:0;z-index:65;background:var(--navy-deep);color:#e8eef7;
+  opacity:0;visibility:hidden;transition:opacity .8s ease,visibility .8s}
+#finale.in{opacity:1;visibility:visible}
+#finale .grid-bg{position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(rgba(59,130,246,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.05) 1px,transparent 1px);
+  background-size:56px 56px}
+
+/* 씬 A — 요약 + 3단계 */
+.f-a{position:absolute;inset:0;transition:opacity .8s ease}
+.f-a.out{opacity:0}
+.f-eye{position:absolute;left:0;right:0;top:96px;text-align:center;opacity:0;
+  transition:opacity .6s ease}
+.f-eye.in{opacity:1}
+.f-eye .t{font-family:var(--f-head);font-size:11px;letter-spacing:.34em;color:#60a5fa}
+.f-eye .s{font-size:26px;color:#fff;margin-top:14px;font-weight:500}
+
+/* 요약 체인 */
+.f-chain{position:absolute;left:0;right:0;top:212px;display:flex;justify-content:center;
+  align-items:stretch;gap:0}
+.f-ch{border:1px solid var(--navy-line);background:rgba(255,255,255,.022);
+  padding:13px 20px;min-width:214px;opacity:0;transform:translateY(6px);
+  transition:opacity .45s ease,transform .45s cubic-bezier(.16,1,.3,1)}
+.f-ch.in{opacity:1;transform:none}
+.f-ch .n{font-family:var(--f-mono);font-size:9px;color:#3d4d68;letter-spacing:.1em}
+.f-ch .v{font-size:14px;color:#e8eef7;margin-top:6px;line-height:1.3}
+.f-ch .d{font-size:10px;color:#5f7290;margin-top:5px;font-family:var(--f-mono)}
+.f-ar{display:flex;align-items:center;padding:0 11px;font-family:var(--f-mono);
+  font-size:12px;color:#2f3d54;opacity:0;transition:opacity .4s ease}
+.f-ar.in{opacity:1;color:#3b82f6}
+
+/* 3단계 */
+.f-steps{position:absolute;left:56px;right:56px;top:392px;display:grid;
+  grid-template-columns:1fr 46px 1fr 46px 1fr}
+.f-st{border:1px solid var(--navy-line);background:rgba(255,255,255,.022);
+  padding:20px 24px;opacity:0;transform:translateY(8px);
+  transition:opacity .55s ease,transform .55s cubic-bezier(.16,1,.3,1)}
+.f-st.in{opacity:1;transform:none}
+.f-st.hi{border-color:rgba(96,165,250,.42);background:rgba(30,64,175,.1)}
+.f-st .n{font-family:var(--f-head);font-size:9.5px;letter-spacing:.22em;color:#3d4d68}
+.f-st .h{font-family:var(--f-head);font-size:27px;font-weight:600;color:#fff;
+  margin-top:9px;letter-spacing:.02em}
+.f-st.hi .h{color:#bfdbfe}
+.f-st ul{list-style:none;margin-top:15px}
+.f-st li{display:grid;grid-template-columns:12px 1fr;gap:8px;font-size:13px;
+  color:#a8bcd8;line-height:1.55;margin-bottom:9px}
+.f-st li i{width:4px;height:4px;background:#4a5b78;margin-top:8px;font-style:normal}
+.f-st .out{margin-top:16px;padding-top:13px;border-top:1px solid var(--navy-line);
+  font-size:12.5px;color:#8ea0bd}
+.f-st .out b{color:#e8eef7;font-weight:500}
+.f-sar{display:grid;place-items:center;font-family:var(--f-mono);font-size:14px;
+  color:#2f3d54;opacity:0;transition:opacity .5s ease}
+.f-sar.in{opacity:1;color:#3b82f6}
+
+/* 파일럿 제안 범위 */
+.f-prop{position:absolute;left:56px;right:56px;top:706px;border:1px solid var(--navy-line);
+  display:grid;grid-template-columns:212px 1fr;opacity:0;
+  transition:opacity .6s ease}
+.f-prop.in{opacity:1}
+.f-prop .lb{padding:15px 22px;border-right:1px solid var(--navy-line);
+  font-family:var(--f-head);font-size:10px;letter-spacing:.2em;color:#60a5fa;
+  display:grid;align-content:center}
+.f-prop .lb span{display:block;font-family:var(--f-kr);font-size:10px;letter-spacing:0;
+  color:#3d4d68;margin-top:5px}
+.f-prop .items{display:flex}
+.f-prop .items > span{flex:1;padding:15px 22px;border-right:1px solid var(--navy-line);
+  font-size:13px;color:#8ea0bd;line-height:1.5}
+.f-prop .items > span:last-child{border-right:none;flex:1.5}
+.f-prop .items b{color:#e8eef7;font-weight:500}
+
+/* 씬 B — 마감 프레임 */
+.f-b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;opacity:0;visibility:hidden;
+  transition:opacity .9s ease,visibility .9s}
+.f-b.in{opacity:1;visibility:visible}
+.f-b .lock{font-family:var(--f-head);font-size:66px;font-weight:600;letter-spacing:.05em;
+  color:#fff;line-height:1.05;opacity:0;transform:translateY(12px);
+  transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+.f-b .lock.in{opacity:1;transform:none}
+.f-b .lock em{font-style:normal;color:#4a5b78;font-weight:500;margin:0 20px}
+.f-b .f-tag{margin-top:30px;font-size:27px;color:#e8eef7;line-height:1.5;text-align:center;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+.f-b .f-tag.in{opacity:1;transform:none}
+.f-b .f-tag .en{display:block;font-family:var(--f-head);font-size:13px;letter-spacing:.16em;
+  color:#5f7290;margin-top:16px;font-weight:500}
+.f-b .three{margin-top:40px;display:flex;align-items:stretch;
+  border:1px solid var(--navy-line);opacity:0;transition:opacity .8s ease}
+.f-b .three.in{opacity:1}
+.f-b .three div{padding:15px 30px;border-right:1px solid var(--navy-line);
+  font-size:14.5px;color:#8ea0bd}
+.f-b .three div:last-child{border-right:none}
+.f-b .three b{color:#93c5fd;font-weight:500}
+.f-b .fic{position:absolute;left:0;right:0;bottom:38px;text-align:center;font-size:11px;
+  color:#3d4d68;line-height:1.85;opacity:0;transition:opacity .7s ease}
+.f-b .fic.in{opacity:1}
+
+/* ═══════════════════════════════════════════════════════════════
+   3. 시뮬레이션 커서
+   ═══════════════════════════════════════════════════════════════ */
+#cursor{position:absolute;left:0;top:0;width:22px;height:22px;z-index:90;
+  pointer-events:none;opacity:0;transition:opacity .3s ease;
+  filter:drop-shadow(0 2px 3px rgba(15,23,42,.35))}
+#cursor.show{opacity:1}
+#cursor .ring{position:absolute;left:-13px;top:-13px;width:48px;height:48px;
+  border:1.5px solid rgba(30,64,175,.85);border-radius:50%;opacity:0;transform:scale(.35)}
+#cursor.click .ring{animation:clickRing .52s cubic-bezier(.2,.7,.3,1) 1 both}
+@keyframes clickRing{0%{opacity:.95;transform:scale(.25)}
+  70%{opacity:.28}100%{opacity:0;transform:scale(1)}}
+
+/* ═══════════════════════════════════════════════════════════════
+   4. 시작 오버레이 / 프리젠터 / 디버그
+   ═══════════════════════════════════════════════════════════════ */
+#intro{position:absolute;inset:0;z-index:120;background:var(--navy-deep);color:#e8eef7;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  transition:opacity .55s ease,visibility .55s}
+#intro.gone{opacity:0;visibility:hidden}
+#intro .grid-bg{position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(rgba(59,130,246,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.055) 1px,transparent 1px);
+  background-size:56px 56px}
+#intro .inner{position:relative;text-align:center}
+#intro .kicker{font-family:var(--f-head);font-size:10px;letter-spacing:.34em;
+  color:#60a5fa;margin-bottom:22px}
+#intro h1{font-family:var(--f-head);font-size:58px;font-weight:600;letter-spacing:.04em;
+  color:#fff;line-height:1.1}
+#intro h1 em{font-style:normal;color:#4a5b78;font-weight:500;margin:0 14px}
+#intro .lede{margin-top:20px;font-size:15px;color:#8ea0bd;line-height:1.85}
+#intro .lede b{color:#e8eef7;font-weight:500}
+#intro .flow{margin:32px auto 0;display:flex;gap:0;align-items:stretch;
+  border:1px solid var(--navy-line)}
+#intro .flow div{padding:11px 18px;font-size:11px;color:#8ea0bd;
+  border-right:1px solid var(--navy-line)}
+#intro .flow div:last-child{border-right:none;color:#93c5fd}
+#startBtn{margin-top:34px;border:1px solid #3b82f6;background:#1e40af;color:#fff;
+  font-family:var(--f-head);font-size:12px;font-weight:600;letter-spacing:.2em;
+  padding:15px 40px;transition:background .2s ease}
+#startBtn:hover{background:#2563eb}
+#startBtn[disabled]{opacity:.5;cursor:progress}
+#intro .keys{margin-top:20px;font-family:var(--f-mono);font-size:10px;color:#4a5b78}
+#intro .fic{position:absolute;bottom:26px;left:0;right:0;text-align:center;
+  font-size:10px;color:#4a5b78;line-height:1.7}
+
+/* 진행 표시 */
+#prog{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:100;display:flex;
+  gap:1px;background:rgba(15,23,42,.1);opacity:0;transition:opacity .4s ease}
+#prog.on{opacity:1}
+#prog .seg{position:relative;height:100%;background:rgba(15,23,42,.08);overflow:hidden}
+#prog .seg i{position:absolute;inset:0;transform-origin:left center;transform:scaleX(0);
+  background:var(--navy)}
+#prog .seg.past i{transform:scaleX(1);background:var(--line-2)}
+
+/* 프리젠터 컨트롤 */
+#pres{position:absolute;right:10px;bottom:2px;z-index:110;display:flex;align-items:center;
+  gap:1px;background:rgba(15,23,42,.9);padding:1px;opacity:.16;
+  transition:opacity .25s ease;backdrop-filter:blur(2px)}
+#pres:hover{opacity:1}
+#pres button{width:30px;height:26px;display:grid;place-items:center;color:#cbd5e1;
+  font-family:var(--f-mono);font-size:10px;background:rgba(255,255,255,.04)}
+#pres button:hover{background:rgba(255,255,255,.16);color:#fff}
+#pres button.on{background:#1e40af;color:#fff}
+#pres .lbl{padding:0 9px;font-family:var(--f-mono);font-size:10px;color:#8ea0bd;
+  height:26px;display:grid;place-items:center;min-width:74px}
+
+/* 디버그 */
+#dbg{position:absolute;left:14px;bottom:14px;z-index:110;display:none;
+  background:rgba(13,21,38,.94);border:1px solid rgba(96,165,250,.3);padding:9px 12px;
+  font-family:var(--f-mono);font-size:10.5px;color:#93c5fd;line-height:1.8;min-width:290px}
+#dbg.on{display:block}
+#dbg .k{color:#4a5b78;display:inline-block;width:74px}
+#dbg b{color:#e8eef7;font-weight:500}
+</style>
+
+<div id="viewport"><div id="stage">
+
+  <!-- ══ 카메라 레이어 (줌 / 팬) ══════════════════════════════
+       씬(제품 셸·오버레이·배선·커서)을 모두 감싸고 transform 으로
+       확대·이동한다. 진행바·프리젠터·디버그는 밖에 있어 고정. -->
+  <div id="cam">
+
+  <!-- ══ 제품 셸 ══════════════════════════════════════════════ -->
+  <div id="appShell">
+
+    <header id="mast">
+      <div class="wordmark">TREASURER<small>프라이빗 마켓 인텔리전스</small></div>
+      <div class="divide"></div>
+      <nav id="crumb">
+        <span>Alder Capital Asia</span><span class="sep">/</span>
+        <span>자금 운용</span><span class="sep">/</span>
+        <b id="crumbLeaf">문서 수신함</b>
+      </nav>
+      <div class="spacer"></div>
+      <div class="mast-chip"><span class="dot-live"></span>실시간 수집 중</div>
+      <div class="mast-chip mono">2026-08-21 09:41 JST</div>
+      <div class="mast-chip" style="gap:8px">
+        <span class="avatar">YT</span><span>田辺 悠人 · 운용지원팀</span>
+      </div>
+    </header>
+
+    <aside id="rail">
+      <div class="rail-cap">운용 워크스페이스</div>
+      <div class="nav on" data-nav="inbox">
+        <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3">
+          <path d="M1.5 9.5h4l1 2h3l1-2h4M1.5 9.5 3 3h10l1.5 6.5v3.5a1 1 0 0 1-1 1H2.5a1 1 0 0 1-1-1V9.5Z"/></svg>
+        <span>문서 수신함</span><span class="badge">3</span>
+      </div>
+      <div class="nav" data-nav="recon">
+        <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3">
+          <path d="M2 4h5M2 8h5M2 12h5M14 4H9M14 8H9M14 12H9"/><circle cx="8" cy="8" r="1.2"/></svg>
+        <span>대조 · 검증</span>
+      </div>
+      <div class="nav" data-nav="graph">
+        <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3">
+          <circle cx="3.5" cy="4" r="2"/><circle cx="12.5" cy="3.5" r="1.6"/>
+          <circle cx="8" cy="12" r="2"/><path d="M5 5.2 7 10.4M5.3 3.7l5.6-.1M11.6 5l-2.4 5.4"/></svg>
+        <span>GP 관계</span>
+      </div>
+      <div class="nav" data-nav="commit">
+        <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3">
+          <path d="M2.5 13.5V7M6.2 13.5V3.5M9.8 13.5V9M13.5 13.5V5.5"/></svg>
+        <span>커밋먼트 원장</span>
+      </div>
+      <div class="nav" data-nav="api">
+        <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3">
+          <path d="M6 3 2.5 8 6 13M10 3l3.5 5-3.5 5"/></svg>
+        <span>연동 (API · MCP)</span>
+      </div>
+      <div class="rail-foot">
+        <div class="k">수집 파이프라인</div>
+        <div class="v">JP · KR · EN · ZH</div>
+        <div class="k" style="margin-top:10px">감사 로그</div>
+        <div class="v">활성 · 불변 저장</div>
+      </div>
+    </aside>
+
+    <main id="board">
+
+      <!-- ═══ ACT 1 — 다국어 문서 인텔리전스 ══════════════════ -->
+      <section class="act" id="act1">
+
+        <!-- 문서 수신함 -->
+        <div class="card" id="inbox">
+          <div class="card-hd">
+            <span class="t">Document Inbox</span><span class="s">문서 수신함</span>
+            <span class="spacer"></span><span class="pill kr">신규 3건</span>
+          </div>
+          <div class="card-bd" id="inboxList"></div>
+          <div class="ib-foot">
+            <span class="mono">자동 수집</span><span>·</span>
+            <span>GP 메일박스 · 세일즈포스 · SFTP</span>
+            <span class="spacer" style="flex:1"></span>
+            <span class="mono">09:41:12 동기화</span>
+          </div>
+        </div>
+
+        <!-- 문서 뷰어 -->
+        <div class="card" id="viewer">
+          <div class="vw-tools">
+            <span class="pill mono" id="vwPage">— / —</span>
+            <span class="fname" id="vwName">문서를 선택하세요</span>
+            <span class="spacer"></span>
+            <span class="pill mono">100%</span>
+            <span class="pill kr" id="vwState">대기</span>
+          </div>
+          <div class="vw-body" id="vwBody">
+            <div class="vw-empty" id="vwEmpty">
+              <div class="big">PDF</div>
+              좌측 수신함에서 문서를 선택하면<br>원문과 추출 결과를 나란히 확인할 수 있습니다.
+            </div>
+
+            <!-- ── 일본어 캐피탈 콜 통지서 (원문 유지) ── -->
+            <div class="page" id="jpPage" style="display:none">
+              <div class="pg-hd">
+                <span class="jp">受付番号　SRP-CC-2026-0814</span>
+                <span class="jp">2026年8月20日</span>
+              </div>
+              <div class="pg-to">Alder Capital Asia Pte. Ltd.　御中</div>
+              <div class="pg-from">
+                <div>Sakura Ridge Partners 株式会社</div>
+                <div>Hikari Growth Fund III 投資事業有限責任組合</div>
+                <div>無限責任組合員　代表　山下 恭平</div>
+              </div>
+              <h1 class="pg-title">出資請求通知書<span>（キャピタル・コール）</span></h1>
+              <div class="pg-rule"></div>
+              <p class="pg-body">拝啓　平素は格別のご高配を賜り、厚く御礼申し上げます。<br>
+                標記組合につきまして、組合契約書第8条第2項に基づき、下記のとおり
+                出資金の払込みをご請求申し上げます。</p>
+              <table class="pg-tb">
+                <tr data-f="fund"><th>ファンド名</th><td>Hikari Growth Fund III 投資事業有限責任組合</td></tr>
+                <tr data-f="gp"><th>無限責任組合員</th><td>Sakura Ridge Partners 株式会社</td></tr>
+                <tr data-f="lp"><th>出資者（有限責任組合員）</th><td>Alder Capital Asia Pte. Ltd.</td></tr>
+                <tr data-f="cur"><th>通貨</th><td>日本円（JPY）</td></tr>
+                <tr data-f="commit"><th>出資約束金額</th><td class="num">¥2,000,000,000</td></tr>
+                <tr data-f="cum"><th>累計請求額（前回まで）</th><td class="num">¥1,120,000,000</td></tr>
+                <tr data-f="call"><th>今回請求額</th><td class="num">¥180,000,000</td></tr>
+                <tr data-f="remain"><th>残余出資約束額</th><td class="num">¥700,000,000</td></tr>
+                <tr data-f="due"><th>払込期日</th><td>2026年9月4日（金）</td></tr>
+                <tr data-f="bank"><th>振込先口座</th><td>みずほ銀行　丸の内支店　普通 2841-77••••</td></tr>
+              </table>
+              <p class="pg-note">※　本請求額は、Kiyomizu Holdings 株式会社への追加投資
+                ¥150,000,000 及び管理報酬 ¥30,000,000 に充当されます。<br>
+                ※　払込期日までに上記口座へお振込みください。振込手数料は貴社負担にて
+                お願い申し上げます。</p>
+              <div class="pg-close">
+                <div class="ijo">以上</div>
+                <div class="cont">
+                  <span>本通知に関するお問い合わせ先<br>
+                    Sakura Ridge Partners 株式会社　投資家対応部　小林 真希<br>
+                    ir@sakuraridge.example.jp　/　TEL 03-5555-0182</span>
+                  <span style="text-align:right;white-space:nowrap;color:#9ca3af">
+                    通知区分：第7回<br>出資請求<br>整理番号 CC-07</span>
+                </div>
+              </div>
+              <div class="pg-seal">桜嶺<br>之印</div>
+              <div class="pg-ft">
+                <span>Sakura Ridge Partners K.K.　—　機密 / Confidential</span>
+                <span>1 / 2</span>
+              </div>
+            </div>
+
+            <div class="scan" id="scanLine"></div>
+            <div class="lang-chip" id="langChip">
+              <span>언어 자동 감지</span>
+              <span class="mono">日本語 (ja-JP) · 99.8%</span>
+              <span style="color:#4a5b78">|</span>
+              <span>레이아웃 인식 · 표 10행</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 추출 필드 패널 -->
+        <div class="card" id="fieldPanel">
+          <div class="card-hd">
+            <span class="t">Extracted Fields</span><span class="s">추출 필드</span>
+            <span class="spacer"></span><span class="pill kr" id="fpState">대기</span>
+          </div>
+          <div class="card-bd">
+            <div class="fp-sum">
+              <div><div class="k">Fields</div><div class="v" id="sumN">0<span
+                style="font-size:11px;color:var(--hint);font-weight:400">/10</span></div></div>
+              <div><div class="k">평균 신뢰도</div><div class="v" id="sumConf">—</div></div>
+              <div><div class="k">정규화</div><div class="v small" id="sumNorm">JP → 표준 스키마</div></div>
+            </div>
+            <div class="fp-list" id="fpList"></div>
+            <div class="fp-audit" id="fpAudit">
+              <div class="k">Audit Trail · 감사 추적</div>
+              <div class="ln"><span class="mono">09:41:24</span>
+                <span>문서 수집 — GP 메일박스 (SFTP 미러)</span></div>
+              <div class="ln"><span class="mono">09:41:31</span>
+                <span>언어 판별 ja-JP · 표 구조 10행 인식</span></div>
+              <div class="ln"><span class="mono">09:41:38</span>
+                <span>필드 추출 10건 · 원문 좌표 보존</span></div>
+              <div class="ln"><span class="mono">09:41:38</span>
+                <span>원문 해시 sha256:9f2c…41ab · 불변 저장</span></div>
+              <div class="ln pend"><span class="mono">대기 &nbsp;&nbsp;&nbsp;</span>
+                <span>담당자 검토 · 커밋먼트 원장 대조</span></div>
+            </div>
+            <div class="fp-act" id="fpAct">
+              <div class="norm">
+                <b>일본어 원문 → 정규화 투자 데이터</b>
+                통화·일자·법인명 표준화 완료 · 원문 좌표 보존
+              </div>
+              <button class="btn" id="toRecon">대조 검증 실행</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ ACT 2 — 커밋먼트 대조 및 검증 ═════════════════ -->
+      <section class="act" id="act2">
+
+        <!-- 대조 요약 4 타일 -->
+        <div class="card a2-sum">
+          <div class="card-hd">
+            <span class="t">Reconciliation</span><span class="s">커밋먼트 대조 · 검증</span>
+            <span class="pill kr">Hikari Growth Fund III</span>
+            <span class="spacer"></span>
+            <span class="s">문서 CC-07 ↔ Alder 커밋먼트 원장</span>
+            <span class="pill kr" id="a2State">대조 실행 중</span>
+            <span class="pill mono">09:41:44</span>
+          </div>
+          <div class="card-bd" id="a2Tiles"></div>
+        </div>
+
+        <!-- 본문 3열 -->
+        <div class="a2-main">
+
+          <!-- 원장 레코드 -->
+          <div class="card">
+            <div class="card-hd"><span class="t">Ledger Record</span>
+              <span class="s">원장 레코드</span></div>
+            <div class="card-bd a2-led">
+              <div class="fund">Hikari Growth Fund III</div>
+              <div class="gp">GP · Sakura Ridge Partners K.K. &nbsp;|&nbsp; 일본 · 그로스</div>
+              <div class="grp">
+                <div class="kv"><span>투자자 엔티티</span><span>Alder Capital<br>Asia Pte. Ltd.</span></div>
+                <div class="kv"><span>투자 비히클</span><span>Alder Asia PE Fund II</span></div>
+                <div class="kv"><span>커밋먼트</span><span class="mono">JPY 2,000,000,000</span></div>
+                <div class="kv"><span>빈티지 / 약정일</span><span class="mono">2023 · 2023-11-30</span></div>
+                <div class="kv"><span>원장 최종 갱신</span><span class="mono">2026-05-16</span></div>
+              </div>
+              <div class="grp">
+                <div class="cap">Capital Activity · 자본거래 이력</div>
+                <div class="act-row"><span class="id">CC-06</span>
+                  <span>2026-05-14</span><span class="amt">240,000,000</span></div>
+                <div class="act-row"><span class="id">CC-05</span>
+                  <span>2025-12-08</span><span class="amt">310,000,000</span></div>
+                <div class="act-row"><span class="id">CC-04</span>
+                  <span>2025-07-22</span><span class="amt">180,000,000</span></div>
+                <div class="more">이전 6회 누적 <b class="mono">JPY 1,120,000,000</b> · 전액 납입 완료</div>
+              </div>
+              <div class="grp">
+                <div class="cap">등록 지급 계좌</div>
+                <div class="bank" id="a2Bank">
+                  <div class="b1">三菱UFJ銀行　丸の内支店</div>
+                  <div class="b2">普通 1902-33•••• · 최종 확인 2026-05-14</div>
+                </div>
+              </div>
+              <div class="grp">
+                <div class="cap">Linked Documents · 관련 문서</div>
+                <div class="act-row"><span class="id">CC-07</span>
+                  <span>出資請求通知書</span><span class="pill new kr">신규</span></div>
+                <div class="act-row"><span class="id">CC-06</span>
+                  <span>出資請求通知書</span><span class="pill ok kr">검증 완료</span></div>
+                <div class="act-row"><span class="id">CAS</span>
+                  <span>Q2 FY26 명세서</span><span class="pill ok kr">검증 완료</span></div>
+                <div class="more">문서 12건 연결 · 전량 원문 보존</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 대조 체크리스트 -->
+          <div class="card" id="a2CkCard">
+            <div class="card-hd"><span class="t">Verification Checks</span>
+              <span class="s">대조 항목</span><span class="spacer"></span>
+              <span class="pill mono" id="a2Prog">0 / 8</span></div>
+            <div class="card-bd" style="display:flex;flex-direction:column">
+              <div class="a2-ck-hd">
+                <span></span><span>항목</span><span>Alder 원장</span>
+                <span>수신 문서 (CC-07)</span><span style="justify-self:end">판정</span>
+              </div>
+              <div style="flex:1;min-height:0;overflow:hidden" id="a2Checks"></div>
+              <div class="a2-upd" id="a2Upd">
+                <div class="cap">Ledger Write-back · 원장 반영 결과</div>
+                <div class="ur" data-ur="0"><span>누적 청구</span>
+                  <span class="mono">1,120,000,000</span><span class="ar">→</span>
+                  <span class="mono to">1,300,000,000</span>
+                  <span class="pill ok kr">반영 완료</span></div>
+                <div class="ur" data-ur="1"><span>잔여 커밋먼트</span>
+                  <span class="mono">880,000,000</span><span class="ar">→</span>
+                  <span class="mono to">700,000,000</span>
+                  <span class="pill ok kr">반영 완료</span></div>
+                <div class="ur" data-ur="2"><span>지급 지시</span>
+                  <span class="mono">JPY 180,000,000</span><span class="ar">→</span>
+                  <span class="mono to hold">실행 보류</span>
+                  <span class="pill critp kr">예외 검토 대기</span></div>
+              </div>
+              <div class="a2-ck-foot">
+                <span>대조 기준 · 조합계약 §8.2 / Alder 자금운용 통제 절차 v4</span>
+                <span class="spacer"></span>
+                <span class="mono" id="a2Sum">통과 0 · 예외 0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 예외 상세 -->
+          <div class="card" id="a2Exc">
+            <div class="card-hd"><span class="t">Exception</span>
+              <span class="s">검토 필요 항목</span><span class="spacer"></span>
+              <span class="pill critp">위험도 높음</span>
+              <span class="pill mono">EXC-2026-0193</span></div>
+            <div class="card-bd a2-exc-bd">
+              <div class="a2-exc-ttl">지급 계좌 변경 감지
+                <span class="why">직전 통지(CC-06) 대비 은행과 계좌번호가 동시에 변경되었고,
+                  통지서 본문에 변경 안내 문구가 없습니다.</span></div>
+
+              <table class="a2-cmp">
+                <thead><tr><th></th><th>Alder 원장 (최종 확인)</th>
+                  <th>금회 통지 CC-07</th></tr></thead>
+                <tbody>
+                  <tr class="diff" data-cmp="0"><th>은행</th><td>三菱UFJ銀行</td>
+                    <td>みずほ銀行<span class="mk">✗</span></td></tr>
+                  <tr class="same" data-cmp="1"><th>지점</th><td>丸の内支店</td>
+                    <td>丸の内支店<span class="mk">✓</span></td></tr>
+                  <tr class="diff" data-cmp="2"><th>계좌</th><td class="mono">普通 1902-33••••</td>
+                    <td class="mono">普通 2841-77••••<span class="mk">✗</span></td></tr>
+                  <tr class="same" data-cmp="3"><th>명의</th><td>サクラリッジ…(カ</td>
+                    <td>サクラリッジ…(カ<span class="mk">✓</span></td></tr>
+                </tbody>
+              </table>
+
+              <div class="a2-trace" id="a2Trace">
+                <div class="a2-thumb">
+                  <div class="tp">
+                    <i style="width:60%"></i><i style="width:34%"></i>
+                    <div class="tt">
+                      <s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s><s></s>
+                      <s class="hit" id="a2Hit"></s>
+                    </div>
+                    <i style="width:52%"></i><i style="width:40%"></i>
+                  </div>
+                  <div class="cap">p.1 · 표 10행</div>
+                </div>
+                <div class="tr-r">
+                  <div class="lbl">원문 역추적 · Source</div>
+                  <div class="a2-snip" id="a2Snip">
+                    <div class="sk">振込先口座</div>
+                    <div class="sv">みずほ銀行　丸の内支店　普通 2841-77••••</div>
+                  </div>
+                  <div class="src">출처 <b>Hikari_Growth_III_出資請求通知書_20260820.pdf</b>
+                    · p.1 · 표 10행 · 추출 신뢰도 96.2%</div>
+                </div>
+              </div>
+
+              <div class="a2-risk">
+                <div class="lbl">위험 사유</div>
+                <div class="r" data-risk="0"><i></i><span><b>변경 안내 부재</b> —
+                  통지서 본문·별지에 계좌 변경 고지 문구 없음</span></div>
+                <div class="r" data-risk="1"><i></i><span><b>은행·계좌 동시 변경</b> —
+                  직전 통지 2026-05-14 대비 두 항목 모두 상이</span></div>
+                <div class="r" data-risk="2"><i></i><span><b>납입 임박</b> —
+                  JPY 180,000,000 · 기일 2026-09-04 (14일 이내)</span></div>
+              </div>
+
+              <div class="a2-rec" id="a2Rec">
+                <div class="lbl">권고 조치</div>
+                <div class="txt">원장 등록 연락처로 <b>콜백 확인</b> 후 납입 진행 —
+                  Sakura Ridge Partners IR · 小林 真希 (03-5555-0182).
+                  잔여 커밋먼트는 갱신하되 <b>지급 지시는 보류</b>합니다.</div>
+                <div class="row">
+                  <button class="btn crit sm" id="a2Send">검토 요청 발송</button>
+                  <button class="btn ghost sm">지급 지시 보류</button>
+                  <span class="sent">✓ 田辺 悠人 · 자금운용 승인 대기</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 처리시간 대역 + 필수 캡션 -->
+        <div class="a2-band" id="a2Band">
+          <div class="z1">
+            <div class="side"><span class="k">수동 대조 기준</span>
+              <span class="v">약 2영업일</span></div>
+            <span class="arw">──▶</span>
+            <div class="side"><span class="k">Treasurer</span>
+              <span class="v now">8분</span></div>
+          </div>
+          <div>
+            <div class="cav"><span class="ic">i</span>
+              <span><b>예시 수치입니다 — 파일럿에서 실측 예정.</b>
+                Alder에서 측정된 결과가 아닙니다.</span></div>
+            <div class="obj">파일럿 목표: Alder 실제 문서로 기준선(baseline)과
+              실측 처리시간을 확립합니다.</div>
+          </div>
+          <div class="z3" id="a2Msg">
+            <div class="stat">
+              <span class="k">검증 상태</span>
+              <div class="row"><span>대조 항목 <b id="a2Zt">0</b>/8</span>
+                <span>통과 <b id="a2Zp">0</b></span>
+                <span>예외 <b class="c" id="a2Ze">0</b></span></div>
+            </div>
+            <div class="msg">추출에서 끝나지 않습니다.<br>
+              <b>Alder가 이미 아는 것과 대조해 검증합니다.</b></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ ACT 3 — GP 관계 인텔리전스 ════════════════════ -->
+      <section class="act" id="act3">
+
+        <!-- 관계 그래프 -->
+        <div class="card g3-wrap">
+          <div class="card-hd">
+            <span class="t">GP Relationship Graph</span>
+            <span class="s">GP 관계 인텔리전스</span>
+            <span class="spacer"></span>
+            <span class="s">검증 완료 문서에서 자동 생성</span>
+            <span class="pill mono" id="a3Cnt">노드 0 · 엣지 0</span>
+            <span class="pill mono">최근 갱신 09:41</span>
+          </div>
+          <div class="card-bd" style="display:flex;flex-direction:column">
+            <div id="g3">
+              <svg viewBox="0 0 1128 860" preserveAspectRatio="none"></svg>
+
+              <div class="g3-lg">
+                <div class="t">Entity Types</div>
+                <div class="r"><span class="sw lp"></span>Alder (LP)</div>
+                <div class="r"><span class="sw gp"></span>GP · 운용사</div>
+                <div class="r"><span class="sw fd"></span>펀드 · 커밋먼트</div>
+                <div class="r"><span class="sw pr"></span>주요 인물</div>
+                <div class="r"><span class="sw co"></span>포트폴리오 기업</div>
+              </div>
+
+              <!-- 그래프 통계 -->
+              <div class="g3-st" id="a3Stats">
+                <div class="t">Graph Stats</div>
+                <div class="r"><span>엔티티</span><b>13</b></div>
+                <div class="r"><span>관계</span><b>14</b></div>
+                <div class="r"><span>구성</span><b>GP 3 · 펀드 4 · 인물 2 · 기업 3</b></div>
+                <div class="r"><span>출처 문서</span><b>12건 · 전량 추적</b></div>
+                <div class="r hl"><span>감지된 인사이트</span><b>2건</b></div>
+              </div>
+
+              <!-- 인사이트 칩 -->
+              <div class="g3-ins" id="a3Ins1" style="left:788px;top:228px">
+                <div class="k">Relationship Insight</div>
+                <div class="v"><b>山下 恭平</b>은 Northstar Asia Ventures에서
+                  <b>Northstar Asia Fund IV</b>를 공동 운용했습니다 (2015–2019).</div>
+              </div>
+              <div class="g3-ins w" id="a3Ins2" style="left:636px;top:578px">
+                <div class="k">Portfolio Overlap</div>
+                <div class="v"><b>Kiyomizu Holdings</b> — 서로 다른 GP의
+                  <b>2개 펀드</b>가 동일 기업에 투자. 실질 익스포저 중복 확인 필요.</div>
+              </div>
+            </div>
+            <div class="g3-bar">
+              <span class="msg" id="a3Msg">문서는 고립된 PDF로 남지 않습니다.
+                <b>Alder의 프라이빗 마켓 관계도로 축적됩니다.</b></span>
+              <span class="spacer"></span>
+              <span class="meta">출처 문서 12건 · 전량 원문 추적 가능</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GP 상세 패널 -->
+        <div class="card" id="a3Panel">
+          <div class="card-hd"><span class="t">GP Profile</span>
+            <span class="s">GP 상세</span><span class="spacer"></span>
+            <span class="pill kr" id="a3PState">미선택</span></div>
+          <div class="card-bd">
+
+            <div class="a3-empty" id="a3Empty">
+              <div>
+                <div class="big">◎</div>
+                그래프에서 GP를 선택하면<br>
+                Alder의 누적 관계 이력이 표시됩니다.
+              </div>
+            </div>
+
+            <div class="a3-body" id="a3Body">
+              <!-- 0. 신원 -->
+              <div class="a3-id blk" data-blk="0">
+                <div class="nm">Sakura Ridge Partners K.K.</div>
+                <div class="sub">도쿄 · 2011 설립 · 그로스 에쿼티 · 일본 중견기업<br>
+                  Alder 관계 개시 2019-06 · 관계 기간 7년</div>
+                <div class="tags">
+                  <span class="pill kr">활성 펀드 2</span>
+                  <span class="pill kr">문서 14건</span>
+                  <span class="pill critp kr">예외 1건 진행 중</span>
+                </div>
+              </div>
+
+              <!-- 1. 총 익스포저 -->
+              <div class="a3-sec blk" data-blk="1">
+                <div class="cap">Total Alder Exposure · 총 익스포저</div>
+                <div class="a3-exp"><span class="u">JPY</span>
+                  <span class="v">3,450,000,000</span></div>
+                <div class="a3-brk">
+                  <div><div class="k">청구 누계</div><div class="v">2,180,000,000</div></div>
+                  <div><div class="k">납입 완료</div><div class="v">2,000,000,000</div></div>
+                  <div><div class="k">미납 (검토 보류)</div><div class="v c">180,000,000</div></div>
+                  <div><div class="k">잔여 커밋먼트</div><div class="v">1,270,000,000</div></div>
+                </div>
+              </div>
+
+              <!-- 2. 활성 펀드 -->
+              <div class="a3-sec blk" data-blk="2">
+                <div class="cap">Active Funds · 활성 펀드<span class="spacer"></span>
+                  <span style="color:var(--meta)">2</span></div>
+                <div class="a3-row"><div>Hikari Growth Fund III
+                    <div class="l2">빈티지 2023 · 그로스</div></div>
+                  <div class="r"><div class="amt">2,000,000,000</div>
+                    <div class="st">잔여 700,000,000</div></div></div>
+                <div class="a3-row"><div>Sakura Ridge Fund II
+                    <div class="l2">빈티지 2021 · 그로스</div></div>
+                  <div class="r"><div class="amt">1,450,000,000</div>
+                    <div class="st">잔여 570,000,000</div></div></div>
+              </div>
+
+              <!-- 3. 과거 커밋먼트 -->
+              <div class="a3-sec blk" data-blk="3">
+                <div class="cap">Historical Commitments · 과거 커밋먼트</div>
+                <div class="a3-row"><div>Sakura Ridge Fund I
+                    <div class="l2">빈티지 2019</div></div>
+                  <div class="r"><div class="amt">800,000,000</div>
+                    <div class="st p">청산 완료 2025-11</div></div></div>
+              </div>
+
+              <!-- 4. 최근 자본 활동 -->
+              <div class="a3-sec blk" data-blk="4">
+                <div class="cap">Recent Capital Activity · 최근 자본 활동</div>
+                <div class="a3-row" id="a3Cc07"><div>캐피탈 콜 · CC-07
+                    <div class="l2">2026-08-20 · Hikari Growth III</div></div>
+                  <div class="r"><div class="amt">180,000,000</div>
+                    <div class="st c">검토 필요 · EXC-2026-0193</div></div></div>
+                <div class="a3-row"><div>캐피탈 콜 · CC-06
+                    <div class="l2">2026-05-14 · Hikari Growth III</div></div>
+                  <div class="r"><div class="amt">240,000,000</div>
+                    <div class="st p">납입 완료</div></div></div>
+                <div class="a3-row"><div>분배 · D-04
+                    <div class="l2">2026-03-19 · Sakura Ridge Fund II</div></div>
+                  <div class="r"><div class="amt">95,000,000</div>
+                    <div class="st p">수령 완료</div></div></div>
+              </div>
+
+              <!-- 5. 주요 담당자 -->
+              <div class="a3-sec blk" data-blk="5">
+                <div class="cap">Key Contacts · 주요 담당자</div>
+                <div class="a3-ct"><span class="av">山</span>
+                  <div><div class="nm">山下 恭平 · Yamashita Kyohei</div>
+                    <div class="ro">대표 파트너 · 창업자 &nbsp;|&nbsp;
+                      <em>前 Northstar Asia Ventures (2015–2019)</em></div></div></div>
+                <div class="a3-ct"><span class="av">小</span>
+                  <div><div class="nm">小林 真希 · Kobayashi Maki</div>
+                    <div class="ro">IR · 투자자 대응 &nbsp;|&nbsp;
+                      ir@sakuraridge.example.jp</div></div></div>
+              </div>
+
+              <!-- 6. 문서 / 최근 상호작용 -->
+              <div class="a3-foot blk" data-blk="6">
+                <div class="r"><span>관련 문서</span>
+                  <span><b>14건</b> · 전량 원문 보존</span></div>
+                <div class="r"><span>최근 갱신</span>
+                  <span><b>2026-08-21 09:41</b> · CC-07 파싱</span></div>
+                <div class="r"><span>최근 접촉</span>
+                  <span>2026-07-02 · 연차총회 (田辺)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ ACT 4 — 내장형 인텔리전스 (API + MCP) ═════════ -->
+      <!-- (1) 인앱 연동 콘솔 — 뒤로 당겨질 제품 화면 -->
+      <section class="act" id="act4">
+
+        <div style="display:flex;flex-direction:column;gap:14px;min-height:0">
+          <div class="card a4-c" data-c="0">
+            <div class="card-hd"><span class="t">Integrations</span>
+              <span class="s">연동 상태</span><span class="spacer"></span>
+              <span class="pill ok kr">2 활성</span></div>
+            <div class="card-bd a4-int">
+              <div class="a4-ir"><span class="dot"></span>
+                <span class="nm">REST API<span class="d">api.treasurer.example / v1</span></span>
+                <span class="pill mono">OAuth 2.0</span>
+                <span class="pill ok kr">활성</span></div>
+              <div class="a4-ir" id="a4McpRow"><span class="dot"></span>
+                <span class="nm">MCP 서버<span class="d">mcp.treasurer.example / sse</span></span>
+                <span class="pill mono">도구 14</span>
+                <span class="pill ok kr">활성</span></div>
+              <div class="a4-ir"><span class="dot w"></span>
+                <span class="nm">웹훅<span class="d">alder-ops.internal / hooks</span></span>
+                <span class="pill mono">이벤트 6</span>
+                <span class="pill warnp kr">설정 대기</span></div>
+            </div>
+          </div>
+
+          <div class="card a4-c" data-c="1" style="flex:1;min-height:0">
+            <div class="card-hd"><span class="t">Credentials & Scope</span>
+              <span class="s">자격 증명 · 노출 범위</span></div>
+            <div class="card-bd" style="display:flex;flex-direction:column">
+              <div class="a4-cred">
+                <div class="cap">Endpoint</div>
+                <div class="kv"><span>클라이언트</span>
+                  <span class="mono">alder-ops-prod</span></div>
+                <div class="kv"><span>API 키</span>
+                  <span class="mono">trs_live_••••••••••••4f2a</span></div>
+                <div class="kv"><span>MCP 엔드포인트</span>
+                  <span class="mono">mcp.treasurer.example/sse</span></div>
+                <div class="kv"><span>발급 / 만료</span>
+                  <span class="mono">2026-08-01 / 2027-08-01</span></div>
+              </div>
+              <div class="a4-cred" style="border-top:1px solid var(--line)">
+                <div class="cap">Policy</div>
+                <div class="kv"><span>요청 한도</span>
+                  <span class="mono">600 req / min · burst 60</span></div>
+                <div class="kv"><span>허용 IP</span>
+                  <span class="mono">203.0.113.0/24 · 198.51.100.7</span></div>
+                <div class="kv"><span>데이터 리전</span>
+                  <span class="mono">ap-northeast-1 (도쿄)</span></div>
+                <div class="kv"><span>감사 로깅</span>
+                  <span class="mono">전체 호출 · 불변 저장</span></div>
+              </div>
+              <div class="a4-scope">
+                <div class="cap">노출 데이터 범위 · Scope</div>
+                <div class="tags">
+                  <span class="pill kr">펀드 익스포저</span>
+                  <span class="pill kr">커밋먼트 원장</span>
+                  <span class="pill kr">문서 메타데이터</span>
+                  <span class="pill kr">GP 관계</span>
+                  <span class="pill kr">예외 · 검증 결과</span>
+                  <span class="pill kr">원문 링크</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card a4-c" data-c="3" style="flex:1;min-height:0">
+            <div class="card-hd"><span class="t">MCP Tools</span>
+              <span class="s">노출 도구</span><span class="spacer"></span>
+              <span class="pill mono">14</span></div>
+            <div class="card-bd a4-tools">
+              <span class="pill mono">list_documents</span>
+              <span class="pill mono">get_document</span>
+              <span class="pill mono">search_documents</span>
+              <span class="pill mono">list_funds</span>
+              <span class="pill mono">get_fund_exposure</span>
+              <span class="pill mono">get_commitment_ledger</span>
+              <span class="pill mono">list_capital_calls</span>
+              <span class="pill mono">get_capital_call</span>
+              <span class="pill mono">list_distributions</span>
+              <span class="pill mono">list_exceptions</span>
+              <span class="pill mono">get_exception</span>
+              <span class="pill mono">get_gp_profile</span>
+              <span class="pill mono">list_gp_relationships</span>
+              <span class="pill mono">get_audit_trail</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card a4-c" data-c="2">
+          <div class="card-hd"><span class="t">Recent Calls</span>
+            <span class="s">최근 호출 로그</span><span class="spacer"></span>
+            <span class="pill mono">최근 24시간 1,284건</span></div>
+          <div class="card-bd">
+            <table class="a4-log">
+              <thead><tr><th>시각</th><th>채널</th><th>요청</th>
+                <th>소비 주체</th><th>응답</th></tr></thead>
+              <tbody>
+                <tr data-l="0"><td>09:41:41</td><td class="p">MCP</td>
+                  <td>list_exceptions</td><td>Alder AI 어시스턴트</td>
+                  <td class="ok">200 · 88ms</td></tr>
+                <tr data-l="1"><td>09:41:40</td><td class="p">MCP</td>
+                  <td>get_fund_exposure</td><td>Alder AI 어시스턴트</td>
+                  <td class="ok">200 · 142ms</td></tr>
+                <tr data-l="2"><td>09:41:39</td><td class="p">API</td>
+                  <td>GET /v1/funds/…/exposure</td><td>포트폴리오 운용 시스템</td>
+                  <td class="ok">200 · 142ms</td></tr>
+                <tr data-l="3"><td>09:38:12</td><td class="p">API</td>
+                  <td>GET /v1/documents?since=…</td><td>운용 데이터 웨어하우스</td>
+                  <td class="ok">200 · 61ms</td></tr>
+                <tr data-l="4"><td>09:15:03</td><td class="p">API</td>
+                  <td>GET /v1/gp/sakura-ridge</td><td>리스크 모니터링</td>
+                  <td class="ok">200 · 74ms</td></tr>
+                <tr data-l="5"><td>08:52:47</td><td class="p">API</td>
+                  <td>GET /v1/documents/{id}/fields</td><td>운용 데이터 웨어하우스</td>
+                  <td class="ok">200 · 55ms</td></tr>
+                <tr data-l="6"><td>08:52:44</td><td class="p">MCP</td>
+                  <td>search_documents</td><td>Alder AI 어시스턴트</td>
+                  <td class="ok">200 · 210ms</td></tr>
+                <tr data-l="7"><td>08:30:00</td><td class="p">API</td>
+                  <td>GET /v1/commitment-ledger</td><td>포트폴리오 운용 시스템</td>
+                  <td class="ok">200 · 96ms</td></tr>
+                <tr data-l="8"><td>08:15:22</td><td class="p">MCP</td>
+                  <td>get_audit_trail</td><td>내부 감사팀 어시스턴트</td>
+                  <td class="ok">200 · 118ms</td></tr>
+                <tr data-l="9"><td>08:00:01</td><td class="p">API</td>
+                  <td>GET /v1/funds?updated_since=…</td><td>야간 배치 · 데이터 동기화</td>
+                  <td class="ok">200 · 340ms</td></tr>
+                <tr data-l="10"><td>07:45:10</td><td class="p">API</td>
+                  <td>GET /v1/exceptions?status=open</td><td>리스크 모니터링</td>
+                  <td class="ok">200 · 47ms</td></tr>
+              </tbody>
+            </table>
+            <div class="a4-usage">
+              <div class="cap">채널별 호출 · 최근 24시간</div>
+              <div class="ub"><span class="l">API</span>
+                <span class="bar"><i style="width:78%"></i></span>
+                <span class="v">1,002</span></div>
+              <div class="ub"><span class="l">MCP</span>
+                <span class="bar"><i style="width:22%" class="m"></i></span>
+                <span class="v">282</span></div>
+              <div class="cap" style="margin-top:13px">일별 호출 추이 · 14일</div>
+              <div class="spark">
+                <i style="height:38%"></i><i style="height:44%"></i><i style="height:35%"></i>
+                <i style="height:52%"></i><i style="height:61%"></i><i style="height:49%"></i>
+                <i style="height:57%"></i><i style="height:66%"></i><i style="height:72%"></i>
+                <i style="height:63%"></i><i style="height:78%"></i><i style="height:84%"></i>
+                <i style="height:91%"></i><i style="height:100%" class="on"></i>
+              </div>
+              <div class="axs"><span>08-08</span><span>08-21</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ ACT 5 — 파일럿에서 인프라로 (오버레이에서 렌더) ═══ -->
+      <section class="act" id="act5"></section>
+
+    </main>
+
+    <footer id="stat">
+      <span id="stFlow">문서 파싱 파이프라인 · 가동 중</span>
+      <span class="sep">|</span>
+      <span id="stQueue">처리 대기 2건</span>
+      <span class="sep">|</span>
+      <span>감사 로그 기록 중</span>
+      <span class="sep">|</span>
+      <span>모든 데이터는 데모용 가상(fictional) 정보</span>
+      <span class="sep">|</span>
+      <span id="stAct">ACT 1 / 5</span>
+      <span class="spacer"></span>
+    </footer>
+  </div>
+
+  <!-- ═══ ACT 4 (2) — 뒤로 당긴 아키텍처 오버레이 ══════════════ -->
+  <div id="pullback">
+    <div class="grid-bg"></div>
+
+    <div class="p4 p4-eyebrow" id="p4Eye">
+      <span class="t">EMBEDDED INTELLIGENCE</span>
+      <span class="s">내장형 인텔리전스 — Alder 시스템 안에서 소비되는 Treasurer</span>
+    </div>
+
+    <!-- 좌측: 3계층 아키텍처 -->
+    <div class="p4 p4-l" id="p4L1" style="left:56px;top:152px;width:796px;height:132px">
+      <div class="hd"><span class="n">Alder 내부 시스템</span>
+        <span class="x">기존 환경 · 변경 없음</span></div>
+      <div class="bd">
+        <span class="p4-chip">포트폴리오 · 운용 시스템<span class="s">portfolio ops</span></span>
+        <span class="p4-chip">내부 AI 어시스턴트<span class="s">internal assistant</span></span>
+        <span class="p4-chip">리스크 모니터링<span class="s">risk</span></span>
+      </div>
+    </div>
+
+    <div class="p4 p4-ar" id="p4ArApi" style="left:186px;top:292px;height:48px">
+      <span class="cap">▲</span><span class="bar"></span>
+      <span class="lb">API</span><span class="bar"></span><span class="cap">▼</span></div>
+    <div class="p4 p4-ar" id="p4ArMcp" style="left:566px;top:292px;height:48px">
+      <span class="cap">▲</span><span class="bar"></span>
+      <span class="lb">MCP</span><span class="bar"></span><span class="cap">▼</span></div>
+
+    <div class="p4 p4-l tr" id="p4L2" style="left:56px;top:348px;width:796px;height:264px">
+      <div class="hd"><span class="n">Treasurer 인텔리전스 레이어</span>
+        <span class="x">verify · normalize · connect</span></div>
+      <div class="bd" style="align-items:flex-start">
+        <div style="width:400px;height:220px"></div>
+        <div class="p4-note" style="width:330px">
+          <b>다국어 문서 → 검증된 투자 데이터</b><br>
+          정규화 · 원장 대조 · 예외 탐지 · GP 관계 축적<br><br>
+          Alder는 새 화면에 로그인하지 않습니다.
+          <b>기존 시스템이 이 계층을 호출</b>합니다.
+        </div>
+      </div>
+    </div>
+
+    <div class="p4 p4-ar" id="p4ArData" style="left:376px;top:620px;height:44px">
+      <span class="cap">▲</span><span class="bar"></span>
+      <span class="lb">검증 데이터</span><span class="bar"></span><span class="cap">▼</span></div>
+
+    <div class="p4 p4-l" id="p4L3" style="left:56px;top:672px;width:796px;height:132px">
+      <div class="hd"><span class="n">문서 · 펀드 · GP 관계 · 검증</span>
+        <span class="x">source of record</span></div>
+      <div class="bd">
+        <span class="p4-chip">다국어 원문 문서<span class="s">12건 · JP / EN</span></span>
+        <span class="p4-chip">커밋먼트 원장<span class="s">펀드 4</span></span>
+        <span class="p4-chip">GP 관계 그래프<span class="s">엔티티 13</span></span>
+        <span class="p4-chip">검증 · 예외<span class="s">예외 1건</span></span>
+      </div>
+    </div>
+
+    <!-- 우측 상단: API 경로 -->
+    <div class="p4 p4-p" id="p4Api" style="left:900px;top:152px;width:964px;height:300px">
+      <div class="hd"><span class="k">API</span>
+        <span class="n">구조화된 프라이빗 마켓 데이터 → Alder 내부 시스템</span>
+        <span class="spacer"></span><span class="r">REST · OAuth 2.0</span></div>
+      <div class="bd">
+        <div class="p4-flow">
+          <b>Alder 포트폴리오 · 운용 시스템</b><span class="ar">──▶</span>
+          <span>Treasurer API</span><span class="ar">──▶</span><b>구조화 응답</b>
+        </div>
+        <div class="p4-code" id="p4ApiCode">
+          <div class="ln" data-a="0"><span class="req">GET</span> <span class="v">/v1/funds/hikari-growth-iii/exposure</span></div>
+          <div class="ln" data-a="1"><span class="dim">Authorization: Bearer trs_live_••••4f2a</span></div>
+          <div class="st" data-a="2"><span class="code">200 OK</span>
+            <span class="ms">142 ms · application/json</span></div>
+          <div class="ln" data-a="3">{</div>
+          <div class="ln" data-a="4">  <span class="k">"fund"</span>: <span class="v">"Hikari Growth Fund III"</span>,  <span class="k">"gp"</span>: <span class="v">"Sakura Ridge Partners K.K."</span>,  <span class="k">"currency"</span>: <span class="v">"JPY"</span>,</div>
+          <div class="ln" data-a="5">  <span class="k">"commitment"</span>: <span class="n">2000000000</span>,  <span class="k">"called_to_date"</span>: <span class="n">1300000000</span>,  <span class="k">"remaining_commitment"</span>: <span class="n">700000000</span>,</div>
+          <div class="ln" data-a="6">  <span class="k">"last_call"</span>: { <span class="k">"id"</span>: <span class="v">"CC-07"</span>, <span class="k">"amount"</span>: <span class="n">180000000</span>, <span class="k">"due"</span>: <span class="v">"2026-09-04"</span>, <span class="k">"status"</span>: <span class="c">"under_review"</span> },</div>
+          <div class="ln" data-a="7">  <span class="k">"exceptions"</span>: [ { <span class="k">"id"</span>: <span class="v">"EXC-2026-0193"</span>, <span class="k">"type"</span>: <span class="c">"payment_instruction_change"</span> } ],</div>
+          <div class="ln" data-a="8">  <span class="k">"source_documents"</span>: <span class="n">12</span>,  <span class="k">"as_of"</span>: <span class="v">"2026-08-21T09:41:38+09:00"</span> }</div>
+        </div>
+        <div class="p4-consume" id="p4Consume">
+          <span class="ar">──▶</span>
+          <span>Alder 포트폴리오 운용 시스템의 <b>기존 화면에 그대로 반영</b> —
+            별도 로그인 없음</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 우측 하단: MCP 경로 -->
+    <div class="p4 p4-p" id="p4Mcp" style="left:900px;top:476px;width:964px;height:328px">
+      <div class="hd"><span class="k">MCP</span>
+        <span class="n">Alder 사내 AI 어시스턴트가 Treasurer를 도구로 호출</span>
+        <span class="spacer"></span><span class="r">Model Context Protocol</span></div>
+      <div class="bd">
+        <div class="p4-idle" id="p4Idle">MCP 세션 연결됨 · Alder 사내 어시스턴트 입력 대기…</div>
+        <div class="p4-msg" data-m="0">
+          <div class="who"><span class="av">YT</span>田辺 悠人 · 운용지원팀
+            &nbsp;|&nbsp; Alder 사내 어시스턴트</div>
+          <div class="q">"이번 주 일본 포커스 펀드에서 무엇이 바뀌었나요?"</div>
+        </div>
+        <div class="p4-msg tool" data-m="1">
+          <div class="tl">⟳ <em>treasurer</em> MCP 호출 &nbsp;→&nbsp;
+            list_documents · get_fund_exposure · list_exceptions
+            <span style="color:#4a5b78">&nbsp;(도구 3 · 0.9s)</span></div>
+        </div>
+        <div class="p4-msg" data-m="2">
+          <div class="who"><span class="av">AI</span>어시스턴트 · Treasurer 데이터 기반</div>
+          <ul class="p4-ans">
+            <li data-b="0"><i></i><span>신규 <b>캐피탈 콜 통지 3건</b> 수신
+              (일본어 원문 1건 포함)</span></li>
+            <li data-b="1"><i></i><span><b>Hikari Growth Fund III</b> —
+              <b>¥180,000,000</b> 청구 (CC-07 · 기일 2026-09-04)</span></li>
+            <li data-b="2"><i></i><span><span class="c">지급 지시 변경 1건</span>
+              검토 요청 — EXC-2026-0193 (지급 보류 중)</span></li>
+            <li data-b="3"><i></i><span>잔여 커밋먼트 갱신
+              <b>¥880,000,000 → ¥700,000,000</b></span></li>
+            <li data-b="4"><i></i><span><b>Sakura Ridge Partners</b>
+              GP 관계 레코드 갱신 (09:41)</span></li>
+          </ul>
+          <div class="p4-src" id="p4Src">출처 문서 3건 · 원문 링크 첨부 ·
+            모든 수치는 Treasurer 검증 결과</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 하단 전략 메시지 -->
+    <div class="p4 p4-msg1" id="p4Msg1">
+      <div class="a">또 하나의 대시보드가 아닙니다.</div>
+      <div class="b">Alder의 업무에 내장되는 인텔리전스 레이어입니다.</div>
+    </div>
+    <div class="p4 p4-steps" id="p4Steps">
+      <div class="s on"><div class="n">STEP 01</div><div class="v">파일럿</div></div>
+      <div class="s"><div class="n">STEP 02</div><div class="v">검증</div></div>
+      <div class="s"><div class="n">STEP 03</div><div class="v">연동</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ ACT 5 — 파일럿에서 인프라로 ══════════════════════════ -->
+  <div id="finale">
+    <div class="grid-bg"></div>
+
+    <!-- 씬 A: 요약 체인 + 3단계 -->
+    <div class="f-a" id="fA">
+      <div class="f-eye" id="fEye">
+        <div class="t">FROM PILOT TO INFRASTRUCTURE</div>
+        <div class="s">파일럿에서 인프라로</div>
+      </div>
+
+      <div class="f-chain">
+        <div class="f-ch" data-c="0"><div class="n">01</div>
+          <div class="v">다국어 문서</div><div class="d">JP · EN · KR · ZH</div></div>
+        <div class="f-ar" data-a="0">──▶</div>
+        <div class="f-ch" data-c="1"><div class="n">02</div>
+          <div class="v">구조화 펀드 데이터</div><div class="d">필드 10 · 신뢰도 99.0%</div></div>
+        <div class="f-ar" data-a="1">──▶</div>
+        <div class="f-ch" data-c="2"><div class="n">03</div>
+          <div class="v">자동 대조 검증</div><div class="d">8항목 · 예외 1건</div></div>
+        <div class="f-ar" data-a="2">──▶</div>
+        <div class="f-ch" data-c="3"><div class="n">04</div>
+          <div class="v">GP 관계 인텔리전스</div><div class="d">엔티티 13 · 관계 14</div></div>
+        <div class="f-ar" data-a="3">──▶</div>
+        <div class="f-ch" data-c="4"><div class="n">05</div>
+          <div class="v">API · MCP 연동</div><div class="d">Alder 기존 시스템</div></div>
+      </div>
+
+      <div class="f-steps">
+        <div class="f-st" data-s="0">
+          <div class="n">STEP 01</div><div class="h">파일럿</div>
+          <ul>
+            <li><i></i><span>Alder 실제 문서로 실행</span></li>
+            <li><i></i><span>정확도 · 처리시간 <b style="color:#dbe6f5">실측</b></span></li>
+            <li><i></i><span>기존 운용 워크플로 검증</span></li>
+          </ul>
+          <div class="out">→ <b>Alder 고유의 측정 기준선 확보</b></div>
+        </div>
+        <div class="f-sar" data-r="0">▶</div>
+        <div class="f-st" data-s="1">
+          <div class="n">STEP 02</div><div class="h">연동</div>
+          <ul>
+            <li><i></i><span>Alder 내부 시스템 연결</span></li>
+            <li><i></i><span>API · MCP 로 인텔리전스 노출</span></li>
+            <li><i></i><span>권한 · 감사 · 데이터 리전 확정</span></li>
+          </ul>
+          <div class="out">→ <b>기존 화면과 사내 AI에서 소비</b></div>
+        </div>
+        <div class="f-sar" data-r="1">▶</div>
+        <div class="f-st" data-s="2">
+          <div class="n">STEP 03</div><div class="h">인프라</div>
+          <ul>
+            <li><i></i><span>Treasurer가 기존 업무 흐름 안에서 작동</span></li>
+            <li><i></i><span>새 대시보드 학습 부담 없음</span></li>
+            <li><i></i><span>문서가 쌓일수록 관계도가 축적</span></li>
+          </ul>
+          <div class="out">→ <b>운용 인프라로 정착</b></div>
+        </div>
+      </div>
+
+      <div class="f-prop" id="fProp">
+        <div class="lb">PILOT SCOPE<span>파일럿 제안 범위 (예시)</span></div>
+        <div class="items">
+          <span>기간 <b>2–4주</b></span>
+          <span>Alder 실제 문서 <b>50–100건</b></span>
+          <span>대상 펀드 <b>2–3개</b></span>
+          <span>성공 기준 <b>필드 정확도 · 처리시간 · 예외 검출률</b>
+            (Alder와 사전 합의)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 씬 B: 마감 프레임 -->
+    <div class="f-b" id="fB">
+      <div class="lock" id="fLock">TREASURER<em>×</em>ALDER</div>
+      <div class="f-tag" id="fTag">
+        프라이빗 마켓 문서를 <b style="color:#fff">기관 인텔리전스</b>로 전환합니다.
+        <span class="en">TURN PRIVATE-MARKET DOCUMENTS INTO INSTITUTIONAL INTELLIGENCE</span>
+      </div>
+      <div class="three" id="fThree">
+        <div><b>파일럿</b>으로 시작합니다</div>
+        <div><b>Alder의 데이터</b>로 측정합니다</div>
+        <div><b>검증된 것</b>만 연동합니다</div>
+      </div>
+      <div class="fic" id="fFic">
+        본 데모의 모든 펀드 · GP · 법인 · 인물 · 계좌 · 거래는 가상(fictional) 데이터입니다.<br>
+        「약 2영업일 → 8분」은 예시 수치이며, Alder에서 측정된 결과가 아닙니다 — 파일럿에서 실측 예정.
+      </div>
+    </div>
+  </div>
+
+  <!-- 문서 → 필드 배선 -->
+  <svg id="wires" viewBox="0 0 1920 1080" preserveAspectRatio="none"></svg>
+
+  <!-- 시뮬레이션 커서 -->
+  <div id="cursor">
+    <div class="ring"></div>
+    <svg viewBox="0 0 22 22" width="22" height="22">
+      <path d="M4 2.2 17.6 11.4l-5.7.55 3.1 6.4-2.5 1.2-3.1-6.4-3.4 4.2Z"
+        fill="#0f172a" stroke="#fff" stroke-width="1.1" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  </div><!-- /#cam -->
+
+  <!-- 진행 표시 -->
+  <div id="prog"></div>
+
+  <!-- 프리젠터 컨트롤 -->
+  <div id="pres">
+    <button id="cPlay" title="Space — 일시정지 / 재생">❚❚</button>
+    <button id="cPrev" title="← 이전 ACT">◀</button>
+    <div class="lbl" id="cLbl">ACT 1 · 00.0s</div>
+    <button id="cNext" title="→ 다음 ACT">▶</button>
+    <button data-jump="1">1</button><button data-jump="2">2</button>
+    <button data-jump="3">3</button><button data-jump="4">4</button>
+    <button data-jump="5">5</button>
+    <button id="cRestart" title="R — 처음부터">↺</button>
+    <button id="cDbg" title="D — 디버그">D</button>
+  </div>
+
+  <!-- 디버그 오버레이 (기본 OFF) -->
+  <div id="dbg">
+    <div><span class="k">ACT</span><b id="dAct">1 / 5</b> <span id="dTitle"
+      style="color:#8ea0bd"></span></div>
+    <div><span class="k">ACT 경과</span><b id="dLocal">0.00s</b> / <span id="dDur">20.0s</span></div>
+    <div><span class="k">전체 경과</span><b id="dGlobal">0.00s</b> / 100.0s</div>
+    <div><span class="k">다음 beat</span><b id="dNext">—</b></div>
+    <div><span class="k">상태</span><b id="dState">idle</b>
+      <span style="color:#4a5b78">· tween <span id="dTw">0</span></span></div>
+  </div>
+
+  <!-- 시작 오버레이 -->
+  <div id="intro">
+    <div class="grid-bg"></div>
+    <div class="inner">
+      <div class="kicker">PRODUCT DEMONSTRATION · 100 SECONDS</div>
+      <h1>TREASURER<em>×</em>ALDER</h1>
+      <div class="lede">
+        다국어 프라이빗 마켓 문서를 <b>검증된 투자 데이터</b>로 전환하고,<br>
+        그 인텔리전스를 Alder가 이미 쓰는 시스템에 <b>그대로 연결</b>합니다.
+      </div>
+      <div class="flow">
+        <div>문서</div><div>구조화 데이터</div><div>대조 검증</div>
+        <div>GP 관계</div><div>내장형 인프라</div>
+      </div>
+      <button id="startBtn">데모 시작</button>
+      <div class="keys">Space 일시정지 · ← → ACT 이동 · 1~5 ACT 직접 이동 · R 처음부터</div>
+    </div>
+    <div class="fic">
+      본 데모에 등장하는 모든 펀드 · GP · 법인 · 인물 · 계좌 · 거래는 전부 가상(fictional) 데이터입니다.<br>
+      실재하는 운용사 · 포트폴리오 기업 · 개인과 무관합니다.
+    </div>
+  </div>
+
+</div></div>
+
+<script>
+"use strict";
+/* ═══════════════════════════════════════════════════════════════
+   A. 타이밍 설정 — ACT 길이는 전부 여기서만 조정
+   ═══════════════════════════════════════════════════════════════ */
+const CFG = {
+  stage:{ w:1920, h:1080 },
+  acts:[
+    { n:1, key:'a1', nav:'inbox',  leaf:'문서 수신함',        title:'다국어 문서 인텔리전스',   dur:20000 },
+    { n:2, key:'a2', nav:'recon',  leaf:'대조 · 검증',        title:'커밋먼트 대조 및 검증',    dur:22000 },
+    { n:3, key:'a3', nav:'graph',  leaf:'GP 관계 인텔리전스', title:'GP 관계 인텔리전스',       dur:23000 },
+    { n:4, key:'a4', nav:'api',    leaf:'연동 (API · MCP)',   title:'내장형 인텔리전스',        dur:23000 },
+    { n:5, key:'a5', nav:'api',    leaf:'파일럿 → 인프라',    title:'파일럿에서 인프라로',      dur:12000 },
+  ],
+  cursor:{ ease:'expo' },  // 커서 이동 easing
+};
+const TOTAL = CFG.acts.reduce((s,a)=>s+a.dur,0);   // = 100000ms
+
+/* ═══════════════════════════════════════════════════════════════
+   B. 유틸
+   ═══════════════════════════════════════════════════════════════ */
+const $  = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>Array.prototype.slice.call(r.querySelectorAll(s));
+const el = (tag,cls,html)=>{const e=document.createElement(tag);
+  if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e;};
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const EASE={
+  expo:t=>t>=1?1:1-Math.pow(2,-10*t),
+  inout:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2,
+  linear:t=>t,
+};
+const stageEl=$('#stage'), camEl=$('#cam');
+
+/* 요소의 씬(1920×1080) 좌표계 사각형.
+   기준을 #cam 으로 잡아 카메라가 줌/팬 중이어도 항상 씬 좌표를 돌려준다
+   (배선·커서 좌표가 확대 상태와 무관하게 정확해진다). */
+function rectIn(node){
+  if(typeof node==='string')node=$(node);
+  if(!node)return {x:0,y:0,w:0,h:0};
+  const c=camEl.getBoundingClientRect(), r=node.getBoundingClientRect();
+  const k=c.width/CFG.stage.w || 1;
+  return { x:(r.left-c.left)/k, y:(r.top-c.top)/k, w:r.width/k, h:r.height/k };
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   C. 타임라인 엔진 — 단일 마스터 클럭
+      · beats  : [ms, name, fn]  ACT 로컬 시간에 1회 실행
+      · tweens : 마스터 클럭 기반 보간 (일시정지 시 함께 정지)
+      · tasks  : after(ms,fn) 지연 작업 (일시정지 시 함께 정지)
+   ═══════════════════════════════════════════════════════════════ */
+const Demo = {
+  ai:0,            // 현재 ACT 인덱스
+  t:0,             // 현재 ACT 로컬 경과(ms)
+  playing:false,
+  ended:false,
+  started:false,
+  fired:new Set(), // 이번 ACT 에서 실행된 beat 인덱스
+  tweens:[],
+  tasks:[],
+  raf:null, last:0,
+  debug:false,
+  noAnim:false,
+
+  act(){ return CFG.acts[this.ai]; },
+  beats(){ return (ACTS[this.act().n]||{}).beats || []; },
+  globalT(){ let s=0; for(let i=0;i<this.ai;i++)s+=CFG.acts[i].dur; return s+this.t; },
+
+  /* ── ACT 진입: 전체 리셋 → 해당 ACT 초기화 → 로컬 t=0 ── */
+  enter(i,opts){
+    opts=opts||{};
+    this.ai=clamp(i,0,CFG.acts.length-1);
+    this.t=0; this.fired.clear(); this.tweens.length=0; this.tasks.length=0;
+    this.ended=false;
+    const a=this.act();
+
+    // 모든 ACT 리셋 (이전 ACT 잔상 제거)
+    CFG.acts.forEach(function(c){ const A=ACTS[c.n]; if(A&&A.reset)A.reset(); });
+    clearWires();
+    setPullback(false);          // 풀백 상태는 ACT 전환 시 항상 해제
+    camReset(0);                 // 카메라도 항상 원위치
+
+    // 셸 상태 동기화
+    $$('#rail .nav').forEach(function(n){ n.classList.toggle('on', n.dataset.nav===a.nav); });
+    $('#crumbLeaf').textContent=a.leaf;
+    $('#stAct').textContent='ACT '+a.n+' / 5';
+    $$('.act').forEach(function(s){ s.classList.toggle('on', s.id==='act'+a.n); });
+
+    // 커서 기본 위치
+    const A=ACTS[a.n];
+    if(A&&A.enter)A.enter();
+    cursorHide();
+
+    this.paint();
+    if(!opts.keepPlaying && !this.playing) this.paint();
+  },
+
+  play(){ if(this.ended)return; this.playing=true; this.last=0;
+    document.documentElement.classList.remove('is-paused');
+    $('#cPlay').textContent='❚❚'; this.loop(); },
+  pause(){ this.playing=false;
+    document.documentElement.classList.add('is-paused');
+    $('#cPlay').textContent='▶'; },
+  toggle(){ this.playing?this.pause():this.play(); },
+
+  loop(){
+    const self=this;
+    cancelAnimationFrame(this.raf);
+    this.raf=requestAnimationFrame(function step(ts){
+      if(!self.playing)return;
+      if(!self.last)self.last=ts;
+      const dt=Math.min(64, ts-self.last); self.last=ts;
+      self.tick(dt);
+      if(self.playing) self.raf=requestAnimationFrame(step);
+    });
+  },
+
+  tick(dt){
+    this.t+=dt;
+    this.runBeats();
+    this.runTweens(dt);
+    this.runTasks(dt);
+    this.paint();
+    if(this.t>=this.act().dur){
+      if(this.ai>=CFG.acts.length-1){ this.t=this.act().dur; this.ended=true; this.pause(); }
+      else { this.enter(this.ai+1,{keepPlaying:true}); }
+    }
+  },
+
+  runBeats(){
+    const bs=this.beats();
+    for(let i=0;i<bs.length;i++){
+      if(this.fired.has(i))continue;
+      if(this.t>=bs[i][0]){ this.fired.add(i); try{ bs[i][2](); }catch(e){ console.error('beat',bs[i][1],e);} }
+    }
+  },
+  nextBeat(){
+    const bs=this.beats();
+    for(let i=0;i<bs.length;i++) if(!this.fired.has(i)) return bs[i];
+    return null;
+  },
+
+  /* 보간 */
+  tween(o){ o.el_t=0; o.ease=EASE[o.ease||'expo']||EASE.expo;
+    if(o.tag) this.tweens=this.tweens.filter(function(x){return x.tag!==o.tag;});
+    if(this.noAnim){ o.apply(1); if(o.done)o.done(); return; }
+    this.tweens.push(o); },
+  runTweens(dt){
+    for(let i=this.tweens.length-1;i>=0;i--){
+      const w=this.tweens[i];
+      if(w.delay>0){ w.delay-=dt; continue; }
+      w.el_t+=dt;
+      const p=clamp(w.el_t/w.dur,0,1);
+      w.apply(w.ease(p));
+      if(p>=1){ this.tweens.splice(i,1); if(w.done)w.done(); }
+    }
+  },
+  /* 지연 작업 (tag='wirefade' 는 정적 프레임에서 건너뜀 → 배선이 남는다) */
+  after(ms,fn,tag){ if(this.noAnim){ if(tag!=='wirefade')fn(); return; }
+    this.tasks.push({t:ms,fn:fn,tag:tag}); },
+  runTasks(dt){
+    for(let i=this.tasks.length-1;i>=0;i--){
+      const k=this.tasks[i]; k.t-=dt;
+      if(k.t<=0){ this.tasks.splice(i,1); try{k.fn();}catch(e){console.error(e);} }
+    }
+  },
+
+  /* ── 정적 프레임(스크럽): 애니메이션 없이 해당 시점 상태 재현 ── */
+  scrub(actN,sec){
+    const idx=CFG.acts.findIndex(function(a){return a.n===actN;});
+    this.noAnim=true;
+    document.documentElement.classList.add('no-anim');
+    this.enter(idx<0?0:idx);
+    this.t=sec*1000;
+    this.runBeats();
+    this.tweens.forEach(function(w){ w.apply(1); if(w.done)w.done(); });
+    this.tweens.length=0;
+    while(this.tasks.length){ const k=this.tasks.pop();
+      if(k.tag==='wirefade')continue; try{k.fn();}catch(e){} }
+    this.paint();
+  },
+
+  /* 진행 표시 / 라벨 / 디버그 */
+  paint(){
+    const segs=$$('#prog .seg');
+    for(let i=0;i<segs.length;i++){
+      const fill=segs[i].firstElementChild;
+      if(i<this.ai){ segs[i].classList.add('past'); fill.style.transform='scaleX(1)'; }
+      else if(i===this.ai){ segs[i].classList.remove('past');
+        fill.style.transform='scaleX('+clamp(this.t/CFG.acts[i].dur,0,1).toFixed(4)+')'; }
+      else { segs[i].classList.remove('past'); fill.style.transform='scaleX(0)'; }
+    }
+    $('#cLbl').textContent='ACT '+this.act().n+' · '+(this.t/1000).toFixed(1)+'s';
+    $$('#pres [data-jump]').forEach(function(b){
+      b.classList.toggle('on', +b.dataset.jump===Demo.act().n); });
+    if(this.debug){
+      const nb=this.nextBeat();
+      $('#dAct').textContent=this.act().n+' / 5';
+      $('#dTitle').textContent='· '+this.act().title;
+      $('#dLocal').textContent=(this.t/1000).toFixed(2)+'s';
+      $('#dDur').textContent=(this.act().dur/1000).toFixed(1)+'s';
+      $('#dGlobal').textContent=(this.globalT()/1000).toFixed(2)+'s';
+      $('#dNext').textContent=nb? nb[1]+' @ '+(nb[0]/1000).toFixed(2)+'s' : '— (ACT 종료 대기)';
+      $('#dState').textContent=this.ended?'ended':(this.playing?'playing':'paused');
+      $('#dTw').textContent=this.tweens.length;
+    }
+  },
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   D. 시뮬레이션 커서
+   ═══════════════════════════════════════════════════════════════ */
+const Cursor={ x:960, y:540 };
+const curEl=$('#cursor');
+function cursorPut(x,y){ Cursor.x=x; Cursor.y=y;
+  curEl.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)'; }
+function cursorShow(){ curEl.classList.add('show'); }
+function cursorHide(){ curEl.classList.remove('show'); }
+/* target: 셀렉터/엘리먼트/{x,y}, opts:{ox,oy,align:'center'|'left'} */
+function cursorTo(target,dur,opts){
+  opts=opts||{}; cursorShow();
+  let tx,ty;
+  if(target&&target.x!=null){ tx=target.x; ty=target.y; }
+  else{
+    const node=typeof target==='string'?$(target):target;
+    if(!node)return;
+    const r=rectIn(node);
+    tx=opts.align==='left'? r.x+16 : r.x+r.w/2;
+    ty=r.y+r.h/2;
+  }
+  tx+=(opts.ox||0); ty+=(opts.oy||0);
+  const sx=Cursor.x, sy=Cursor.y;
+  Demo.tween({ tag:'cursor', dur:dur||700, ease:'expo',
+    apply:function(p){ cursorPut(sx+(tx-sx)*p, sy+(ty-sy)*p); } });
+}
+function cursorClick(){ curEl.classList.remove('click');
+  void curEl.offsetWidth; curEl.classList.add('click'); }
+
+/* ═══════════════════════════════════════════════════════════════
+   E. 배선(문서 셀 → 필드 행) SVG
+   ═══════════════════════════════════════════════════════════════ */
+const wiresEl=$('#wires');
+function clearWires(){ while(wiresEl.firstChild) wiresEl.removeChild(wiresEl.firstChild); }
+/* opt:{keep:true 유지(추적선), crit:true 예외색} */
+function drawWire(fromNode,toNode,opt){
+  opt=opt||{};
+  if(!fromNode||!toNode)return;
+  const a=rectIn(fromNode), b=rectIn(toNode);
+  const x1=a.x+a.w-2, y1=a.y+a.h/2, x2=b.x+2, y2=b.y+b.h/2;
+  const mx=(x1+x2)/2;
+  const d='M'+x1+','+y1+' C'+(mx)+','+y1+' '+(mx)+','+y2+' '+x2+','+y2;
+  const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d',d);
+  if(opt.crit)p.setAttribute('class','crit');
+  const len=Math.hypot(x2-x1,y2-y1)*1.35+40;
+  p.style.setProperty('--len',len.toFixed(0));
+  const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  c.setAttribute('cx',x1); c.setAttribute('cy',y1); c.setAttribute('r',2.6);
+  if(opt.crit)c.setAttribute('class','crit');
+  wiresEl.appendChild(p); wiresEl.appendChild(c);
+  requestAnimationFrame(function(){ p.classList.add('drawn'); c.classList.add('drawn'); });
+  if(Demo.noAnim){ p.classList.add('drawn'); c.classList.add('drawn'); }
+  if(opt.keep)return;
+  Demo.after(900,function(){ p.classList.add('fade'); c.classList.add('fade');
+    Demo.after(400,function(){ if(p.parentNode)p.remove(); if(c.parentNode)c.remove(); },
+      'wirefade'); },'wirefade');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   D-2. 카메라 — 씬의 특정 지점을 확대/이동해서 보여준다.
+        마스터 클럭 기반 tween 이라 일시정지 시 함께 멈춘다.
+        Cam.x/y = 무대 중앙에 오게 할 씬 좌표, Cam.s = 배율
+   ═══════════════════════════════════════════════════════════════ */
+const Cam={ s:1, x:960, y:540 };
+function camApply(){
+  if(Cam.s===1 && Cam.x===960 && Cam.y===540){ camEl.style.transform=''; return; }
+  const tx=960-Cam.x*Cam.s, ty=540-Cam.y*Cam.s;
+  camEl.style.transform='translate('+tx.toFixed(2)+'px,'+ty.toFixed(2)+'px) scale('+Cam.s.toFixed(4)+')';
+}
+function camTo(s,x,y,dur,ease){
+  const f={s:Cam.s,x:Cam.x,y:Cam.y};
+  Demo.tween({ tag:'cam', dur:dur||700, ease:ease||'inout', apply:function(p){
+    Cam.s=f.s+(s-f.s)*p; Cam.x=f.x+(x-f.x)*p; Cam.y=f.y+(y-f.y)*p; camApply(); } });
+}
+function camReset(dur){
+  if(!dur){ Demo.tweens=Demo.tweens.filter(function(t){return t.tag!=='cam';});
+    Cam.s=1; Cam.x=960; Cam.y=540; camApply(); return; }
+  camTo(1,960,540,dur,'inout');
+}
+/* 요소를 화면에 꽉 채우도록 줌 (가로 기준 fill 비율) */
+function camZoomEl(sel,fill,dur,ease){
+  const r=rectIn(sel); if(!r.w)return 1;
+  const s=(CFG.stage.w*(fill||0.8))/r.w;
+  camTo(s, r.x+r.w/2, r.y+r.h/2, dur, ease);
+  return s;
+}
+/* 요소 위쪽에 맞춰 줌 (이후 아래로 팬하기 위한 시작 위치) */
+function camZoomTop(sel,s,dur,ease){
+  const r=rectIn(sel); if(!r.w)return;
+  const half=540/s;
+  camTo(s, r.x+r.w/2, r.y+half*0.94, dur, ease);
+}
+/* 같은 배율로 요소 아래쪽까지 훑어 내려간다 (스크롤 느낌).
+   frac = 화면 아래끝이 도달할 요소 높이 비율 (여백까지 내려가지 않게 조절) */
+function camPanBottom(sel,dur,ease,frac){
+  const r=rectIn(sel); if(!r.w)return;
+  const s=Cam.s, half=540/s;
+  const endY=r.y+r.h*(frac==null?1:frac)-half;
+  camTo(s, r.x+r.w/2, Math.max(r.y+half*0.94,endY), dur, ease||'linear');
+}
+
+/* ACT4 풀백 — 제품 화면을 축소해 아키텍처 중앙(Treasurer 계층)에 배치.
+   축소 시 z-index 를 올려 오버레이 위에 떠 있게 한다. */
+const shellEl=$('#appShell'), pullEl=$('#pullback');
+function setPullback(on){
+  if(on){
+    // L2 박스 좌측 슬롯에 맞춘 축소 배치 (스케일 0.20 → 384×216)
+    shellEl.style.transform='translate(-691px,-43px) scale(.20)';
+    shellEl.classList.add('pulled');
+    pullEl.classList.add('in');
+  } else {
+    shellEl.style.transform='';
+    shellEl.classList.remove('pulled');
+    pullEl.classList.remove('in');
+  }
+}
+
+/* 숫자 카운트 (마스터 클럭 기반) */
+function countTo(node,from,to,dur,prefix,suffix){
+  if(!node)return;
+  Demo.tween({ dur:dur||900, ease:'expo', apply:function(p){
+    const v=Math.round(from+(to-from)*p);
+    node.textContent=(prefix||'')+v.toLocaleString('en-US')+(suffix||'');
+  }});
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   F. ACT 레지스트리
+   ═══════════════════════════════════════════════════════════════ */
+const ACTS={};
+
+/* ───────────────────────────────────────────────────────────────
+   ACT 1 — 다국어 문서 인텔리전스 (0 – 20s)
+   문서 수신 → 일본어 캐피탈 콜 열기 → 언어/레이아웃 인식
+   → 원문 셀 ↔ 정규화 필드 1:1 추출 → 대조 검증으로 인계
+   ─────────────────────────────────────────────────────────────── */
+
+// 수신함 (가상 문서)
+const A1_INBOX=[
+  { fn:'Hikari_Growth_III_出資請求通知書_20260820.pdf', kind:'캐피탈 콜 통지',
+    gp:'Sakura Ridge Partners', when:'09:38', size:'412 KB', pg:'2p',
+    pills:[['jp','日本語'],['new','신규']], sel:true },
+  { fn:'Sakura_Ridge_II_Capital_Account_Statement_Q2FY26.pdf', kind:'캐피탈 어카운트 명세서',
+    gp:'Sakura Ridge Partners', when:'08:52', size:'1.1 MB', pg:'6p',
+    pills:[['','EN'],['new','신규']] },
+  { fn:'Northstar_Asia_Distribution_Notice_20260818.pdf', kind:'분배 통지',
+    gp:'Northstar Asia Ventures', when:'08-18', size:'268 KB', pg:'3p',
+    pills:[['','EN'],['ok','검증 완료']] },
+];
+
+// 원문(일본어) ↔ 정규화 필드 매핑 — 10건
+const A1_FIELDS=[
+  { f:'fund',  ja:'ファンド名',            k:'펀드',                 v:'Hikari Growth Fund III',              conf:99.4 },
+  { f:'gp',    ja:'無限責任組合員',        k:'GP (무한책임조합원)',  v:'Sakura Ridge Partners K.K.',          conf:99.1 },
+  { f:'lp',    ja:'出資者',                k:'투자자 엔티티',        v:'Alder Capital Asia Pte. Ltd.',        conf:99.3,
+    tags:[['','원장 매칭']] },
+  { f:'cur',   ja:'通貨',                  k:'통화',                 v:'JPY (¥)',                              conf:99.8, mono:true },
+  { f:'commit',ja:'出資約束金額',          k:'커밋먼트(Commitment)', v:'JPY 2,000,000,000',                    conf:99.6, mono:true },
+  { f:'cum',   ja:'累計請求額（前回まで）',k:'누적 청구액',          v:'JPY 1,120,000,000',                    conf:99.2, mono:true },
+  { f:'call',  ja:'今回請求額',            k:'금회 캐피탈 콜',       v:'JPY 180,000,000',                      conf:99.5, mono:true },
+  { f:'remain',ja:'残余出資約束額',        k:'잔여 커밋먼트',        v:'JPY 700,000,000',                      conf:98.9, mono:true,
+    tags:[['calc','산식 검증 ✓ 2,000M − 1,120M − 180M']] },
+  { f:'due',   ja:'払込期日',              k:'납입 기일',            v:'2026-09-04 (금) · JST',                conf:99.0, mono:true },
+  { f:'bank',  ja:'振込先口座',            k:'지급 계좌',            v:'Mizuho Bank / 丸の内支店 / 普通 2841-77••••', conf:96.2,
+    low:true, tags:[['watch','원장 대조 필요']] },
+];
+
+ACTS[1]=(function(){
+  const inboxList=$('#inboxList'), fpList=$('#fpList');
+  let built=false;
+
+  function build(){
+    if(built)return; built=true;
+    // 수신함 행
+    A1_INBOX.forEach(function(d,i){
+      const row=el('div','inbox-row'+(d.sel?'':''));
+      row.dataset.i=i;
+      row.innerHTML=
+        '<div class="ln1"><span class="fn">'+d.fn+'</span></div>'+
+        '<div class="ln2"><span>'+d.kind+'</span><span class="mono">·</span>'+
+        '<span>'+d.gp+'</span></div>'+
+        '<div class="ln3">'+d.pills.map(function(p){
+          return '<span class="pill '+(p[0]||'')+(p[0]==='jp'?'':' kr')+'">'+p[1]+'</span>';}).join('')+
+        '<span class="pill mono">'+d.pg+'</span><span class="pill mono">'+d.size+'</span>'+
+        '<span style="flex:1"></span><span class="pill mono">'+d.when+'</span></div>';
+      inboxList.appendChild(row);
+    });
+    const dz=el('div','drop','<b>추가 문서 업로드</b>PDF · 스캔 이미지 · 이메일 첨부<br>일본어 · 한국어 · 영어 · 중국어 자동 판별');
+    inboxList.appendChild(dz);
+
+    // 필드 행 (초기 숨김)
+    A1_FIELDS.forEach(function(d){
+      const r=el('div','fr'); r.dataset.f=d.f;
+      r.innerHTML=
+        '<div class="fr-ja">'+d.ja+'</div>'+
+        '<div class="fr-main"><div class="fr-k">'+d.k+'</div>'+
+        '<div class="fr-v'+(d.mono?' mono':'')+'">'+d.v+'</div>'+
+        (d.tags?'<div class="tagline">'+d.tags.map(function(t){
+          return '<span class="tag '+t[0]+'">'+t[1]+'</span>';}).join('')+'</div>':'')+
+        '</div>'+
+        '<div class="fr-meta"><span class="fr-conf'+(d.low?' low':'')+'">'+
+        d.conf.toFixed(1)+'%</span><span class="fr-src">출처 p.1</span></div>';
+      fpList.appendChild(r);
+    });
+  }
+
+  function reset(){
+    build();
+    $$('#inboxList .inbox-row').forEach(function(r){ r.classList.remove('in','sel'); });
+    $('#jpPage').style.display='none';
+    $('#jpPage').classList.remove('in');
+    $('#vwEmpty').style.display='';
+    $('#vwName').textContent='문서를 선택하세요';
+    $('#vwPage').textContent='— / —';
+    $('#vwState').textContent='대기'; $('#vwState').className='pill kr';
+    $('#scanLine').classList.remove('go');
+    $('#langChip').classList.remove('in');
+    $$('#jpPage tr[data-f]').forEach(function(t){ t.classList.remove('hot','done'); });
+    $$('#fpList .fr').forEach(function(r){ r.classList.remove('in','land'); });
+    $('#sumN').innerHTML='0<span style="font-size:11px;color:var(--hint);font-weight:400">/10</span>';
+    $('#sumConf').textContent='—';
+    $('#sumNorm').textContent='JP → 표준 스키마';
+    $('#fpState').textContent='대기'; $('#fpState').className='pill kr';
+    $('#fpAudit').classList.remove('in');
+    $('#fpAct').classList.remove('in');
+    const b=$('#toRecon'); b.className='btn'; b.textContent='대조 검증 실행';
+    $('#stFlow').textContent='문서 파싱 파이프라인 · 가동 중';
+    $('#stQueue').textContent='처리 대기 3건';
+  }
+
+  function enterState(){ cursorPut(1180,900); }
+
+  // 필드 1건 추출: 원문 셀 하이라이트 → 배선 → 필드 행 등장
+  function extract(i){
+    const d=A1_FIELDS[i];
+    const tr=$('#jpPage tr[data-f="'+d.f+'"]');
+    const fr=$('#fpList .fr[data-f="'+d.f+'"]');
+    if(!tr||!fr)return;
+    $$('#jpPage tr.hot').forEach(function(t){ t.classList.remove('hot'); t.classList.add('done'); });
+    tr.classList.add('hot');
+    Demo.after(150,function(){
+      drawWire(tr.querySelector('td'), fr);
+      Demo.after(240,function(){
+        fr.classList.add('in','land');
+        Demo.after(700,function(){ fr.classList.remove('land'); });
+        // 요약 카운터
+        const n=i+1;
+        $('#sumN').innerHTML=n+'<span style="font-size:11px;color:var(--hint);font-weight:400">/10</span>';
+        let s=0; for(let j=0;j<n;j++)s+=A1_FIELDS[j].conf;
+        $('#sumConf').textContent=(s/n).toFixed(1)+'%';
+      });
+    });
+  }
+
+  const beats=[
+    [   0,'shell-in', function(){
+          $('#stFlow').textContent='문서 파싱 파이프라인 · 가동 중';
+        }],
+    [ 260,'inbox-row-1', function(){ $$('#inboxList .inbox-row')[0].classList.add('in'); }],
+    [ 420,'inbox-row-2', function(){ $$('#inboxList .inbox-row')[1].classList.add('in'); }],
+    [ 580,'inbox-row-3', function(){ $$('#inboxList .inbox-row')[2].classList.add('in'); }],
+    [ 900,'cursor-to-jp-doc', function(){
+          cursorTo($$('#inboxList .inbox-row')[0], 950, {align:'left', ox:60, oy:-4});
+        }],
+    [2050,'click-jp-doc', function(){
+          cursorClick();
+          $$('#inboxList .inbox-row')[0].classList.add('sel');
+        }],
+    [2260,'open-viewer', function(){
+          $('#vwEmpty').style.display='none';
+          $('#jpPage').style.display='';
+          $('#vwName').textContent='Hikari_Growth_III_出資請求通知書_20260820.pdf';
+          $('#vwPage').textContent='1 / 2';
+          $('#vwState').textContent='원문 확인'; $('#vwState').className='pill jp';
+          requestAnimationFrame(function(){ $('#jpPage').classList.add('in'); });
+          if(Demo.noAnim) $('#jpPage').classList.add('in');
+        }],
+    // ── 원문으로 카메라 진입: 확 확대해서 위 → 아래로 훑어 내린다 ──
+    [2560,'cam-doc-in', function(){
+          cursorHide();
+          camZoomTop('#jpPage', 2.15, 640);
+        }],
+    [3050,'ocr-scan', function(){
+          $('#scanLine').classList.remove('go'); void $('#scanLine').offsetWidth;
+          $('#scanLine').classList.add('go');
+          $('#vwState').textContent='레이아웃 분석'; $('#vwState').className='pill kr';
+          camPanBottom('#jpPage', 1180, 'linear', .87);  // 스캔 라인과 함께 아래로
+        }],
+    [4300,'cam-doc-out', function(){ camReset(660); }],
+    [4450,'lang-detect', function(){
+          $('#langChip').classList.add('in');
+          $('#fpState').textContent='추출 중'; $('#fpState').className='pill new kr';
+          $('#stFlow').textContent='ja-JP 문서 인식 · 필드 추출 진행';
+        }],
+    [4900,'field-01-fund',   function(){ extract(0); }],
+    [6000,'field-02-gp',     function(){ extract(1); }],
+    [7050,'field-03-lp',     function(){ extract(2); }],
+    [8000,'field-04-cur',    function(){ extract(3); }],
+    [8900,'field-05-commit', function(){ extract(4); }],
+    [9900,'field-06-cum',    function(){ extract(5); }],
+    [10900,'field-07-call',  function(){ extract(6); }],
+    [11950,'field-08-remain',function(){ extract(7); }],
+    [13100,'field-09-due',   function(){ extract(8); }],
+    [14150,'field-10-bank',  function(){ extract(9); }],
+    [15400,'extract-done',   function(){
+          $$('#jpPage tr.hot').forEach(function(t){ t.classList.remove('hot'); t.classList.add('done'); });
+          $('#fpState').textContent='정규화 완료'; $('#fpState').className='pill ok kr';
+          $('#vwState').textContent='추출 완료'; $('#vwState').className='pill ok kr';
+          $('#sumNorm').textContent='ISO 통화 · JST 일자 · 법인명';
+          $('#langChip').classList.remove('in');
+          $('#stFlow').textContent='10개 필드 정규화 완료 · 평균 신뢰도 99.0%';
+        }],
+    [15650,'audit-trail',     function(){ $('#fpAudit').classList.add('in'); }],
+    [15950,'normalize-label', function(){ $('#fpAct').classList.add('in'); }],
+    [16600,'cursor-to-cta',   function(){ cursorTo('#toRecon', 900); }],
+    [17900,'click-cta',       function(){
+          cursorClick();
+          const b=$('#toRecon'); b.className='btn busy'; b.textContent='대조 검증 준비 중…';
+          $('#stQueue').textContent='대조 대기 1건';
+        }],
+    [18700,'handoff',         function(){
+          $('#stFlow').textContent='커밋먼트 원장 대조 시작 · Hikari Growth Fund III';
+        }],
+  ];
+
+  return { beats:beats, reset:reset, enter:enterState };
+})();
+
+/* ───────────────────────────────────────────────────────────────
+   ACT 2 — 커밋먼트 대조 및 검증 (20 – 42s)
+   원장 레코드 로드 → 8개 항목 순차 대조 → 7건 통과
+   → 지급 계좌 변경 예외 1건 → 원문 역추적 → 검토 요청 발송
+   ─────────────────────────────────────────────────────────────── */
+
+// 대조 요약 타일
+const A2_TILES=[
+  { k:'커밋먼트 총액',  v:2000000000, badge:['ok','일치'],
+    sub:'원장 <b>2,000,000,000</b> · 문서 <b>2,000,000,000</b>' },
+  { k:'누적 청구 (금회 포함)', v:1300000000, badge:['','갱신 예정'],
+    sub:'기존 <b>1,120,000,000</b> + 금회 <b>180,000,000</b>' },
+  { k:'금회 캐피탈 콜', v:180000000, badge:['ok','스케줄 부합'],
+    sub:'조합계약 §8.2 · 통지일 2026-08-20' },
+  { k:'잔여 커밋먼트',  v:880000000, badge:['','갱신 대기'], upd:true,
+    sub:'원장 <b>880,000,000</b> → 갱신 후 <b>700,000,000</b>' },
+];
+
+// 대조 항목 8건 (7 통과 + 1 예외)
+const A2_CHECKS=[
+  { n:'펀드 동일성',      a:'Hikari Growth Fund III',       b:'同一 · 계약 ID HG3-ALD-002' },
+  { n:'투자자 엔티티',    a:'Alder Capital Asia Pte. Ltd.', b:'一致 · 법인명 표기 정규화' },
+  { n:'커밋먼트 총액',    a:'JPY 2,000,000,000',            b:'JPY 2,000,000,000', mono:true },
+  { n:'통화',             a:'JPY',                          b:'日本円（JPY）', jp:true },
+  { n:'이전 자본거래 누적',a:'JPY 1,120,000,000 (6회)',      b:'JPY 1,120,000,000', mono:true },
+  { n:'잔여 커밋먼트 산식',a:'예상 JPY 700,000,000',         b:'JPY 700,000,000 · 산식 일치', mono:true },
+  { n:'납입 기일',        a:'통지일 +15영업일 이내',         b:'2026-09-04 (금) · 적합' },
+  { n:'지급 계좌',        a:'三菱UFJ銀行 普通 1902-33••••',  b:'みずほ銀行 普通 2841-77••••',
+    jp:true, fail:true },
+];
+
+ACTS[2]=(function(){
+  let built=false;
+
+  function build(){
+    if(built)return; built=true;
+    const tw=$('#a2Tiles');
+    A2_TILES.forEach(function(t,i){
+      const d=el('div','a2-t'+(t.upd?' upd':'')); d.dataset.i=i;
+      d.innerHTML='<div class="r1"><span class="k">'+t.k+'</span><span class="spacer"></span>'+
+        '<span class="pill kr '+(t.badge[0]==='ok'?'ok':'')+'">'+t.badge[1]+'</span></div>'+
+        '<div class="v"><small>JPY</small><span class="num">'+t.v.toLocaleString('en-US')+'</span></div>'+
+        '<div class="sub">'+t.sub+'</div>';
+      tw.appendChild(d);
+    });
+    const cw=$('#a2Checks');
+    A2_CHECKS.forEach(function(c,i){
+      const r=el('div','ck'); r.dataset.ck=i;
+      r.innerHTML='<span class="idx">'+('0'+(i+1)).slice(-2)+'</span>'+
+        '<span class="nm">'+c.n+'</span>'+
+        '<span class="a'+(c.mono?' mono':'')+'">'+c.a+'</span>'+
+        '<span class="b'+(c.mono?' mono':'')+(c.jp?' jp':'')+'">'+c.b+'</span>'+
+        '<span class="rs"><span class="dots">···</span>'+
+          '<span class="verdict ok">✓ 일치</span>'+
+          '<span class="verdict no">! 검토 필요</span></span>';
+      cw.appendChild(r);
+    });
+  }
+
+  function reset(){
+    build();
+    $$('#a2Tiles .a2-t').forEach(function(t,i){
+      t.classList.remove('in');
+      t.querySelector('.num').textContent=A2_TILES[i].v.toLocaleString('en-US');
+      const p=t.querySelector('.pill');
+      p.className='pill kr'+(A2_TILES[i].badge[0]==='ok'?' ok':'');
+      p.textContent=A2_TILES[i].badge[1];
+    });
+    $$('#a2Checks .ck').forEach(function(r){ r.classList.remove('run','pass','fail'); });
+    $('#a2Prog').textContent='0 / 8';
+    $('#a2Sum').textContent='통과 0 · 예외 0';
+    $('#a2State').textContent='대조 실행 중'; $('#a2State').className='pill kr';
+    $('#a2Bank').classList.remove('flag');
+    $('#a2Exc').classList.remove('in');
+    $$('#a2Exc .a2-cmp tbody tr').forEach(function(r){ r.classList.remove('in'); });
+    $$('#a2Exc .a2-risk .r').forEach(function(r){ r.classList.remove('in'); });
+    $('#a2Rec').classList.remove('in','sent-on');
+    const b=$('#a2Send'); b.className='btn crit sm'; b.textContent='검토 요청 발송';
+    $$('#a2Upd .ur').forEach(function(r){ r.classList.remove('in'); });
+    $('#a2Band').classList.remove('in');
+    $('#a2Msg').classList.remove('msg-on');
+    $('#a2Zt').textContent='0'; $('#a2Zp').textContent='0'; $('#a2Ze').textContent='0';
+  }
+
+  function enterState(){ cursorPut(1790,1000); }
+
+  let pass=0, exc=0;
+  function runCheck(i){
+    const r=$('#a2Checks .ck[data-ck="'+i+'"]');
+    if(!r)return;
+    r.classList.add('run');
+    $('#a2Prog').textContent=(i+1)+' / 8';
+  }
+  function resolveCheck(i){
+    const c=A2_CHECKS[i], r=$('#a2Checks .ck[data-ck="'+i+'"]');
+    if(!r)return;
+    r.classList.remove('run');
+    r.classList.add(c.fail?'fail':'pass');
+    if(c.fail){ exc++; $('#a2Bank').classList.add('flag'); }
+    else pass++;
+    $('#a2Sum').textContent='통과 '+pass+' · 예외 '+exc;
+    $('#a2Zt').textContent=String(pass+exc);
+    $('#a2Zp').textContent=String(pass);
+    $('#a2Ze').textContent=String(exc);
+  }
+
+  const beats=[
+    [    0,'a2-enter', function(){
+          pass=0; exc=0;
+          $('#stFlow').textContent='커밋먼트 원장 대조 · Hikari Growth Fund III (CC-07)';
+          $('#stQueue').textContent='대조 진행 1건';
+        }],
+    [  600,'tile-1', function(){ $$('#a2Tiles .a2-t')[0].classList.add('in'); }],
+    [  760,'tile-2', function(){ $$('#a2Tiles .a2-t')[1].classList.add('in'); }],
+    [  920,'tile-3', function(){ $$('#a2Tiles .a2-t')[2].classList.add('in'); }],
+    [ 1080,'tile-4', function(){ $$('#a2Tiles .a2-t')[3].classList.add('in'); }],
+    [ 1500,'band-in', function(){ $('#a2Band').classList.add('in'); }],   // 캡션 상시 노출
+
+    // ── 대조 항목으로 카메라 진입 (확대 후 아래로 훑어 내림) ──
+    [ 1900,'cam-ck-in', function(){ camZoomTop('#a2CkCard', 2.15, 700); }],
+
+    // 8개 항목 순차 대조 (조회 → 판정)
+    [ 2100,'ck-1-run',  function(){ runCheck(0); }],
+    [ 2660,'ck-1-done', function(){ resolveCheck(0); }],
+    [ 2700,'cam-ck-pan', function(){ camPanBottom('#a2CkCard', 7100, 'linear', .80); }],
+    [ 3150,'ck-2-run',  function(){ runCheck(1); }],
+    [ 3700,'ck-2-done', function(){ resolveCheck(1); }],
+    [ 4200,'ck-3-run',  function(){ runCheck(2); }],
+    [ 4750,'ck-3-done', function(){ resolveCheck(2); }],
+    [ 5250,'ck-4-run',  function(){ runCheck(3); }],
+    [ 5800,'ck-4-done', function(){ resolveCheck(3); }],
+    [ 6300,'ck-5-run',  function(){ runCheck(4); }],
+    [ 6850,'ck-5-done', function(){ resolveCheck(4); }],
+    [ 7350,'ck-6-run',  function(){ runCheck(5); }],
+    [ 7900,'ck-6-done', function(){ resolveCheck(5); }],
+    [ 8400,'ck-7-run',  function(){ runCheck(6); }],
+    [ 8950,'ck-7-done', function(){ resolveCheck(6); }],
+    [ 9500,'ck-8-run',  function(){ runCheck(7); }],
+    [10300,'ck-8-exception', function(){
+          resolveCheck(7);
+          $('#a2State').textContent='예외 1건 발견'; $('#a2State').className='pill critp kr';
+          $('#stFlow').textContent='대조 8항목 · 통과 7 · 예외 1 — 지급 계좌 변경 감지';
+        }],
+
+    // 예외 확인 후 원래 화면으로 복귀
+    [10500,'cam-ck-out', function(){ camReset(820); }],
+
+    // 예외 상세 + 원문 역추적
+    [10800,'exc-panel-in', function(){ $('#a2Exc').classList.add('in'); }],
+    [11500,'exc-trace-wire', function(){
+          const src=$('#a2Checks .ck[data-ck="7"] .b');
+          drawWire(src, $('#a2Snip'), {keep:true, crit:true});
+        }],
+    [11900,'cmp-row-1', function(){ $('#a2Exc .a2-cmp tr[data-cmp="0"]').classList.add('in'); }],
+    [12080,'cmp-row-2', function(){ $('#a2Exc .a2-cmp tr[data-cmp="1"]').classList.add('in'); }],
+    [12260,'cmp-row-3', function(){ $('#a2Exc .a2-cmp tr[data-cmp="2"]').classList.add('in'); }],
+    [12440,'cmp-row-4', function(){ $('#a2Exc .a2-cmp tr[data-cmp="3"]').classList.add('in'); }],
+    [13100,'risk-1', function(){ $('#a2Exc .r[data-risk="0"]').classList.add('in'); }],
+    [13400,'risk-2', function(){ $('#a2Exc .r[data-risk="1"]').classList.add('in'); }],
+    [13700,'risk-3', function(){ $('#a2Exc .r[data-risk="2"]').classList.add('in'); }],
+    [14300,'recommend-in', function(){ $('#a2Rec').classList.add('in'); }],
+
+    // 원장 갱신 (잔여 커밋먼트) — 지급 지시는 보류
+    [15100,'ledger-update', function(){
+          const t=$$('#a2Tiles .a2-t')[3];
+          countTo(t.querySelector('.num'), 880000000, 700000000, 1000);
+          const p=t.querySelector('.pill'); p.className='pill ok kr'; p.textContent='갱신 완료';
+          $('#a2Upd .ur[data-ur="1"]').classList.add('in');
+        }],
+    [15400,'tile2-update', function(){
+          const t=$$('#a2Tiles .a2-t')[1];
+          const p=t.querySelector('.pill'); p.className='pill ok kr'; p.textContent='반영 완료';
+          $('#a2Upd .ur[data-ur="0"]').classList.add('in');
+        }],
+    [15700,'payment-hold', function(){ $('#a2Upd .ur[data-ur="2"]').classList.add('in'); }],
+
+    // 검토 요청 발송
+    [16200,'cursor-to-send', function(){ cursorTo('#a2Send', 950); }],
+    [17500,'click-send', function(){
+          cursorClick();
+          const b=$('#a2Send'); b.className='btn done sm'; b.textContent='✓ 검토 요청 발송됨';
+          $('#a2Rec').classList.add('sent-on');
+          $('#a2State').textContent='검토 대기'; $('#a2State').className='pill warnp kr';
+          $('#stQueue').textContent='검토 대기 1건';
+          $('#stFlow').textContent='예외 EXC-2026-0193 등록 · 감사 로그 기록 · 지급 지시 보류';
+        }],
+    [18400,'cursor-out', function(){ cursorTo({x:1120,y:1010}, 900); }],
+    [19000,'summary-msg', function(){ $('#a2Msg').classList.add('msg-on'); }],
+    [20600,'to-act3-hint', function(){
+          $('#stFlow').textContent='검증 데이터 → GP 관계 그래프 반영 중';
+        }],
+  ];
+
+  return { beats:beats, reset:reset, enter:enterState };
+})();
+
+/* ───────────────────────────────────────────────────────────────
+   ACT 3 — GP 관계 인텔리전스 (42 – 65s)
+   추출·검증된 데이터로 관계 그래프 자생성 → 인사이트 2건
+   (인물의 前 소속 펀드 / 포트폴리오 중복 노출) → GP 선택 → 상세 패널
+   ─────────────────────────────────────────────────────────────── */
+
+// 노드 (좌표 = 캔버스 1128×860 상의 중심점, 전부 가상 엔티티)
+const A3_NODES=[
+  { id:'alder', t:'lp', x:118, y:430, n:'Alder Capital',            s:'Asia Pte. Ltd. · LP' },
+  { id:'srp',   t:'gp', x:372, y:195, n:'Sakura Ridge Partners',    s:'GP · 도쿄 · 펀드 2' },
+  { id:'nav',   t:'gp', x:372, y:485, n:'Northstar Asia Ventures',  s:'GP · 싱가포르 · 펀드 1' },
+  { id:'mpm',   t:'gp', x:372, y:745, n:'Meridian Private Markets', s:'GP · 홍콩 · 펀드 1' },
+  { id:'hg3',   t:'fd', x:650, y:140, n:'Hikari Growth Fund III',   s:'커밋 ¥2,000M · 잔여 ¥700M' },
+  { id:'srf2',  t:'fd', x:650, y:290, n:'Sakura Ridge Fund II',     s:'커밋 ¥1,450M · 잔여 ¥570M' },
+  { id:'naf4',  t:'fd', x:650, y:485, n:'Northstar Asia Fund IV',   s:'커밋 ¥1,800M · 잔여 ¥940M' },
+  { id:'mac1',  t:'fd', x:650, y:745, n:'Meridian Asia Credit I',   s:'커밋 ¥1,200M · 잔여 ¥300M' },
+  { id:'koba',  t:'pr', x:940, y:62,  n:'小林 真希',                s:'IR 담당',  av:'小' },
+  { id:'yama',  t:'pr', x:940, y:155, n:'山下 恭平',                s:'대표 파트너', av:'山' },
+  { id:'kiyo',  t:'co', x:940, y:392, n:'Kiyomizu Holdings',        s:'포트폴리오 · 산업재' },
+  { id:'tsu',   t:'co', x:940, y:522, n:'Tsurumi Robotics',         s:'포트폴리오 · 로보틱스' },
+  { id:'yots',  t:'co', x:940, y:745, n:'Yotsuba Logistics',        s:'포트폴리오 · 물류' },
+];
+
+// 엣지 (arc:'up' 은 위로 크게 우회 — 펀드 노드 회피)
+const A3_EDGES=[
+  { a:'alder', b:'srp',  l:'커밋먼트 2건 · ¥3,450M' },
+  { a:'alder', b:'nav',  l:'커밋먼트 1건 · ¥1,800M' },
+  { a:'alder', b:'mpm',  l:'커밋먼트 1건 · ¥1,200M' },
+  { a:'srp',   b:'hg3'  },
+  { a:'srp',   b:'srf2' },
+  { a:'nav',   b:'naf4' },
+  { a:'mpm',   b:'mac1' },
+  { a:'srp',   b:'koba', arc:'up', ay:10 },
+  { a:'srp',   b:'yama', arc:'up', ay:40 },
+  { a:'hg3',   b:'kiyo', dbl:true },
+  { a:'naf4',  b:'kiyo', dbl:true },
+  { a:'naf4',  b:'tsu'  },
+  { a:'mac1',  b:'yots' },
+  { a:'yama',  b:'naf4', ins:true, l:'前 소속 · 2015–2019', lo:[26,34] },
+];
+
+// Sakura Ridge 선택 시 강조 대상
+const A3_FOCUS={
+  nodes:['alder','srp','hg3','srf2','koba','yama','kiyo','naf4'],
+  edges:[0,3,4,7,8,9,10,13],
+};
+
+ACTS[3]=(function(){
+  const gEl=$('#g3'), svg=$('#g3 svg');
+  let built=false, nodeEl={}, edgeEl=[], labelEl=[];
+
+  function build(){
+    if(built)return; built=true;
+    // 엣지 먼저 (SVG)
+    const at={}; A3_NODES.forEach(function(n){ at[n.id]=n; });
+    A3_EDGES.forEach(function(e,i){
+      const a=at[e.a], b=at[e.b];
+      const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+      let d;
+      if(e.arc==='up'){
+        d='M'+a.x+','+a.y+' C'+(a.x+150)+','+e.ay+' '+(b.x-160)+','+e.ay+' '+b.x+','+b.y;
+      } else {
+        const dx=(b.x-a.x)*.45;
+        d='M'+a.x+','+a.y+' C'+(a.x+dx)+','+a.y+' '+(b.x-dx)+','+b.y+' '+b.x+','+b.y;
+      }
+      p.setAttribute('d',d);
+      if(e.ins)p.classList.add('ins');
+      if(e.dbl)p.classList.add('dbl');
+      svg.appendChild(p);
+      const len=p.getTotalLength?p.getTotalLength():600;
+      p.style.setProperty('--len',(len||600).toFixed(0));
+      edgeEl.push(p);
+      // 엣지 라벨
+      if(e.l){
+        const mid=p.getPointAtLength?p.getPointAtLength(len*.5):{x:(a.x+b.x)/2,y:(a.y+b.y)/2};
+        const L=el('div','e3l'+(e.ins?' ins':''),e.l);
+        L.style.left=(mid.x+(e.lo?e.lo[0]:0))+'px';
+        L.style.top =(mid.y+(e.lo?e.lo[1]:0))+'px';
+        L.dataset.e=i;
+        gEl.appendChild(L); labelEl[i]=L;
+      }
+    });
+    // 노드
+    A3_NODES.forEach(function(n){
+      const d=el('div','n3 '+n.t);
+      d.style.left=n.x+'px'; d.style.top=n.y+'px';
+      d.dataset.id=n.id;
+      d.innerHTML=(n.av?'<span class="av">'+n.av+'</span>':'')+
+        '<div><div class="nn">'+n.n+'</div><div class="ns">'+n.s+'</div></div>';
+      gEl.appendChild(d); nodeEl[n.id]=d;
+    });
+  }
+
+  function reset(){
+    build();
+    gEl.classList.remove('focus');
+    A3_NODES.forEach(function(n){
+      nodeEl[n.id].classList.remove('in','sel','hi','warn'); });
+    edgeEl.forEach(function(p){ p.classList.remove('drawn','hi','on'); });
+    labelEl.forEach(function(L){ if(L)L.classList.remove('in','hi'); });
+    $('#a3Ins1').classList.remove('in');
+    $('#a3Ins2').classList.remove('in');
+    $('#a3Stats').classList.remove('in');
+    $('#a3Msg').classList.remove('in');
+    $('#a3Cnt').textContent='노드 0 · 엣지 0';
+    $('#a3Empty').style.display='';
+    $('#a3Body').classList.remove('on');
+    $$('#a3Body .blk').forEach(function(b){ b.classList.remove('in'); });
+    $('#a3PState').textContent='미선택'; $('#a3PState').className='pill kr';
+    $('#a3Cc07').classList.remove('hot');
+  }
+
+  function enterState(){ cursorPut(560,880); }
+
+  let nc=0, ec=0;
+  function addNode(id){
+    if(!nodeEl[id])return;
+    nodeEl[id].classList.add('in'); nc++;
+    $('#a3Cnt').textContent='노드 '+nc+' · 엣지 '+ec;
+  }
+  function addEdge(i){
+    const p=edgeEl[i]; if(!p)return;
+    p.classList.add('drawn'); ec++;
+    if(labelEl[i]) Demo.after(360,function(){ labelEl[i].classList.add('in'); });
+    $('#a3Cnt').textContent='노드 '+nc+' · 엣지 '+ec;
+  }
+
+  const beats=[
+    [    0,'a3-enter', function(){
+          nc=0; ec=0;
+          $('#stFlow').textContent='GP 관계 그래프 생성 · 검증 완료 문서 12건';
+          $('#stQueue').textContent='검토 대기 1건';
+        }],
+    [  400,'hub-alder',  function(){ addNode('alder'); }],
+    [  900,'gp-1', function(){ addNode('srp');  addEdge(0); }],
+    [ 1150,'gp-2', function(){ addNode('nav');  addEdge(1); }],
+    [ 1400,'gp-3', function(){ addNode('mpm');  addEdge(2); }],
+    [ 2000,'fd-1', function(){ addNode('hg3');  addEdge(3); }],
+    [ 2260,'fd-2', function(){ addNode('srf2'); addEdge(4); }],
+    [ 2520,'fd-3', function(){ addNode('naf4'); addEdge(5); }],
+    [ 2780,'fd-4', function(){ addNode('mac1'); addEdge(6); }],
+    [ 3300,'pr-1', function(){ addNode('koba'); addEdge(7); }],
+    [ 3560,'pr-2', function(){ addNode('yama'); addEdge(8); }],
+    [ 4100,'co-1', function(){ addNode('kiyo'); addEdge(9);  }],
+    [ 4360,'co-2', function(){ addEdge(10); }],
+    [ 4620,'co-3', function(){ addNode('tsu');  addEdge(11); }],
+    [ 4880,'co-4', function(){ addNode('yots'); addEdge(12); }],
+    [ 5400,'graph-done', function(){
+          $('#a3Stats').classList.add('in');
+          $('#stFlow').textContent='노드 13 · 엣지 14 — 문서에서 자동 생성';
+        }],
+
+    // 인사이트 1 — 인물의 前 소속 펀드
+    [ 6000,'insight-1-edge', function(){
+          addEdge(13);
+          nodeEl['yama'].classList.add('sel');
+        }],
+    [ 6600,'insight-1-chip', function(){ $('#a3Ins1').classList.add('in'); }],
+
+    // 인사이트 2 — 포트폴리오 중복 노출
+    [ 8000,'insight-2-edges', function(){
+          $('#a3Ins1').classList.remove('in');       // 인사이트는 순차 노출
+          nodeEl['yama'].classList.remove('sel');
+          edgeEl[9].classList.add('on'); edgeEl[10].classList.add('on');
+          nodeEl['kiyo'].classList.add('warn');
+        }],
+    [ 8500,'insight-2-chip', function(){
+          $('#a3Ins2').classList.add('in');
+          $('#stFlow').textContent='포트폴리오 중복 노출 1건 · GP 2사 / 펀드 2개 → Kiyomizu Holdings';
+        }],
+
+    // GP 선택 → 상세 패널
+    [10000,'cursor-to-gp', function(){ cursorTo(nodeEl['srp'], 1000); }],
+    [11300,'click-gp', function(){
+          cursorClick();
+          $('#a3Ins1').classList.remove('in');
+          $('#a3Ins2').classList.remove('in');
+          nodeEl['kiyo'].classList.remove('warn');
+          edgeEl[9].classList.remove('on'); edgeEl[10].classList.remove('on');
+          // 포커스 모드 — 선택 GP 와 연결된 엔티티만 강조
+          A3_FOCUS.nodes.forEach(function(id){ nodeEl[id].classList.add('hi'); });
+          A3_FOCUS.edges.forEach(function(i){
+            edgeEl[i].classList.add('hi');
+            if(labelEl[i])labelEl[i].classList.add('hi'); });
+          nodeEl['srp'].classList.add('sel');
+          gEl.classList.add('focus');
+          $('#a3Empty').style.display='none';
+          $('#a3Body').classList.add('on');
+          $('#a3PState').textContent='Sakura Ridge Partners';
+          $('#a3PState').className='pill new kr';
+          $('#stFlow').textContent='GP 프로파일 조회 · Sakura Ridge Partners K.K.';
+        }],
+    [11700,'blk-0', function(){ $('#a3Body .blk[data-blk="0"]').classList.add('in'); }],
+    [12100,'blk-1', function(){ $('#a3Body .blk[data-blk="1"]').classList.add('in'); }],
+    [12700,'blk-2', function(){ $('#a3Body .blk[data-blk="2"]').classList.add('in'); }],
+    [13200,'blk-3', function(){ $('#a3Body .blk[data-blk="3"]').classList.add('in'); }],
+    [13700,'blk-4', function(){ $('#a3Body .blk[data-blk="4"]').classList.add('in'); }],
+    [14300,'blk-5', function(){ $('#a3Body .blk[data-blk="5"]').classList.add('in'); }],
+    [14800,'blk-6', function(){ $('#a3Body .blk[data-blk="6"]').classList.add('in'); }],
+
+    // ACT2 예외와의 연결을 시각적으로 되짚기
+    [15600,'cursor-to-cc07', function(){ cursorTo('#a3Cc07', 900, {ox:120}); }],
+    [16600,'highlight-cc07', function(){
+          $('#a3Cc07').classList.add('hot');
+          $('#stFlow').textContent='CC-07 예외 EXC-2026-0193 — GP 관계 레코드에 연결됨';
+        }],
+    [18000,'cursor-park', function(){ cursorTo({x:700,y:930}, 900); }],
+    [18600,'closing-msg', function(){ $('#a3Msg').classList.add('in'); }],
+    [21000,'to-act4-hint', function(){
+          $('#stFlow').textContent='관계 인텔리전스 준비 완료 · 외부 연동 계층 대기';
+        }],
+  ];
+
+  return { beats:beats, reset:reset, enter:enterState };
+})();
+
+/* ───────────────────────────────────────────────────────────────
+   ACT 4 — 내장형 인텔리전스 · API + MCP (65 – 88s)  ★ 전략적 정점
+   인앱 연동 콘솔 → 화면을 뒤로 당겨 3계층 아키텍처 노출
+   → API 경로(구조화 데이터) → MCP 경로(사내 AI) → 전략 메시지
+   ─────────────────────────────────────────────────────────────── */
+ACTS[4]=(function(){
+
+  function reset(){
+    $$('#act4 .a4-c').forEach(function(c){ c.classList.remove('in'); });
+    $$('#act4 .a4-log tbody tr').forEach(function(r){ r.classList.remove('in'); });
+    $('#a4McpRow').classList.remove('sel');
+    // 오버레이
+    $('#p4Eye').classList.remove('in');
+    ['p4L1','p4L2','p4L3'].forEach(function(id){ $('#'+id).classList.remove('in'); });
+    ['p4ArApi','p4ArMcp','p4ArData'].forEach(function(id){
+      $('#'+id).classList.remove('in','on'); });
+    $('#p4Api').classList.remove('in');
+    $('#p4Mcp').classList.remove('in');
+    $('#p4Idle').classList.remove('gone');
+    $$('#p4ApiCode .ln, #p4ApiCode .st').forEach(function(l){ l.classList.remove('in'); });
+    $('#p4Consume').classList.remove('in');
+    $$('#p4Mcp .p4-msg').forEach(function(m){ m.classList.remove('in'); });
+    $$('#p4Mcp .p4-ans li').forEach(function(l){ l.classList.remove('in'); });
+    $('#p4Src').classList.remove('in');
+    $('#p4Msg1').classList.remove('in');
+    $('#p4Steps').classList.remove('in');
+    $$('#p4Steps .s').forEach(function(s,i){ s.classList.toggle('on', i===0); });
+  }
+
+  function enterState(){ cursorPut(700,560); }
+
+  const beats=[
+    [    0,'a4-enter', function(){
+          $('#stFlow').textContent='연동 계층 · REST API + MCP 서버 가동 중';
+          $('#stQueue').textContent='최근 24시간 호출 1,284건';
+        }],
+    [  250,'console-1', function(){ $('#act4 .a4-c[data-c="0"]').classList.add('in'); }],
+    [  450,'console-2', function(){ $('#act4 .a4-c[data-c="2"]').classList.add('in'); }],
+    [  650,'console-3', function(){ $('#act4 .a4-c[data-c="1"]').classList.add('in'); }],
+    [  850,'console-4', function(){ $('#act4 .a4-c[data-c="3"]').classList.add('in'); }],
+    [ 1000,'log-stream', function(){
+          $$('#act4 .a4-log tbody tr').forEach(function(r,i){
+            Demo.after(i*95, function(){ r.classList.add('in'); });
+          });
+        }],
+    [ 1800,'cursor-to-mcp-row', function(){ cursorTo('#a4McpRow', 800, {align:'left',ox:80}); }],
+    [ 2500,'click-mcp-row', function(){
+          cursorClick(); $('#a4McpRow').classList.add('sel');
+          $('#stFlow').textContent='MCP 서버 · 노출 도구 14종 · 소비 주체 Alder 사내 AI';
+        }],
+
+    // ── 화면을 뒤로 당긴다 (전략 전환) ──
+    [ 3100,'PULLBACK', function(){
+          cursorHide();
+          setPullback(true);
+          $('#stFlow').textContent='Treasurer 인텔리전스 레이어 · Alder 기존 환경에 내장';
+        }],
+    [ 3900,'arch-eyebrow', function(){ $('#p4Eye').classList.add('in'); }],
+    [ 4200,'arch-l1', function(){ $('#p4L1').classList.add('in'); }],
+    [ 4550,'arch-l2', function(){ $('#p4L2').classList.add('in'); }],
+    [ 4900,'arch-l3', function(){ $('#p4L3').classList.add('in'); }],
+    [ 5300,'arch-arrows', function(){
+          $('#p4ArApi').classList.add('in');
+          $('#p4ArMcp').classList.add('in');
+          $('#p4ArData').classList.add('in');
+        }],
+
+    // ── 경로 1: API ──
+    [ 5900,'api-panel', function(){ $('#p4Api').classList.add('in'); }],
+    [ 6400,'mcp-panel', function(){ $('#p4Mcp').classList.add('in'); }],
+    [ 7000,'api-path-on', function(){
+          $('#p4ArApi').classList.add('on');
+          $('#p4ApiCode .ln[data-a="0"]').classList.add('in');
+        }],
+    [ 7350,'api-auth', function(){ $('#p4ApiCode .ln[data-a="1"]').classList.add('in'); }],
+    [ 7800,'api-200',  function(){ $('#p4ApiCode .st[data-a="2"]').classList.add('in'); }],
+    [ 8150,'api-json-1',  function(){ $('#p4ApiCode .ln[data-a="3"]').classList.add('in'); }],
+    [ 8300,'api-json-2',  function(){ $('#p4ApiCode .ln[data-a="4"]').classList.add('in'); }],
+    [ 8460,'api-json-3',  function(){ $('#p4ApiCode .ln[data-a="5"]').classList.add('in'); }],
+    [ 8620,'api-json-4',  function(){ $('#p4ApiCode .ln[data-a="6"]').classList.add('in'); }],
+    [ 8790,'api-json-5',  function(){ $('#p4ApiCode .ln[data-a="7"]').classList.add('in'); }],
+    [ 8960,'api-json-6',  function(){ $('#p4ApiCode .ln[data-a="8"]').classList.add('in'); }],
+    [ 9700,'api-consume', function(){
+          $('#p4Consume').classList.add('in');
+          $('#stFlow').textContent='API 응답 142ms · Alder 포트폴리오 운용 시스템에 반영';
+        }],
+
+    // ── 경로 2: MCP ──
+    [10900,'mcp-path-on', function(){
+          $('#p4ArApi').classList.remove('on');
+          $('#p4ArMcp').classList.add('on');
+        }],
+    // ── MCP 대화로 카메라 진입 (타이핑되는 내용 확대) ──
+    [11050,'cam-mcp-in', function(){ camZoomEl('#p4Mcp', 0.90, 820); }],
+    [11200,'mcp-question', function(){
+          $('#p4Idle').classList.add('gone');
+          $('#p4Mcp .p4-msg[data-m="0"]').classList.add('in');
+        }],
+    [12200,'mcp-tool-call', function(){
+          $('#p4Mcp .p4-msg[data-m="1"]').classList.add('in');
+          $('#stFlow').textContent='MCP 도구 3종 호출 · Treasurer 검증 데이터 조회';
+        }],
+    [13200,'mcp-answer-head', function(){ $('#p4Mcp .p4-msg[data-m="2"]').classList.add('in'); }],
+    [13500,'mcp-b-1', function(){ $('#p4Mcp .p4-ans li[data-b="0"]').classList.add('in'); }],
+    [13900,'mcp-b-2', function(){ $('#p4Mcp .p4-ans li[data-b="1"]').classList.add('in'); }],
+    [14300,'mcp-b-3', function(){ $('#p4Mcp .p4-ans li[data-b="2"]').classList.add('in'); }],
+    [14700,'mcp-b-4', function(){ $('#p4Mcp .p4-ans li[data-b="3"]').classList.add('in'); }],
+    [15100,'mcp-b-5', function(){ $('#p4Mcp .p4-ans li[data-b="4"]').classList.add('in'); }],
+    [15600,'mcp-src', function(){
+          $('#p4Src').classList.add('in');
+          $('#stFlow').textContent='답변은 Alder 환경 안에서 반환 — 화면 이동 없음';
+        }],
+    [15950,'cam-mcp-out', function(){ camReset(840); }],
+    [16300,'both-paths-on', function(){ $('#p4ArApi').classList.add('on'); }],
+
+    // ── 전략 메시지 ──
+    [17200,'strategic-msg', function(){ $('#p4Msg1').classList.add('in'); }],
+    [19000,'steps-in', function(){ $('#p4Steps').classList.add('in'); }],
+    [20000,'step-2', function(){ $$('#p4Steps .s')[1].classList.add('on'); }],
+    [20700,'step-3', function(){ $$('#p4Steps .s')[2].classList.add('on'); }],
+    [21400,'a4-close', function(){
+          $('#stFlow').textContent='파일럿 → 검증 → 연동';
+        }],
+  ];
+
+  return { beats:beats, reset:reset, enter:enterState };
+})();
+
+/* ───────────────────────────────────────────────────────────────
+   ACT 5 — 파일럿에서 인프라로 (88 – 100s)
+   요약 체인 → 파일럿/연동/인프라 3단계 → 마감 프레임 (정지 후 유지)
+   ─────────────────────────────────────────────────────────────── */
+ACTS[5]=(function(){
+  const fin=$('#finale');
+
+  function reset(){
+    fin.classList.remove('in');
+    $('#fA').classList.remove('out');
+    $('#fEye').classList.remove('in');
+    $$('#fA .f-ch').forEach(function(c){ c.classList.remove('in'); });
+    $$('#fA .f-ar').forEach(function(a){ a.classList.remove('in'); });
+    $$('#fA .f-st').forEach(function(s){ s.classList.remove('in','hi'); });
+    $$('#fA .f-sar').forEach(function(a){ a.classList.remove('in'); });
+    $('#fProp').classList.remove('in');
+    $('#fB').classList.remove('in');
+    $('#fLock').classList.remove('in');
+    $('#fTag').classList.remove('in');
+    $('#fThree').classList.remove('in');
+    $('#fFic').classList.remove('in');
+  }
+
+  function enterState(){ cursorHide(); }
+
+  const beats=[
+    [    0,'a5-enter', function(){
+          fin.classList.add('in');
+          $('#stFlow').textContent='요약 · 파일럿에서 인프라로';
+          $('#stQueue').textContent='데모 마감';
+        }],
+    [  400,'eyebrow', function(){ $('#fEye').classList.add('in'); }],
+
+    // 요약 체인
+    [  850,'chain-1', function(){ $('#fA .f-ch[data-c="0"]').classList.add('in'); }],
+    [ 1080,'chain-a1',function(){ $('#fA .f-ar[data-a="0"]').classList.add('in'); }],
+    [ 1200,'chain-2', function(){ $('#fA .f-ch[data-c="1"]').classList.add('in'); }],
+    [ 1430,'chain-a2',function(){ $('#fA .f-ar[data-a="1"]').classList.add('in'); }],
+    [ 1550,'chain-3', function(){ $('#fA .f-ch[data-c="2"]').classList.add('in'); }],
+    [ 1780,'chain-a3',function(){ $('#fA .f-ar[data-a="2"]').classList.add('in'); }],
+    [ 1900,'chain-4', function(){ $('#fA .f-ch[data-c="3"]').classList.add('in'); }],
+    [ 2130,'chain-a4',function(){ $('#fA .f-ar[data-a="3"]').classList.add('in'); }],
+    [ 2250,'chain-5', function(){ $('#fA .f-ch[data-c="4"]').classList.add('in'); }],
+
+    // 3단계
+    [ 2900,'step-1', function(){
+          const s=$('#fA .f-st[data-s="0"]'); s.classList.add('in','hi'); }],
+    [ 3600,'step-ar-1', function(){ $('#fA .f-sar[data-r="0"]').classList.add('in'); }],
+    [ 3800,'step-2', function(){ $('#fA .f-st[data-s="1"]').classList.add('in'); }],
+    [ 4500,'step-ar-2', function(){ $('#fA .f-sar[data-r="1"]').classList.add('in'); }],
+    [ 4700,'step-3', function(){ $('#fA .f-st[data-s="2"]').classList.add('in'); }],
+    [ 5400,'pilot-scope', function(){ $('#fProp').classList.add('in'); }],
+    [ 5900,'steps-read', function(){
+          $('#stFlow').textContent='파일럿 → 연동 → 인프라';
+        }],
+
+    // 마감 프레임으로 전환 (요약 페이드 아웃)
+    [ 6900,'scene-out', function(){ $('#fA').classList.add('out'); }],
+    [ 7500,'final-in',  function(){
+          $('#fB').classList.add('in');
+          $('#fLock').classList.add('in');
+        }],
+    [ 8300,'final-tag', function(){ $('#fTag').classList.add('in'); }],
+    [ 9100,'final-three', function(){ $('#fThree').classList.add('in'); }],
+    [ 9900,'final-note',  function(){
+          $('#fFic').classList.add('in');
+          $('#stFlow').textContent='Treasurer × Alder — 데모 종료 · 마감 프레임 유지';
+        }],
+  ];
+
+  return { beats:beats, reset:reset, enter:enterState };
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   G. 무대 스케일 / 컨트롤 / 부팅
+   ═══════════════════════════════════════════════════════════════ */
+function fitStage(){
+  const k=Math.min(window.innerWidth/CFG.stage.w, window.innerHeight/CFG.stage.h);
+  stageEl.style.transform='scale('+k+')';
+}
+window.addEventListener('resize',fitStage);
+fitStage();
+
+// 진행 표시 세그먼트 (ACT 길이 비례)
+(function(){
+  const p=$('#prog');
+  CFG.acts.forEach(function(a){
+    const s=el('div','seg'); s.style.flex=a.dur; s.appendChild(el('i')); p.appendChild(s);
+  });
+})();
+
+// 컨트롤
+$('#cPlay').onclick=function(){ Demo.toggle(); };
+$('#cPrev').onclick=function(){ Demo.enter(Demo.ai-1,{keepPlaying:true}); };
+$('#cNext').onclick=function(){ Demo.enter(Demo.ai+1,{keepPlaying:true}); };
+$('#cRestart').onclick=function(){ restart(); };
+$('#cDbg').onclick=function(){ setDebug(!Demo.debug); };
+$$('#pres [data-jump]').forEach(function(b){
+  b.onclick=function(){ jump(+b.dataset.jump); };
+});
+function jump(n){
+  const i=CFG.acts.findIndex(function(a){return a.n===n;});
+  if(i<0)return;
+  Demo.enter(i); if(!Demo.playing&&Demo.started)Demo.play();
+}
+function restart(){ Demo.ended=false; Demo.enter(0); Demo.play(); }
+function setDebug(v){ Demo.debug=v; $('#dbg').classList.toggle('on',v);
+  $('#cDbg').classList.toggle('on',v); Demo.paint(); }
+
+document.addEventListener('keydown',function(e){
+  if(e.key===' '||e.code==='Space'){ e.preventDefault();
+    if(!Demo.started){ boot(); return; } Demo.toggle(); return; }
+  if(e.key==='ArrowRight'){ e.preventDefault(); Demo.enter(Demo.ai+1,{keepPlaying:true}); return; }
+  if(e.key==='ArrowLeft'){ e.preventDefault(); Demo.enter(Demo.ai-1,{keepPlaying:true}); return; }
+  if(e.key==='r'||e.key==='R'){ restart(); return; }
+  if(e.key==='d'||e.key==='D'){ setDebug(!Demo.debug); return; }
+  if(/^[1-5]$/.test(e.key)){ if(!Demo.started){ boot(+e.key); } else jump(+e.key); }
+});
+
+// 시작
+$('#startBtn').onclick=function(){ boot(); };
+function boot(actN){
+  Demo.started=true;
+  $('#intro').classList.add('gone');
+  $('#prog').classList.add('on');
+  const i=actN? CFG.acts.findIndex(function(a){return a.n===actN;}) : 0;
+  Demo.enter(i<0?0:i);
+  Demo.play();
+}
+
+/* 폰트 준비 대기 (오프라인이어도 2.5초 후 진행 — 녹화 시 폰트 스왑 방지) */
+function whenReady(fn){
+  let done=false;
+  const ok=function(){ if(done)return; done=true; fn(); };
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ setTimeout(ok,60); });
+  setTimeout(ok,2500);
+}
+
+/* ── 자기 점검(?selftest=1): 타임라인 엔진 무결성 검사 ────────
+   합성 클럭으로 전 ACT 를 끝까지 돌려 beat 누락·예외·ACT 리셋 확인 */
+function selfTest(){
+  const log=[]; let fail=0;
+  const errs=[]; const oldErr=console.error;
+  console.error=function(){ errs.push(Array.prototype.join.call(arguments,' ')); oldErr.apply(console,arguments); };
+  document.documentElement.classList.add('no-anim'); Demo.noAnim=true;
+
+  // 1) ACT 별 beat 전수 실행
+  CFG.acts.forEach(function(a,i){
+    Demo.enter(i);
+    const total=(ACTS[a.n].beats||[]).length;
+    let guard=0;
+    while(Demo.t<a.dur && guard++<100000){ Demo.t+=16; Demo.runBeats(); Demo.runTweens(16); Demo.runTasks(16); }
+    const fired=Demo.fired.size;
+    const ok=(fired===total);
+    if(!ok)fail++;
+    log.push((ok?'PASS':'FAIL')+'  ACT'+a.n+'  beats '+fired+'/'+total+'  dur '+(a.dur/1000)+'s');
+  });
+
+  // 2) ACT 전환 시 상태 리셋 확인
+  Demo.enter(0);
+  while(Demo.t<16000){ Demo.t+=16; Demo.runBeats(); }
+  const midFired=Demo.fired.size;
+  Demo.enter(1); Demo.enter(0);
+  const resetOk=(Demo.t===0 && Demo.fired.size===0 && midFired>0);
+  if(!resetOk)fail++;
+  log.push((resetOk?'PASS':'FAIL')+'  ACT 재진입 리셋  t='+Demo.t+' fired='+Demo.fired.size);
+
+  // 3) DOM 리셋 확인 (모든 ACT 에 잔상 없음)
+  const stale=$$('#board .in, #board .run, #board .pass, #board .fail, '+
+                 '#board .hot, #board .done, #board .land, #board .sel').length
+            + wiresEl.childNodes.length
+            // #board 밖의 오버레이(ACT4 풀백 / ACT5 마감)도 함께 확인
+            + $$('#pullback.in, #finale.in, #appShell.pulled, '+
+                 '#pullback .in, #finale .in').length
+            + (shellEl.style.transform?1:0)
+            + (camEl.style.transform?1:0);      // 카메라 복귀 확인
+  const domOk=(stale===0);
+  if(!domOk)fail++;
+  log.push((domOk?'PASS':'FAIL')+'  전 ACT DOM 리셋  잔상 노드 '+stale);
+
+  // 4) 총 길이
+  const durOk=(TOTAL===100000);
+  if(!durOk)fail++;
+  log.push((durOk?'PASS':'FAIL')+'  총 러닝타임 '+(TOTAL/1000)+'s');
+
+  // 5) beat 시각이 ACT 길이 안에 있는지 / 시간순인지
+  CFG.acts.forEach(function(a){
+    const bs=ACTS[a.n].beats||[]; let bad=0;
+    for(let i=0;i<bs.length;i++){
+      if(bs[i][0]>a.dur)bad++;
+      if(i>0&&bs[i][0]<bs[i-1][0])bad++;
+    }
+    if(bad)fail++;
+    log.push((bad?'FAIL':'PASS')+'  ACT'+a.n+' beat 순서/범위  위반 '+bad);
+  });
+
+  if(errs.length){ fail++; log.push('FAIL  beat 예외 '+errs.length+'건: '+errs.join(' | ')); }
+  console.error=oldErr;
+
+  const pre=el('pre'); pre.id='selftest';
+  pre.style.cssText='position:absolute;inset:0;z-index:200;background:#0d1526;color:#93c5fd;'+
+    'font-family:var(--f-mono);font-size:13px;padding:28px;line-height:1.9;white-space:pre-wrap';
+  pre.textContent='SELFTEST '+(fail?('FAILED ('+fail+')'):'OK')+'\n\n'+log.join('\n');
+  stageEl.appendChild(pre);
+}
+
+/* URL 파라미터: ?debug=1 / ?act=N / ?scrub=N,sec / ?selftest=1 */
+(function initFromUrl(){
+  const q=new URLSearchParams(location.search);
+  Demo.enter(0);                              // 초기 상태 구성
+  if(q.get('debug')==='1') setDebug(true);
+
+  if(q.get('selftest')==='1'){ whenReady(selfTest); return; }
+
+  const sc=q.get('scrub');
+  if(sc){
+    const parts=sc.split(',');
+    $('#intro').classList.add('gone'); $('#prog').classList.add('on');
+    Demo.started=true;
+    // 폰트 로드 후 스크럽해야 레이아웃(배선 좌표)이 정확
+    whenReady(function(){ Demo.scrub(+parts[0]||1, parseFloat(parts[1]||'0')); });
+    return;
+  }
+  const a=q.get('act');
+  if(a){ whenReady(function(){ boot(+a); }); return; }
+
+  // 기본: 폰트 준비 후 시작 버튼 활성
+  const b=$('#startBtn');
+  b.disabled=true; b.textContent='폰트 로딩…';
+  whenReady(function(){ b.disabled=false; b.textContent='데모 시작'; });
+})();
+</script>
+

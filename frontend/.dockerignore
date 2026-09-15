@@ -1,0 +1,43 @@
+# Build outputs and dependency caches managed inside the image —
+# copying these from the host clobbers the npm-installed
+# node_modules and produces "cannot replace directory with file"
+# overlay errors during `COPY . .`.
+node_modules
+.next
+out
+dist
+build
+
+# VCS / editor noise
+.git
+.gitignore
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Logs and runtime junk
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local env (the prod build pulls env from compose/runtime, not files)
+.env
+.env.local
+.env.*.local
+
+# Test / coverage
+coverage
+.nyc_output
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker recursion guard — never bring our own Dockerfile/dockerignore
+# back into the image.
+Dockerfile*
+.dockerignore

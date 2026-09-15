@@ -1,0 +1,653 @@
+{
+  "layer": "L3",
+  "app": "aria-reinsight",
+  "extends": "treasurer-ontology/extensions/reinsurance (L2, 재보험 중개 placing~settlement)",
+  "domain": "ARIA — 재보험 중개 특화 AI 에이전트. L2(reinsurance)의 앱 특수화: 실제 테이블·컬럼·코드값·데이터품질 함정·내부 툴·진단 프레임을 정본화. **이 파일이 ins/chat 코파일럿의 그라운딩 컨텍스트** (ontology_as_grounding).",
+  "unit_note": "금액은 원통화(origin_currency) + 환율(roe) + KRW 환산(krw_amount) 3종 병기. 지분(share)은 0~1 소수. 커버노트 번호(cover_note_no)가 계약~클레임을 관통하는 유일 키. 수치는 반드시 내부 툴(SQL)에서 산출 — LLM 은 컨텍스트 없는 수치 금지, 서술·추론만 (numbers_from_db_words_from_llm).",
+  "source_system": {
+    "origin": "고객사 Excel 원장 + 이메일 첨부(.msg/.pdf/.docx) 파싱",
+    "ingest": "app/services/importer.py (Excel), doc_parser.py + parsers/ (문서), file_scanner.py/file_tagger.py (분류)",
+    "coverage_note": "적재 시점 기준 contracts 18,006건 / claims 13,080건 / cover_notes 1,196건 / policies 4,931건. 연도 범위 ~2026. 카운트는 배치마다 변하므로 반드시 툴로 재확인할 것.",
+    "reconcile_target": "SOC(재보험사 정산서) 금액 ↔ 내부 krw_amount. 일치는 반올림 후 비교."
+  },
+  "entities": {
+    "contracts": {
+      "table": "contracts",
+      "grain": "계약 × 재보험사 1행 (한 커버노트에 재보험사 수만큼 행)",
+      "rows_at_snapshot": 18006,
+      "key": "cover_note_no + no",
+      "columns": [
+        "id",
+        "company_id",
+        "year",
+        "cont_month",
+        "no",
+        "cover_note_no",
+        "assured",
+        "project_name",
+        "line",
+        "line2",
+        "new_renew",
+        "renewable",
+        "retail",
+        "original_cedant",
+        "cedant",
+        "period_from",
+        "period_to",
+        "installment",
+        "ppw",
+        "currency",
+        "gross_prem_100",
+        "gross_prem_inst",
+        "reinsurer",
+        "share",
+        "ri_prem",
+        "ri_commission",
+        "net_ri_prem",
+        "net_ri_prem_kwon",
+        "net_to_uwr",
+        "rec_date",
+        "paid_date",
+        "co_brokerage",
+        "partner",
+        "remarks",
+        "workflow_status",
+        "assigned_to"
+      ],
+      "money_semantics": "gross_prem_100 = 100% 기준 총보험료. ri_prem ≈ gross_prem_100 × share. net_ri_prem = ri_prem − ri_commission. 재보험사별 합산 시 gross_prem_100 을 더하면 중복 — ri_prem 을 써야 한다.",
+      "settlement": "rec_date(수금) / paid_date(지급). 둘 다 NULL 이면 미정산."
+    },
+    "claims": {
+      "table": "claims",
+      "grain": "클레임 × 재보험사 1행",
+      "rows_at_snapshot": 13080,
+      "key": "ref_no (중복 탐지 키 — 유일성 보장 안 됨)",
+      "columns": [
+        "id",
+        "company_id",
+        "sheet_name",
+        "booking_month",
+        "soc_received",
+        "soc_sent",
+        "account_name",
+        "line",
+        "policy_period",
+        "dol",
+        "reinsurer",
+        "currency",
+        "total_amount",
+        "share",
+        "origin_currency",
+        "roe",
+        "krw_amount",
+        "soc_amount",
+        "cedant",
+        "status",
+        "received_date",
+        "paid_date",
+        "account_mgr",
+        "ref_no",
+        "remarks",
+        "workflow_status",
+        "assigned_to",
+        "case_id",
+        "last_transition",
+        "last_transition_at",
+        "last_diff_audit_severity"
+      ],
+      "money_semantics": "total_amount = 청구총액(원통화). krw_amount = 우리 산출 KRW 환산. soc_amount = 재보험사 SOC 상 금액. 대사 = ROUND(soc_amount) vs ROUND(krw_amount).",
+      "dol_note": "dol = date of loss(사고일). policy_period(증권기간) 밖의 dol 은 담보 범위 이슈 — 조회 시 항상 함께 볼 것."
+    },
+    "cover_notes": {
+      "table": "cover_notes",
+      "rows_at_snapshot": 1196,
+      "key": "cover_note_number",
+      "columns": [
+        "id",
+        "company_id",
+        "issuing_date",
+        "cover_note_number",
+        "assured",
+        "reassured",
+        "line",
+        "account",
+        "remarks"
+      ],
+      "note": "placing 산출물. contracts.cover_note_no 와 조인되지 않는 커버노트 = 미부킹(unbooked)."
+    },
+    "policies": {
+      "table": "policies",
+      "rows_at_snapshot": 4931,
+      "key": "cover_note_no (unique)",
+      "columns": [
+        "id",
+        "company_id",
+        "cover_note_no",
+        "assured",
+        "line",
+        "cedant",
+        "period_from",
+        "period_to",
+        "currency",
+        "total_premium",
+        "reinsurer_count",
+        "contract_count",
+        "claim_count",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "note": "cover_note_no 로 contracts 를 묶은 **집계층**. policy_builder.py 가 생성. 원장이 아니라 파생 — 불일치 시 contracts 가 정본."
+    },
+    "audit_logs": {
+      "table": "audit_logs",
+      "note": "전 레코드 변경 이력. 사람이 고친 값 vs AI 제안 구분의 근거."
+    },
+    "companies": {
+      "table": "companies",
+      "note": "테넌트. 모든 원장 테이블이 company_id 를 가진다 — 집계 시 테넌트 경계 확인."
+    }
+  },
+  "taxonomies": {
+    "line": {
+      "note": "보험종목(LOB). 담보성 종목과 계약형태가 한 컬럼에 섞여 있다 — Treaty/QS/Surplus/XOL 은 **재보험 계약형태**, Cargo/PAR/CAR/D&O/CGL/PI 등은 **원보험 종목**. 종목 분석 시 이 둘을 구분하지 않으면 오집계.",
+      "observed_top": [
+        {
+          "line": "Treaty",
+          "count": 3304,
+          "kind": "계약형태"
+        },
+        {
+          "line": "Cargo",
+          "count": 2329,
+          "kind": "종목(적하)"
+        },
+        {
+          "line": "PAR",
+          "count": 2005,
+          "kind": "종목(재산종합)"
+        },
+        {
+          "line": "Surplus",
+          "count": 1402,
+          "kind": "계약형태"
+        },
+        {
+          "line": "Package",
+          "count": 892,
+          "kind": "종목"
+        },
+        {
+          "line": "D&O",
+          "count": 801,
+          "kind": "종목(임원배상)"
+        },
+        {
+          "line": "QS",
+          "count": 691,
+          "kind": "계약형태(비례재보험)"
+        },
+        {
+          "line": "CAR",
+          "count": 635,
+          "kind": "종목(건설공사)"
+        },
+        {
+          "line": "CGL",
+          "count": 611,
+          "kind": "종목(일반배상)"
+        },
+        {
+          "line": "FO",
+          "count": 580,
+          "kind": "종목"
+        },
+        {
+          "line": "XOL",
+          "count": 396,
+          "kind": "계약형태(초과손해액)"
+        },
+        {
+          "line": "PI",
+          "count": 376,
+          "kind": "종목(전문인배상)"
+        }
+      ]
+    },
+    "contract_workflow_status": {
+      "sequence": [
+        "booked",
+        "analyzed",
+        "draft_ready",
+        "sent_to_reinsurer",
+        "payment_received",
+        "completed"
+      ],
+      "observed": [
+        {
+          "completed": 11577
+        },
+        {
+          "sent_to_reinsurer": 6066
+        },
+        {
+          "payment_received": 184
+        },
+        {
+          "booked": 179
+        }
+      ],
+      "note": "analyzed/draft_ready 는 실데이터에 거의 없음 — 대부분 booked→sent→completed 로 건너뛴다. 워크플로 진척 질문 시 '단계 누락'을 이상으로 보고하지 말 것."
+    },
+    "claim_workflow_status": {
+      "sequence": [
+        "soc_received",
+        "analyzed",
+        "draft_ready",
+        "review",
+        "sent_to_reinsurer",
+        "awaiting_payment",
+        "completed"
+      ],
+      "observed": [
+        {
+          "completed": 11598
+        },
+        {
+          "sent_to_reinsurer": 1117
+        },
+        {
+          "payment_received": 353
+        },
+        {
+          "draft_ready": 6
+        },
+        {
+          "soc_received": 5
+        },
+        {
+          "deleted": 1
+        }
+      ],
+      "note": "claims.status(Open/Closed)와 claims.workflow_status 는 **다른 축**. status 는 클레임 자체의 종결 여부, workflow_status 는 우리 정산 처리 단계."
+    },
+    "currency": {
+      "distinct_count": 36,
+      "note": "ISO 코드가 아닌 표기 변형과 결측 표식이 섞여 있다. 통화별 집계 전 UPPER(TRIM()) 정규화 + 아래 별칭 병합 필수.",
+      "observed": [
+        {
+          "KRW": 13451
+        },
+        {
+          "USD": 3286
+        },
+        {
+          "Kwon": 258
+        },
+        {
+          "EUR": 223
+        },
+        {
+          "JPY": 127
+        },
+        {
+          "CNY": 111
+        },
+        {
+          "GBP": 94
+        },
+        {
+          "(null)": 84
+        },
+        {
+          "DZD": 53
+        },
+        {
+          "SEK": 50
+        },
+        {
+          "CHF": 50
+        },
+        {
+          "INR": 41
+        },
+        {
+          "SGD": 26
+        },
+        {
+          "HKD": 25
+        },
+        {
+          "CAD": 22
+        },
+        {
+          "BRL": 20
+        },
+        {
+          "NOK": 14
+        },
+        {
+          "DA": 12
+        },
+        {
+          "BHD": 10
+        },
+        {
+          "AUD": 9
+        },
+        {
+          "PHP": 4
+        },
+        {
+          "UKL": 4
+        },
+        {
+          "LKR": 4
+        },
+        {
+          "ZAR": 4
+        },
+        {
+          "SAR": 4
+        },
+        {
+          "RMB": 2
+        },
+        {
+          "THB": 2
+        },
+        {
+          "PLN": 2
+        },
+        {
+          "JYP": 2
+        },
+        {
+          "KWD": 2
+        },
+        {
+          "QAR": 2
+        },
+        {
+          "공란": 2
+        },
+        {
+          "Euro": 2
+        },
+        {
+          "MAD": 2
+        },
+        {
+          "PKR": 1
+        },
+        {
+          "0": 1
+        }
+      ],
+      "aliases": {
+        "KRW": [
+          "Kwon"
+        ],
+        "EUR": [
+          "Euro"
+        ],
+        "JPY": [
+          "JYP (오타)"
+        ],
+        "CNY": [
+          "RMB"
+        ],
+        "GBP": [
+          "UKL"
+        ],
+        "DZD": [
+          "DA (디나르 약칭)"
+        ]
+      },
+      "null_markers": [
+        "(null) 84건",
+        "'공란' 2건",
+        "'0' 1건"
+      ],
+      "cross_currency_warning": "SUM(ri_prem) 을 통화별로 낸 값은 **액면 단위가 달라 서로 비교 불가**. 규모 순위를 물으면 net_ri_prem_kwon(KRW 환산)으로 교차확인하고, 두 지표가 다른 것(전자는 커미션 차감 전, 후자는 차감 후)임을 밝힐 것."
+    }
+  },
+  "data_quality_traps": {
+    "note": "실데이터에서 확인된 함정. 집계 전에 반드시 고려하고, 결과를 보고할 때 해당되면 명시할 것 (process_as_product).",
+    "items": [
+      {
+        "trap": "★ cedant 에 재보험사가 오면 재재보험(retrocession) — 별도 세그먼트",
+        "detail": "cedant='KR' 은 Korean Re 이고 9,191건(51%)이다. assured 값이 'Korean Re Fin Pro Q/S 2020', 'Korean Re Marine Cargo QS' 처럼 Korean Re 자신의 특약이고 reinsurer 는 Vina Re·Saudi Re·Mapfre Re SG 같은 해외 재보험사 — 원수사(NH/HM/HW/DB…) → Korean Re → 해외 재보험사 구조. cedant='Korean Re'(793건)는 별건으로 2017년 LG Display EAR 단일 딜이며 이후 없음.",
+        "handling": "재재보험 = cedant IN ('KR','Korean Re') OR cedant ~* '(reinsur|swiss re|munich|hannover|scor|qgic|qatar general)'. 원보험 출재(7,982건/출재사 118/피보험자 1,880/ri_prem 3,268억)와 재재보험(9,997건/출재사 7/피보험자 777/1,436억)은 영업·수익 성격이 달라 반드시 분리 집계. 최근3년 신규는 원보험 출재 279건 vs 재재보험 66건 — 신규 영업은 원보험 출재 세그먼트에서 나온다. 재재보험의 실제 원수사 축은 original_cedant."
+      },
+      {
+        "trap": "★ 2017년 출재사 표기 전환 — 풀네임과 약어가 같은 회사",
+        "detail": "2017년에 풀네임과 약어가 병존하다 2018년부터 약어만 남았다. 2017년에 HW 96건과 Hanwha 150건이 동시 존재, 피보험자 교집합 31~38%. 풀네임은 2017년이 마지막이라 순진하게 보면 '대형 손보사 3곳이 2017년 이후 거래 없음(휴면)'으로 오진되는데, 실제로는 최대 활성 채널이다.",
+        "aliases": {
+          "SS": "Samsung(120건, 2017만)",
+          "HW": "Hanwha(150건, 2017만)",
+          "HM": "Hyundai(112건, 2017만)",
+          "LT": "Lotte(58건, 2017만)",
+          "DB": "Dongbu(79건, 2017만)"
+        },
+        "handling": "출재사 채널 분석 시 위 별칭을 병합하고 병합 사실을 밝힐 것. 병합 후 판정: SS·HM·KB·HW = 성장(최근3년 신규 90/78/21/17), DB = 유지(1,779억이나 신규 7), MZ·LT·NH·HK = 축소, **대형 손보사 중 진짜 휴면은 없다**."
+      },
+      {
+        "trap": "★ Excel 소계·합계 행이 계약 레코드로 적재",
+        "detail": "원장 Excel 의 'Nth Sub-Total'·'Grandtotal' 행 26건이 contracts 에 실제 계약처럼 들어와 있다. 전부 2017년 적재분이고 rec_date/paid_date 가 없어 미정산으로 잡힌다. 금액이 커서 원시 미정산 총액 5,035.7억 중 3,621.8억(71.9%)을 이 26건이 차지 — 제외하지 않으면 집계가 완전히 왜곡된다.",
+        "handling": "assured ~* '(sub-?total|grand ?total|합계|소계)' 로 배제. 보조 지표: cover_note_no·reinsurer·period_to 가 모두 NULL. 제외 건수와 금액을 반드시 답변에 밝힐 것."
+      },
+      {
+        "trap": "★ 재보험사 계열 별칭 분리",
+        "detail": "같은 그룹이 표기만 다르게 여러 행으로 갈린다. Peak Re 계열 5종(Peak Re 335 / Peak Re HK 83 / Peak Re Company Limited 2 / Peak Re (HK) 2 / Peak Re, Hong Kong 2), AIG 계열 5종(AIG KR 285 / AIG 108 / AIG Korea 56 / AIG SG 2 / AIG, KR 1). 계약과 클레임이 서로 다른 표기를 쓰기도 한다(계약 'AIG KR' vs 클레임 'AIG').",
+        "handling": "랭킹·집중도는 병합 전/후를 모두 제시하고 어느 쪽인지 밝힐 것. 실측 영향: Peak Re 병합 시 CR1 20.0%→39.6%, HHI 895(비집중)→1,711(중간집중)으로 해석이 바뀐다. 법인이 실제로 다를 수 있으니(HK 법인 vs KR 지점) 자동 병합하지 말고 병합 시나리오로 제시."
+      },
+      {
+        "trap": "통화 표기 변형 36종",
+        "detail": "ISO 코드가 아닌 별칭·오타·결측 표식이 섞여 있다: Kwon(=KRW, 258), Euro(=EUR), RMB(=CNY), UKL(=GBP), JYP(=JPY 오타), DA(=DZD), 결측은 NULL 84 + '공란' 2 + '0' 1.",
+        "handling": "UPPER(TRIM()) 정규화 + taxonomies.currency.aliases 병합. 어떤 별칭을 몇 건 병합했는지 답변에 밝힐 것."
+      },
+      {
+        "trap": "통화별 SUM 은 비교 불가",
+        "detail": "SUM(ri_prem) 을 통화별로 내면 액면 단위가 달라 순위가 무의미하다(예: PHP 가 USD 보다 위로 올라온다).",
+        "handling": "규모 순위는 net_ri_prem_kwon(KRW 환산)으로 교차확인. 단 ri_prem 은 커미션 차감 전, net_ri_prem_kwon 은 차감 후라 같은 지표의 환산값이 아님을 명시."
+      },
+      {
+        "trap": "reinsurer='Unknown'",
+        "detail": "736건. 재보험사 미상 — 실제 재보험사가 아니라 결측 표식.",
+        "handling": "재보험사 랭킹·점유율에서 제외하고 제외 건수를 함께 보고."
+      },
+      {
+        "trap": "status 대소문자 혼재",
+        "detail": "claims.status 에 'Closed'(11537) 와 'closed'(60) 공존. 'Deleted' 1건도 있음.",
+        "handling": "LOWER(status) 비교. deleted/Deleted 는 집계 제외."
+      },
+      {
+        "trap": "ref_no 중복",
+        "detail": "claims.ref_no 는 유일하지 않다. 같은 ref_no 가 재보험사 수만큼 존재하는 정상 케이스와, 실제 중복 입력이 섞여 있다.",
+        "handling": "run_reconciliation_check('duplicates') 로 먼저 판별. COUNT(*) 대신 COUNT(DISTINCT ref_no) 를 쓸지 질문 의도에 따라 선택하고 어느 쪽인지 밝힐 것."
+      },
+      {
+        "trap": "gross_prem_100 중복 합산",
+        "detail": "한 커버노트에 재보험사 N개면 gross_prem_100 이 N번 반복된다. SUM 하면 N배.",
+        "handling": "총 인수물량은 SUM(ri_prem). 원수 규모는 커버노트 단위 DISTINCT 후 집계."
+      },
+      {
+        "trap": "policies 는 파생 테이블",
+        "detail": "policy_builder 산출물이라 contracts 와 시점 불일치 가능.",
+        "handling": "숫자가 어긋나면 contracts 를 정본으로 보고, 불일치 자체를 보고할 것."
+      },
+      {
+        "trap": "company_id 테넌트 경계",
+        "detail": "전 원장에 company_id 존재.",
+        "handling": "전사 집계인지 특정 테넌트인지 모호하면 되묻거나, 전체 기준임을 명시."
+      },
+      {
+        "trap": "claims.dol NULL 2,700건",
+        "detail": "Treaty QS 같은 조약 정산은 개별 사고일이 없다. '사고' 단위로 집계하면서 dol NULL 을 포함하면 조약정산이 단일 사고로 잡혀 최대 사고 순위를 왜곡한다.",
+        "handling": "'사고' 질문이면 dol IS NOT NULL 로 제한하고, 제외된 조약정산이 순위에 들었을 경우 그 사실을 별도로 밝힐 것."
+      },
+      {
+        "trap": "period_to = period_from (담보종기 결측)",
+        "detail": "48건에서 보험기간 시기와 종기가 같다 — 실제 기간이 아니라 종기 미입력. 이 계약에 붙은 클레임은 dol 의 담보기간 내 포함 여부를 계약 원장으로 검증할 수 없다.",
+        "handling": "담보 범위 판단 시 period_to=period_from 인 건은 '검증 불가'로 분류. 경과일 계산에서도 제외."
+      },
+      {
+        "trap": "cover_notes 번호 중복 1건",
+        "detail": "cover_note_number 가 unique 가 아니다 — PF210060 이 2행. cover_notes 는 1,196행이지만 고유 번호는 1,195개.",
+        "handling": "커버노트 건수는 COUNT(DISTINCT cover_note_number). 미부킹 판정에는 영향 없으나 중복 자체는 정리 대상."
+      },
+      {
+        "trap": "assured 컬럼에 특약명이 섞여 있다",
+        "detail": "'Hanwha Property Quota Share (UIB…)', 'Hyundai VQS 2019 (HIS)', 'Lotte Fire & Engineering Risk XOL' 처럼 기업명이 아니라 특약(treaty) 이름이 들어온 행이 있다. line 이 QS/XOL/Treaty/VQS 인 경우가 많다.",
+        "handling": "기업/프로젝트 단위 분석(영업 리드, 피보험자 이탈 등)에서는 line IN ('QS','XOL','Treaty','VQS','Surplus','PA QS') 이거나 assured 에 'Quota Share|XOL|Treaty|VQS' 가 포함된 행을 제외할 것."
+      },
+      {
+        "trap": "요율(rate) 산출 불가 — 보험가입금액 컬럼이 없다",
+        "detail": "contracts 에 sum insured / TSI / limit 류 컬럼이 없다. 요율 = 보험료 ÷ 가입금액인데 분모가 없다. 'insured' 로 잡히는 rq_slip_cases.insured 는 피보험자 *이름*이다.",
+        "handling": "요율을 묻는 질문에는 산출 불가를 밝히고 대용 축을 제시: 출재수수료율(ri_commission/ri_prem, 13,010건 산출 가능) · 평균지분(share) · 보험료 규모. 실제 요율이 필요하면 RQ/커버노트 원문 파싱이 선행 과제."
+      }
+    ],
+    "discovered_by": "2026-07-28 챗봇 실사용 테스트 6케이스에서 5종 추가 발견. 온톨로지→챗→발견→온톨로지 루프."
+  },
+  "internal_tools": {
+    "note": "numbers_from_db — 모든 수치는 여기서만. 구현 app/services/agent/tools.py",
+    "sql_dialect": "**PostgreSQL**. SQLite 함수(julianday, strftime)나 MySQL 함수(DATE_FORMAT)는 없다. 날짜 차이는 (a::date - b::date), 현재시각은 CURRENT_DATE, 문자열 포맷은 to_char(). 날짜 컬럼(period_from/period_to/dol/rec_date/paid_date)이 text 로 적재된 경우가 있으니 캐스팅 전 get_table_sample 로 타입을 확인할 것.",
+    "failure_recovery": "쿼리가 실패하면 그 트랜잭션은 롤백되고 세션은 계속 쓸 수 있다. 실패한 SQL 을 고쳐 재시도하면 된다.",
+    "items": [
+      {
+        "name": "sql_query",
+        "use": "SELECT 전용. 집계·조인·추이 전부 여기로.",
+        "guard": "SELECT 로 시작하지 않으면 거부"
+      },
+      {
+        "name": "get_table_sample",
+        "use": "컬럼·타입·행수 파악. 쿼리 작성 전 선행"
+      },
+      {
+        "name": "get_distinct_values",
+        "use": "코드값 실측 (표기 변형 탐지에 필수)"
+      },
+      {
+        "name": "run_reconciliation_check",
+        "use": "soc(금액 대사) | cover_note(미부킹) | duplicates(ref_no 중복)"
+      },
+      {
+        "name": "modify_record",
+        "use": "create/update/delete. **쓰기 = 사람 승인 게이트 대상** (human_in_the_loop_write)",
+        "guard": "reasoning 필수"
+      }
+    ]
+  },
+  "external_tools": {
+    "note": "'+ 알파렌즈' 모드에서만. argo(alpha-lenz) MCP 툴을 Anthropic MCP connector 로 소비 — 내부 정본과 교차대조용 외부 데이터. 서버측 실행. 패턴 external_tools_as_mcp + internal_external_bridging.",
+    "endpoint": "https://api.alpha-lenz.com/mcp/ (argo-alpha-tools v1.28.1, Bearer optional)",
+    "gate": "use_mcp=true (UI '+ 알파렌즈' 토글)",
+    "toolset_filtering": {
+      "why": "argo 는 툴 100개(암호화폐·VCP·CANSLIM 등 재보험 무관 다수). 전량 노출 시 턴당 입력 54,456 토큰.",
+      "how": "mcp_toolset 에 default_config:{enabled:false} + configs:{<tool>:{enabled:true}} allowlist. configs 는 **배열이 아니라 객체** (배열이면 400).",
+      "measured": "allowlist 15개 → 19,638 토큰 (63.9% 절감). 2026-07-28 실측."
+    },
+    "allowlist": {
+      "news_search": "뉴스 — 원수사·피보험자·사고 관련 외부 정황",
+      "resolve_entity": "회사명→식별자 정규화. reinsurer/cedant 별칭 마찰의 외부 해소 경로",
+      "company_profile": "기업 개요",
+      "financial_query": "재무제표 — 재보험사·원수사 신용도(counterparty credit) 확인",
+      "dart_disclosure_search": "DART 공시 검색",
+      "dart_company_overview": "DART 기업개요",
+      "dart_financial_indicators": "DART 재무지표",
+      "dart_audit_opinion": "감사의견 — 거래상대방 리스크 신호",
+      "opensanctions_search": "제재·PEP 스크리닝 — 인수심사 핵심. ⚠️ 2026-07-28 현재 argo 서버측 키 문제로 401 Invalid API key 반환(미작동)",
+      "opensanctions_match": "구조화 정밀 제재 매칭 (search 보다 우선). ⚠️ 동일하게 401",
+      "opensanctions_entity": "제재 엔티티 상세·소유구조. ⚠️ 동일하게 401",
+      "macro_data": "환율·지수 — roe 검증 및 환산 맥락",
+      "fred_series": "FRED 매크로 시계열",
+      "fred_treasury": "美 국채 금리커브",
+      "economic_calendar": "경제 이벤트 일정"
+    }
+  },
+  "reasoning_frames": {
+    "note": "질문 유형별 진단 프레임. 근거 수치는 항상 내부 툴에서.",
+    "items": [
+      {
+        "frame": "settlement_aging",
+        "when": "'정산 안 된 건', '수금 지연' 류",
+        "steps": [
+          "contracts 에서 rec_date/paid_date NULL + workflow_status 로 미정산 후보 추출",
+          "period_to 기준 경과일 산출",
+          "재보험사별·금액대별 집중도 확인"
+        ],
+        "report": "건수·금액·최장 경과일 + 상위 재보험사"
+      },
+      {
+        "frame": "soc_reconciliation",
+        "when": "'SOC 안 맞는 건', '금액 불일치'",
+        "steps": [
+          "run_reconciliation_check('soc') 로 전체 분포 파악",
+          "mismatch 건에 대해 soc_amount vs krw_amount 차이 큰 순 정렬",
+          "origin_currency+roe 확인 — 환율 기인인지 원금 기인인지 분리"
+        ],
+        "report": "차이 원인을 환산 문제 / 지분 문제 / 원금 불일치로 귀속"
+      },
+      {
+        "frame": "unbooked_cover_notes",
+        "when": "'커버노트 누락', '부킹 안 된 건'",
+        "steps": [
+          "run_reconciliation_check('cover_note')",
+          "미매칭 커버노트의 issuing_date·line·assured 확인"
+        ],
+        "report": "미부킹 건수 + 오래된 순 목록"
+      },
+      {
+        "frame": "portfolio_concentration",
+        "when": "'재보험사별 물량', '종목별 비중'",
+        "steps": [
+          "SUM(ri_prem) 기준 집계 (gross_prem_100 아님)",
+          "reinsurer='Unknown' 제외 + 제외건수 보고",
+          "line 은 계약형태/종목 구분 후 집계"
+        ],
+        "report": "상위 N + 집중도, 제외·정규화 처리 명시"
+      },
+      {
+        "frame": "counterparty_external_check",
+        "when": "+알파렌즈 모드에서 '이 재보험사 괜찮나', '상대방 리스크'",
+        "steps": [
+          "내부: 해당 reinsurer 의 인수물량·미정산·SOC 불일치 이력 집계",
+          "외부: opensanctions_match 로 제재 스크리닝, financial_query/dart_* 로 재무·감사의견",
+          "내부 거래 실적 vs 외부 신용 신호 대조"
+        ],
+        "report": "내부 익스포저 규모 + 외부 리스크 신호, 둘의 정합/불일치",
+        "pattern": "internal_external_bridging"
+      },
+      {
+        "frame": "claim_context_external",
+        "when": "+알파렌즈 모드에서 특정 클레임/사고의 '왜'",
+        "steps": [
+          "내부: dol·account_name·line·total_amount 확보",
+          "외부: news_search 로 해당 사고·피보험자 관련 보도 확인",
+          "내부 청구 시점·금액 vs 외부 보도 정황 대조"
+        ],
+        "report": "내부 기록과 외부 정황의 부합 여부"
+      }
+    ]
+  },
+  "process_visibility": {
+    "requirement": "제1원칙 process_as_product — 답변에 도달한 과정이 화면에 보여야 한다.",
+    "surface": "SSE 이벤트 thinking / tool_call / tool_result / answer 를 ins/chat 이 인라인 렌더 (agent_step_trace_ui)",
+    "mcp_surface": "+알파렌즈 턴은 mcp_tool_use / mcp_tool_result 를 별도 표기 — 어떤 외부 모듈이 점등됐는지 사용자가 본다",
+    "rule": "데이터 품질 함정을 적용했으면(예: Kwon 병합, Unknown 제외) 그 처리를 답변에 명시한다. 조용한 정규화 금지."
+  },
+  "playbook_ref": "화면 아키타입은 treasurer-ontology/patterns/planning_patterns.json 의 screen_archetypes.chat_agent_hub. 설계 패턴은 같은 파일의 numbers_from_db_words_from_llm + ontology_as_grounding + agent_step_trace_ui + human_in_the_loop_write (승격됨) 및 external_tools_as_mcp + internal_external_bridging (후보, 2개 앱 반복 확인). 제1원칙 process_as_product. 도메인 규약은 extensions/reinsurance/reinsurance_ontology.json 의 chat_playbook + analysis_lens (L2).",
+  "proprietary_exclusions": "이 파일은 스키마·코드값 분포·진단 프레임만 담는다 (우리 자산). 고객사 실명 로스터, 실거래 레코드, 고유 요율·특약 플레이북은 넣지 않는다 — 반납 테스트 대상.",
+  "charting": {
+    "tool": "code_execution_20260120 (Anthropic 서버측 파이썬 샌드박스, matplotlib·pandas 사전설치)",
+    "role": "수치는 SQL 툴에서 나온다. 파이썬은 '이미 확보한 수치를 그리는' 용도이며 집계 수단이 아니다 (numbers_from_db_words_from_llm).",
+    "hard_requirements": [
+      "저장 위치는 **반드시 `$OUTPUT_DIR`** (= /files/output/<실행별 해시>). CWD(=/)나 /tmp 에 저장하면 파일이 file_id 로 첨부되지 않아 사용자에게 전달되지 않는다 — 2026-07-29 실측.",
+      "작성과 실행을 **한 번의 bash 호출**로. `python3 - <<'EOF' ... EOF` 형태. 스크립트를 .py 로 쓴 뒤 별도 호출로 실행하려 하면 턴이 끊겨 실행되지 않은 채 답변이 나간다 — 실측된 실패 모드.",
+      "한글 폰트 `matplotlib.rcParams['font.family']='WenQuanYi Zen Hei'` 미지정 시 한글 전부 깨짐."
+    ],
+    "retrieval": "결과 블록(bash_code_execution_tool_result)의 content.content 안 bash_code_execution_output 항목에서 file_id 를 얻어 Files API 로 다운로드 → base64 임베드 → SSE image 이벤트.",
+    "disclosure": "차트를 그렸어도 핵심 수치는 본문에 글로 남긴다. 데이터 품질 처리(소계행 제외 등)를 적용했으면 차트 제목·주석에도 반영한다."
+  }
+}

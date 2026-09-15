@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node
+node_modules/
+.next/
+
+# Env
+.env
+
+# Data
+reference/
+backend/data/*.xlsx
+backend/data/weekly/
+2026년 3월/
+.env.prod
+# master contract-management ledger (PII) + generated email drafts
+AI계약관리.xlsx
+*.eml
+
+# Local / runtime
+.claude/
+test-results/
+backend/logs/
+
+# local data / secrets (not for repo)
+.DS_Store
+트레져러 & 인스보험중개/
+CLAUDE.md
+인스보험중개 계약 서류 양식/
+
+# ── Media / render artifacts (repo에서 제외, 2.3GB → 22MB) ──
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.wav
+*.mp3
+*.m4a
+*.aac
+*.flac
+*.jpg
+*.jpeg
+output/
+youtube-alphalenz-mrna/out/
+youtube-alphalenz-mrna/public/media/
+youtube-alphalenz-moderna/out/
+demo-video/capture/
