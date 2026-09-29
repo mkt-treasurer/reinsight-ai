@@ -1,0 +1,19 @@
+{
+  "title": "Treasurer — 45s festival film",
+  "audience": "SFF Singapore · booth loop · no sound",
+  "register": "Visual first. One idea per shot. Under 90 words on screen, total.",
+  "note": "v6: 45s. Adds what-we-do, the ontology graph the dots assemble into, deployment, and reach.",
+  "gapCue": 0.1,
+  "gapScene": 0.18,
+  "tailHold": 0.9,
+  "scenes": [
+    { "id": "s-open", "cues": [{ "sec": 1.8, "sub": "" }, { "sec": 1.8, "sub": "" }] },
+    { "id": "s-what", "cues": [{ "sec": 1.5, "sub": "" }, { "sec": 1.5, "sub": "" }, { "sec": 1.5, "sub": "" }] },
+    { "id": "s-demo", "cues": [{ "sec": 2.6, "sub": "" }, { "sec": 2.6, "sub": "" }, { "sec": 3.2, "sub": "" }] },
+    { "id": "s-graph", "cues": [{ "sec": 2.2, "sub": "" }, { "sec": 2.4, "sub": "" }, { "sec": 2.6, "sub": "" }] },
+    { "id": "s-deploy", "cues": [{ "sec": 2.2, "sub": "" }, { "sec": 2.2, "sub": "" }] },
+    { "id": "s-bench", "cues": [{ "sec": 3.0, "sub": "" }, { "sec": 3.0, "sub": "" }] },
+    { "id": "s-reach", "cues": [{ "sec": 2.1, "sub": "" }, { "sec": 2.1, "sub": "" }] },
+    { "id": "s-close", "cues": [{ "sec": 3.4, "sub": "" }] }
+  ]
+}

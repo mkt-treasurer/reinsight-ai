@@ -1,0 +1,232 @@
+{
+  "fps": 30,
+  "source": "static:script.json",
+  "total": 44.86,
+  "totalFrames": 1346,
+  "scenes": [
+    {
+      "id": "s-open",
+      "start": 0,
+      "end": 3.8800000000000003,
+      "dur": 3.8800000000000003,
+      "cues": [
+        {
+          "sec": 1.8,
+          "sub": "",
+          "start": 0,
+          "dur": 1.8,
+          "fromInScene": 0,
+          "framesInScene": 54
+        },
+        {
+          "sec": 1.8,
+          "sub": "",
+          "start": 1.9000000000000001,
+          "dur": 1.8,
+          "fromInScene": 57,
+          "framesInScene": 54
+        }
+      ],
+      "from": 0,
+      "durationInFrames": 116
+    },
+    {
+      "id": "s-what",
+      "start": 3.8800000000000003,
+      "end": 8.76,
+      "dur": 4.879999999999999,
+      "cues": [
+        {
+          "sec": 1.5,
+          "sub": "",
+          "start": 3.8800000000000003,
+          "dur": 1.5,
+          "fromInScene": 0,
+          "framesInScene": 45
+        },
+        {
+          "sec": 1.5,
+          "sub": "",
+          "start": 5.48,
+          "dur": 1.5,
+          "fromInScene": 48,
+          "framesInScene": 45
+        },
+        {
+          "sec": 1.5,
+          "sub": "",
+          "start": 7.08,
+          "dur": 1.5,
+          "fromInScene": 96,
+          "framesInScene": 45
+        }
+      ],
+      "from": 116,
+      "durationInFrames": 147
+    },
+    {
+      "id": "s-demo",
+      "start": 8.76,
+      "end": 17.54,
+      "dur": 8.78,
+      "cues": [
+        {
+          "sec": 2.6,
+          "sub": "",
+          "start": 8.76,
+          "dur": 2.6,
+          "fromInScene": 0,
+          "framesInScene": 78
+        },
+        {
+          "sec": 2.6,
+          "sub": "",
+          "start": 11.46,
+          "dur": 2.6,
+          "fromInScene": 81,
+          "framesInScene": 78
+        },
+        {
+          "sec": 3.2,
+          "sub": "",
+          "start": 14.16,
+          "dur": 3.2,
+          "fromInScene": 162,
+          "framesInScene": 96
+        }
+      ],
+      "from": 263,
+      "durationInFrames": 263
+    },
+    {
+      "id": "s-graph",
+      "start": 17.54,
+      "end": 25.12,
+      "dur": 7.580000000000002,
+      "cues": [
+        {
+          "sec": 2.2,
+          "sub": "",
+          "start": 17.54,
+          "dur": 2.2,
+          "fromInScene": 0,
+          "framesInScene": 66
+        },
+        {
+          "sec": 2.4,
+          "sub": "",
+          "start": 19.84,
+          "dur": 2.4,
+          "fromInScene": 69,
+          "framesInScene": 72
+        },
+        {
+          "sec": 2.6,
+          "sub": "",
+          "start": 22.34,
+          "dur": 2.6,
+          "fromInScene": 144,
+          "framesInScene": 78
+        }
+      ],
+      "from": 526,
+      "durationInFrames": 228
+    },
+    {
+      "id": "s-deploy",
+      "start": 25.12,
+      "end": 29.8,
+      "dur": 4.68,
+      "cues": [
+        {
+          "sec": 2.2,
+          "sub": "",
+          "start": 25.12,
+          "dur": 2.2,
+          "fromInScene": 0,
+          "framesInScene": 66
+        },
+        {
+          "sec": 2.2,
+          "sub": "",
+          "start": 27.42,
+          "dur": 2.2,
+          "fromInScene": 69,
+          "framesInScene": 66
+        }
+      ],
+      "from": 754,
+      "durationInFrames": 140
+    },
+    {
+      "id": "s-bench",
+      "start": 29.8,
+      "end": 36.08,
+      "dur": 6.279999999999998,
+      "cues": [
+        {
+          "sec": 3,
+          "sub": "",
+          "start": 29.8,
+          "dur": 3,
+          "fromInScene": 0,
+          "framesInScene": 90
+        },
+        {
+          "sec": 3,
+          "sub": "",
+          "start": 32.9,
+          "dur": 3,
+          "fromInScene": 93,
+          "framesInScene": 90
+        }
+      ],
+      "from": 894,
+      "durationInFrames": 188
+    },
+    {
+      "id": "s-reach",
+      "start": 36.08,
+      "end": 40.56,
+      "dur": 4.480000000000004,
+      "cues": [
+        {
+          "sec": 2.1,
+          "sub": "",
+          "start": 36.08,
+          "dur": 2.1,
+          "fromInScene": 0,
+          "framesInScene": 63
+        },
+        {
+          "sec": 2.1,
+          "sub": "",
+          "start": 38.28,
+          "dur": 2.1,
+          "fromInScene": 66,
+          "framesInScene": 63
+        }
+      ],
+      "from": 1082,
+      "durationInFrames": 135
+    },
+    {
+      "id": "s-close",
+      "start": 40.56,
+      "end": 43.96,
+      "dur": 3.3999999999999986,
+      "cues": [
+        {
+          "sec": 3.4,
+          "sub": "",
+          "start": 40.56,
+          "dur": 3.4,
+          "fromInScene": 0,
+          "framesInScene": 102
+        }
+      ],
+      "from": 1217,
+      "durationInFrames": 129
+    }
+  ]
+}

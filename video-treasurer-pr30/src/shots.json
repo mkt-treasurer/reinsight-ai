@@ -1,0 +1,68 @@
+{
+  "note": "Festival booth film. Financial / institutional tone only. Dark graded, used as backdrops and half-frame panels.",
+  "scenes": {
+    "s-open": [
+      {
+        "id": "open-a",
+        "q": "stock exchange trading floor screens",
+        "alt": "financial data ticker board"
+      }
+    ],
+    "s-gap": [
+      {
+        "id": "gap-a",
+        "q": "analyst working late multiple monitors office",
+        "alt": "business person night office computer"
+      }
+    ],
+    "s-research": [
+      {
+        "id": "res-a",
+        "q": "business documents reports on desk close up",
+        "alt": "person reading financial report"
+      }
+    ],
+    "s-monitor": [
+      {
+        "id": "mon-a",
+        "q": "stock market chart moving on screen",
+        "alt": "financial charts monitor close up"
+      }
+    ],
+    "s-report": [
+      {
+        "id": "rep-a",
+        "q": "professional office meeting business documents",
+        "alt": "office workers reviewing documents"
+      }
+    ],
+    "s-close": [
+      {
+        "id": "close-a",
+        "q": "modern financial district skyline aerial",
+        "alt": "city skyscrapers business district"
+      }
+    ],
+    "s-moat": [
+      {
+        "id": "moat-a",
+        "q": "hong kong night skyline business district",
+        "alt": "singapore city skyline evening"
+      }
+    ],
+    "s-deploy": [
+      {
+        "id": "deploy-a",
+        "q": "server room data center racks",
+        "alt": "data center corridor blue lights"
+      }
+    ],
+    "s-what": [
+      {
+        "id": "what-a",
+        "q": "financial analyst office team working",
+        "alt": "business people working desk"
+      }
+    ]
+  }
+}
