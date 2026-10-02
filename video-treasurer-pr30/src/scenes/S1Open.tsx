@@ -20,7 +20,7 @@ export const S1Open: React.FC = () => {
   const rule = pIn(frame, c1 - 6, 18);
 
   return (
-    <AbsoluteFill style={{ fontFamily: FONT, backgroundColor: C.dark }}>
+    <AbsoluteFill style={{ fontFamily: FONT }}>
       <AbsoluteFill
         style={{
           alignItems: "center",

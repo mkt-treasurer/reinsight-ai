@@ -51,11 +51,10 @@ export const Broll: React.FC<{
 
 /** 씬별 전면 배경 강도 — 0 이면 씬이 직접 배치한다는 뜻 */
 const FULL: Record<string, number> = {
-  "s-open": 0.52,
-  "s-what": 0.20,
-  "s-deploy": 0.20,
-  "s-reach": 0.22,
-  "s-close": 0.66,
+  "s-open": 0.88,
+  "s-graph": 0.18,
+  "s-deploy": 0.46,
+  "s-close": 0.82,
 };
 
 const XF = 16;
@@ -99,7 +98,7 @@ export const SceneFootage: React.FC<{ sceneId: string; durationInFrames: number 
       <AbsoluteFill
         style={{
           background:
-            "linear-gradient(180deg, rgba(8,14,28,0.72) 0%, rgba(13,21,38,0.38) 42%, rgba(8,14,28,0.86) 100%)",
+            "linear-gradient(180deg, rgba(8,14,28,0.58) 0%, rgba(13,21,38,0.18) 44%, rgba(8,14,28,0.74) 100%)",
         }}
       />
     </AbsoluteFill>

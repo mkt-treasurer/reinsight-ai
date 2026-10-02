@@ -33,7 +33,7 @@ export const S3Graph: React.FC = () => {
   });
 
   return (
-    <AbsoluteFill style={{ fontFamily: FONT, backgroundColor: C.darkDeep }}>
+    <AbsoluteFill style={{ fontFamily: FONT }}>
       <CornerMark opacity={pIn(frame, 0, 10) * 0.85} />
 
       <div style={{ position: "absolute", left: 0, right: 0, top: 130, textAlign: "center" }}>

@@ -26,12 +26,12 @@ const MAP: Record<string, React.FC> = {
 
 const TRANS: Record<string, Trans> = {
   "s-open": "fade",
-  "s-what": "slideUp",
+  "s-what": "wipeR",
   "s-demo": "zoomIn",
   "s-graph": "zoomIn",
   "s-deploy": "slideL",
-  "s-bench": "slideUp",
-  "s-reach": "wipeL",
+  "s-bench": "wipeR",
+  "s-reach": "slideL",
   "s-close": "zoomOut",
 };
 

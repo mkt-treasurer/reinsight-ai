@@ -9,3 +9,6 @@ close-a	pexels	Matthew Padilla	https://www.pexels.com/video/aerial-drone-view-of
 moat-a	pexels	LayG Traveller	https://www.pexels.com/video/vibrant-night-skyline-of-hong-kong-harbor-36617176/	Pexels License (상업적 사용 가능 · 출처 표기 불필요)
 deploy-a	pexels	Media Hopper Studio	https://www.pexels.com/video/inserting-hard-drive-into-storage-device-38496192/	Pexels License (상업적 사용 가능 · 출처 표기 불필요)
 what-a	pexels	Kampus Production	https://www.pexels.com/video/business-professionals-discussing-documents-8348731/	Pexels License (상업적 사용 가능 · 출처 표기 불필요)
+reach-a	pexels	Nirjhar Basak	https://www.pexels.com/video/breathtaking-nighttime-view-of-singapore-skyline-35061521/	Pexels License (상업적 사용 가능 · 출처 표기 불필요)
+demo-a	pexels	Rafael Minguet Delgado	https://www.pexels.com/video/dynamic-cryptocurrency-trading-desk-footage-38055931/	Pexels License (상업적 사용 가능 · 출처 표기 불필요)
+graph-a	pexels	Nicola Narracci	https://www.pexels.com/video/dynamic-neon-network-animation-36246162/	Pexels License (상업적 사용 가능 · 출처 표기 불필요)

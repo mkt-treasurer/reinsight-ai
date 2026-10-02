@@ -33,7 +33,7 @@ export const S5Deploy: React.FC = () => {
   const blocked = raw >= edge;
 
   return (
-    <AbsoluteFill style={{ fontFamily: FONT, backgroundColor: C.darkDeep }}>
+    <AbsoluteFill style={{ fontFamily: FONT }}>
       <CornerMark opacity={pIn(frame, 0, 10) * 0.85} />
 
       <div
@@ -73,7 +73,7 @@ export const S5Deploy: React.FC = () => {
             position: "absolute",
             left: 26,
             top: -14,
-            background: C.darkDeep,
+            background: "rgba(8,14,28,0.9)",
             padding: "0 12px",
             fontFamily: MONO,
             fontSize: 18,

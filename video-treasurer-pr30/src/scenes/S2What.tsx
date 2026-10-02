@@ -1,191 +1,137 @@
 import React from "react";
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { C, FONT } from "../theme";
-import { pIn, EASE } from "../lib";
-import { CornerMark } from "../Brand";
+import { AbsoluteFill, useCurrentFrame } from "remotion";
+import { C, FONT, MONO } from "../theme";
+import { pIn } from "../lib";
 import { cueAt } from "../timing";
+import { Card, CardHead, PAPER, Say, PathTag } from "../ui/Card";
 
-/** A small moving picture of each job, so the words aren't doing all the work */
-const Glyph: React.FC<{ kind: "note" | "alert" | "report"; p: number; frame: number }> = ({
-  kind,
-  p,
-  frame,
-}) => {
-  if (kind === "note") {
-    return (
-      <svg width={86} height={86}>
-        {[0, 1, 2, 3].map((i) => {
-          const g = interpolate(frame - (14 + i * 7), [0, 12], [0, 1], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-            easing: EASE,
-          });
-          return (
-            <rect
-              key={i}
-              x={4}
-              y={16 + i * 16}
-              width={(i === 3 ? 44 : 74) * g}
-              height={7}
-              rx={3}
-              fill={i === 3 ? C.brandLite : "rgba(232,238,247,0.55)"}
-            />
-          );
-        })}
-      </svg>
-    );
-  }
-  if (kind === "alert") {
-    const beat = (frame % 34) / 34;
-    return (
-      <svg width={86} height={86}>
-        <circle
-          cx={43}
-          cy={43}
-          r={10 + beat * 26}
-          fill="none"
-          stroke={C.brandLite}
-          strokeWidth={2}
-          opacity={(1 - beat) * 0.8 * p}
-        />
-        <circle cx={43} cy={43} r={10} fill={C.brandLite} opacity={p} />
-      </svg>
-    );
-  }
-  const H = [34, 54, 24, 66];
-  return (
-    <svg width={86} height={86}>
-      {H.map((h, i) => {
-        const g = interpolate(frame - (14 + i * 6), [0, 14], [0, 1], {
-          extrapolateLeft: "clamp",
-          extrapolateRight: "clamp",
-          easing: EASE,
-        });
-        return (
-          <rect
-            key={i}
-            x={4 + i * 21}
-            y={78 - h * g}
-            width={13}
-            height={h * g}
-            rx={2}
-            fill={i === 3 ? C.brandLite : "rgba(232,238,247,0.5)"}
-          />
-        );
-      })}
-    </svg>
-  );
-};
-
-const JOBS: { w: string; d: string; g: "note" | "alert" | "report" }[] = [
-  { w: "Research", d: "a company note, written from the filings", g: "note" },
-  { w: "Monitoring", d: "an alert the day a holding changes", g: "alert" },
-  { w: "Reporting", d: "the recurring report, in your template", g: "report" },
+/** 사람이 매주 손으로 하는 일. 우리 제품의 결과물이 아니라 '업무' 자체를 적는다. */
+const JOBS = [
+  { no: "01", k: "Research", d: "Read the filings. Write the note." },
+  { no: "02", k: "Monitoring", d: "Check every holding for changes." },
+  { no: "03", k: "Reporting", d: "Fill the same report again." },
 ];
 
-/** Ends by picking the one job the next shot is about to run, so the cut isn't a jump */
 export const S2What: React.FC = () => {
   const frame = useCurrentFrame();
   cueAt("s-what");
 
-  const pick = pIn(frame, 88, 20);
+  const pick = pIn(frame, 86, 20);
 
   return (
-    <AbsoluteFill style={{ fontFamily: FONT, backgroundColor: C.dark }}>
-      <CornerMark opacity={pIn(frame, 0, 10) * 0.85} />
-
+    <AbsoluteFill style={{ fontFamily: FONT, background: PAPER }}>
       <div
         style={{
           position: "absolute",
-          left: 0,
-          right: 0,
-          top: 196,
-          textAlign: "center",
-          fontSize: 58,
-          fontWeight: 700,
-          letterSpacing: -2.5,
-          color: C.onDark,
-          opacity: pIn(frame, 2, 16),
-          transform: `translateY(${(1 - pIn(frame, 2, 16)) * 14}px)`,
+          left: 120,
+          top: 62,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          opacity: pIn(frame, 0, 12),
         }}
       >
-        Three jobs analysts repeat <span style={{ color: C.brandLite }}>every week</span>.
+        <span style={{ width: 12, height: 12, background: C.brand, transform: "rotate(45deg)" }} />
+        <span
+          style={{ fontFamily: MONO, fontSize: 15, fontWeight: 700, letterSpacing: 4.5, color: C.ink2 }}
+        >
+          TREASURER AX
+        </span>
       </div>
 
-      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", marginTop: 40 }}>
-        <div style={{ display: "flex", gap: 30 }}>
+      <Say
+        y={368}
+        p={pIn(frame, 4, 18)}
+        sub="Work that repeats is work an agent can run."
+        subP={pIn(frame, 94, 18)}
+      >
+        Analysts repeat the same
+        <br />
+        three jobs every week.
+      </Say>
+
+      <PathTag p={pIn(frame, 20, 14)}>/ax/agents</PathTag>
+
+      <Card x={880} y={288} w={912} p={pIn(frame, 8, 16)}>
+        <CardHead label="THE WEEKLY LOOP" right="DONE BY HAND" />
+        <div style={{ padding: "6px 28px 10px" }}>
           {JOBS.map((j, i) => {
-            const at = 4 + i * 14;
-            const p = pIn(frame, at, 15);
             const on = i === 1;
+            const p = pIn(frame, 18 + i * 12, 16);
             return (
               <div
-                key={j.w}
+                key={j.no}
                 style={{
-                  width: 476,
-                  height: 396,
-                  border: on
-                    ? `1px solid rgba(96,165,250,${0.3 + pick * 0.6})`
-                    : `1px solid ${C.onDarkLine2}`,
-                  background: on
-                    ? `rgba(59,130,246,${0.05 + pick * 0.1})`
-                    : "rgba(148,163,184,0.05)",
-                  borderRadius: 6,
-                  padding: "38px 36px",
-                  opacity: p * (on ? 1 : 1 - pick * 0.6),
-                  transform: `translateY(${(1 - p) * 24}px) scale(${
-                    on ? 1 + pick * 0.04 : 1 - pick * 0.03
-                  })`,
-                  boxShadow: on ? `0 0 ${pick * 60}px rgba(59,130,246,0.3)` : "none",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 22,
+                  padding: "26px 18px",
+                  margin: "0 -18px",
+                  borderBottom: i === 2 ? "none" : "1px solid #eef2f7",
+                  background: on ? `rgba(59,130,246,${pick * 0.08})` : "transparent",
+                  borderLeft: on
+                    ? `3px solid rgba(59,130,246,${pick})`
+                    : "3px solid transparent",
+                  opacity: p * (on ? 1 : 1 - pick * 0.5),
+                  transform: `translateX(${(1 - p) * 14}px)`,
                 }}
               >
-                <Glyph kind={j.g} p={p} frame={frame - at} />
-                <div
+                <span
                   style={{
-                    marginTop: 30,
-                    fontSize: 52,
+                    fontFamily: MONO,
+                    fontSize: 17,
                     fontWeight: 700,
-                    letterSpacing: -2,
-                    color: C.onDark,
+                    letterSpacing: 1.6,
+                    color: on && pick > 0.3 ? C.brand : C.ink4,
+                    width: 34,
+                    flex: "0 0 auto",
                   }}
                 >
-                  {j.w}
-                </div>
-                <div
+                  {j.no}
+                </span>
+                <span
                   style={{
-                    marginTop: 16,
-                    fontSize: 27,
-                    fontWeight: 500,
-                    lineHeight: 1.42,
-                    color: C.onDark2,
-                    opacity: pIn(frame, at + 10, 14),
+                    fontSize: 34,
+                    fontWeight: 700,
+                    letterSpacing: -1.1,
+                    color: C.ink,
+                    width: 230,
+                    flex: "0 0 auto",
                   }}
                 >
+                  {j.k}
+                </span>
+                <span style={{ fontSize: 24, fontWeight: 500, color: C.ink3, letterSpacing: -0.3 }}>
                   {j.d}
-                </div>
+                </span>
               </div>
             );
           })}
         </div>
-      </AbsoluteFill>
-
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 848,
-          textAlign: "center",
-          fontSize: 40,
-          fontWeight: 700,
-          letterSpacing: -1.5,
-          color: C.onDark,
-          opacity: pIn(frame, 100, 16),
-          transform: `translateY(${(1 - pIn(frame, 100, 16)) * 12}px)`,
-        }}
-      >
-        Watch <span style={{ color: C.brandLite }}>Monitoring</span> run.
-      </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "16px 28px 20px",
+            borderTop: "1px solid #eef2f7",
+            opacity: pIn(frame, 62, 16),
+          }}
+        >
+          <span style={{ fontSize: 19, color: C.ink4 }}>↻</span>
+          <span
+            style={{
+              fontFamily: MONO,
+              fontSize: 14,
+              fontWeight: 700,
+              letterSpacing: 2.4,
+              color: C.ink4,
+            }}
+          >
+            SAME LOOP, EVERY WEEK
+          </span>
+        </div>
+      </Card>
     </AbsoluteFill>
   );
 };

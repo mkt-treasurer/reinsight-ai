@@ -63,6 +63,27 @@
         "q": "financial analyst office team working",
         "alt": "business people working desk"
       }
+    ],
+    "s-reach": [
+      {
+        "id": "reach-a",
+        "q": "singapore marina bay skyline night",
+        "alt": "singapore city night aerial"
+      }
+    ],
+    "s-demo": [
+      {
+        "id": "demo-a",
+        "q": "trading floor traders monitors wide",
+        "alt": "office night workers computer screens"
+      }
+    ],
+    "s-graph": [
+      {
+        "id": "graph-a",
+        "q": "abstract digital network data lines dark",
+        "alt": "server data flow abstract dark"
+      }
     ]
   }
 }
