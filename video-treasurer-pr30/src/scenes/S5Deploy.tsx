@@ -163,7 +163,7 @@ export const S5Deploy: React.FC = () => {
             color: C.brandLite,
           }}
         >
-          YOUR VPC OR ON-PREM
+          YOUR OWN CLOUD OR SERVERS
         </div>
       </div>
 
@@ -172,17 +172,45 @@ export const S5Deploy: React.FC = () => {
         y={BOX.y + 58}
         w={190}
         label="Your data"
-        sub="NEVER COPIED OUT"
+        sub="STAYS IN PLACE"
         p={pIn(frame, c0 + 10, 16)}
       />
-      <DB
-        x={BOX.x + 286}
-        y={BOX.y + 58}
-        w={190}
-        label="Indexes"
-        sub="BUILT IN PLACE"
-        p={pIn(frame, c0 + 18, 16)}
-      />
+
+      {/* 데이터 옆에서 에이전트가 돈다 */}
+      <div
+        style={{
+          position: "absolute",
+          left: BOX.x + 286,
+          top: BOX.y + 58,
+          width: 190,
+          textAlign: "center",
+          opacity: pIn(frame, c0 + 18, 16),
+        }}
+      >
+        <div
+          style={{
+            width: 74,
+            height: 74,
+            margin: "0 auto",
+            borderRadius: 37,
+            background: C.brand,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: `0 0 ${18 + pIn(frame, c0 + 24, 20) * 30}px rgba(59,130,246,0.55)`,
+          }}
+        >
+          <span style={{ width: 24, height: 24, background: "#fff", transform: "rotate(45deg)" }} />
+        </div>
+        <div style={{ marginTop: 14, fontSize: 22, fontWeight: 700, letterSpacing: -0.6, color: C.onDark }}>
+          Treasurer AX
+        </div>
+        <div
+          style={{ marginTop: 4, fontFamily: MONO, fontSize: 13, letterSpacing: 1.6, color: C.onDark3 }}
+        >
+          RUNS NEXT TO IT
+        </div>
+      </div>
 
       <GraphStatic cx={BC.x + 170} cy={BC.y + 60} scale={s} />
 
