@@ -1,5 +1,6 @@
 import React from "react";
-import { AbsoluteFill, Loop, OffthreadVideo, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Loop, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { Video } from "@remotion/media";
 import media from "./media.json";
 import { EASE } from "./lib";
 
@@ -32,10 +33,9 @@ export const Broll: React.FC<{
   return (
     <div style={{ overflow: "hidden", opacity, ...style }}>
       <Loop durationInFrames={Math.max(2, Math.round(seconds * 30) - 2)} layout="none">
-        <OffthreadVideo
+        <Video
           src={staticFile(`media/${id}.mp4`)}
           muted
-          toneMapped={false}
           style={{
             width: "100%",
             height: "100%",
@@ -51,11 +51,9 @@ export const Broll: React.FC<{
 
 /** 씬별 전면 배경 강도 — 0 이면 씬이 직접 배치한다는 뜻 */
 const FULL: Record<string, number> = {
-  "s-open": 0.88,
   "s-graph": 0.18,
   "s-deploy": 0.30,
   "s-reach": 0.22,
-  "s-close": 0.82,
 };
 
 const XF = 16;

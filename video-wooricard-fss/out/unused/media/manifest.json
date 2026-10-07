@@ -1,0 +1,164 @@
+{
+  "clips": {
+    "s1-a": {
+      "scene": "s1-hook",
+      "query": "financial documents desk close up",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/person-writing-tax-fraud-on-a-notepad-7247869/",
+      "author": "Leeloo The First",
+      "authorUrl": "https://www.pexels.com/@leeloothefirst",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.966666666666667
+    },
+    "s1-b": {
+      "scene": "s1-hook",
+      "query": "office worker late night computer",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/hands-typing-on-laptop-in-dark-environment-34771078/",
+      "author": "Anh Nguyen",
+      "authorUrl": "https://www.pexels.com/@anh-nguyen-517648218",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.966666666666667
+    },
+    "s2-a": {
+      "scene": "s2-mess",
+      "query": "spreadsheet data screen close up",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/a-person-using-a-calculator-7687708/",
+      "author": "Kindel Media",
+      "authorUrl": "https://www.pexels.com/@kindelmedia",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 9.188888888888888
+    },
+    "s2-b": {
+      "scene": "s2-mess",
+      "query": "stack of paper documents office",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/busy-printing-shop-with-workers-stacking-paper-38826409/",
+      "author": "Somogro Bangladesh",
+      "authorUrl": "https://www.pexels.com/@somogrobangladesh",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 9.188888888888888
+    },
+    "s2-c": {
+      "scene": "s2-mess",
+      "query": "server room data center blue",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/inserting-hard-drive-into-storage-device-38496192/",
+      "author": "Media Hopper Studio",
+      "authorUrl": "https://www.pexels.com/@media-hopper-studio-328305910",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 9.188888888888888
+    },
+    "s3-a": {
+      "scene": "s3-pipeline",
+      "query": "abstract data flow technology dark",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/abstract-wavy-digital-grid-with-floating-particles-34189669/",
+      "author": "Nicola Narracci",
+      "authorUrl": "https://www.pexels.com/@nicola-narracci-157460431",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10
+    },
+    "s3-b": {
+      "scene": "s3-pipeline",
+      "query": "programming code screen dark",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/reflection-of-a-girl-854137/",
+      "author": "Coverr",
+      "authorUrl": "https://www.pexels.com/@coverr",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10.866666666666665
+    },
+    "s3-c": {
+      "scene": "s3-pipeline",
+      "query": "business analytics dashboard screen",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/tablet-displaying-financial-data-analytics-36328573/",
+      "author": "Jakub Zerdzicki",
+      "authorUrl": "https://www.pexels.com/@jakubzerdzicki",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10.866666666666665
+    },
+    "s4-a": {
+      "scene": "s4-ai",
+      "query": "circuit board macro technology",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/close-up-shot-of-motherboard-6208729/",
+      "author": "StefWithAnF",
+      "authorUrl": "https://www.pexels.com/@stefwithanf-1955763",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10.666666666666666
+    },
+    "s4-b": {
+      "scene": "s4-ai",
+      "query": "businessman reviewing documents signing",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/a-person-holding-a-clipboard-8069063/",
+      "author": "RDNE Stock project",
+      "authorUrl": "https://www.pexels.com/@rdne",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10.666666666666666
+    },
+    "s5-a": {
+      "scene": "s5-trace",
+      "query": "magnifying glass financial documents",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/charts-and-magnifying-glass-7947448/",
+      "author": "RDNE Stock project",
+      "authorUrl": "https://www.pexels.com/@rdne",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.966666666666667
+    },
+    "s5-b": {
+      "scene": "s5-trace",
+      "query": "finger pointing computer screen data",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/a-woman-pointing-her-finger-on-the-laptop-screen-15288943/",
+      "author": "Media Hopper Studio",
+      "authorUrl": "https://www.pexels.com/@media-hopper-studio-328305910",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.966666666666667
+    },
+    "s6-a": {
+      "scene": "s6-card",
+      "query": "credit card payment terminal store",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/paying-with-card-on-card-reader-11158789/",
+      "author": "Towfiqu barbhuiya",
+      "authorUrl": "https://www.pexels.com/@towfiqu-barbhuiya-3440682",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 9.055555555555555
+    },
+    "s6-b": {
+      "scene": "s6-card",
+      "query": "modern bank office building",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/computer-monitors-on-the-table-8346903/",
+      "author": "Kampus Production",
+      "authorUrl": "https://www.pexels.com/@kampus",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 9.055555555555555
+    },
+    "s6-c": {
+      "scene": "s6-card",
+      "query": "financial charts monitor trading",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/crypto-market-analysis-on-dual-screens-38512646/",
+      "author": "Rafael Minguet Delgado",
+      "authorUrl": "https://www.pexels.com/@thales13",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 9.055555555555555
+    },
+    "s7-a": {
+      "scene": "s7-close",
+      "query": "seoul city skyline night",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/aerial-night-view-of-bustling-city-street-31251626/",
+      "author": "PUWOOK Kwak",
+      "authorUrl": "https://www.pexels.com/@ilovephotos",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 10
+    }
+  }
+}

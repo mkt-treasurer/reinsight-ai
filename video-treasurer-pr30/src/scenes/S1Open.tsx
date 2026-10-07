@@ -2,94 +2,87 @@ import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { C, FONT, MONO } from "../theme";
 import { pIn, EASE } from "../lib";
+import { VoidStage, Statement, Em } from "../ui/Alpha";
 import { cueAt, scene } from "../timing";
 
-/** Open — wordmark builds, then the one line that says what this is */
+/** Open — 타일이 켜지면서 무대가 서고, 그 위에 한 줄 선언 */
 export const S1Open: React.FC = () => {
   const frame = useCurrentFrame();
   const [c0, c1] = cueAt("s-open");
   const life = scene("s-open").durationInFrames;
 
-  const build = pIn(frame, 4, 26);
-  const track = interpolate(build, [0, 1], [26, 13]);
-  const push = interpolate(frame, [0, life], [1.05, 1], {
+  const build = pIn(frame, 6, 24);
+  const track = interpolate(build, [0, 1], [22, 11]);
+  const drift = interpolate(frame, [0, life], [0, -14], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: EASE,
   });
-  const rule = pIn(frame, c1 - 6, 18);
 
   return (
     <AbsoluteFill style={{ fontFamily: FONT }}>
-      <AbsoluteFill
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          transform: `scale(${push})`,
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 26 }}>
-            <span
-              style={{
-                width: 26,
-                height: 26,
-                background: C.brand,
-                transform: `rotate(${45 + (1 - build) * 90}deg)`,
-                opacity: build,
-                display: "inline-block",
-              }}
-            />
-            <span
-              style={{
-                fontSize: 82,
-                fontWeight: 700,
-                letterSpacing: track,
-                color: C.onDark,
-                opacity: build,
-              }}
-            >
-              TREASURER
-            </span>
-          </div>
+      <VoidStage seed={11} count={34} from={0} />
 
-          <div
+      <AbsoluteFill style={{ transform: `translateY(${drift}px)` }}>
+        {/* 워드마크 */}
+        <div
+          style={{
+            position: "absolute",
+            left: 152,
+            top: 286,
+            display: "flex",
+            alignItems: "center",
+            gap: 20,
+            opacity: build,
+          }}
+        >
+          <span
             style={{
-              marginTop: 26,
-              fontFamily: MONO,
-              fontSize: 19,
-              fontWeight: 700,
-              letterSpacing: 9,
-              color: C.brandLite,
-              opacity: pIn(frame, c0 + 6, 16),
-            }}
-          >
-            FINANCIAL INTELLIGENCE
-          </div>
-
-          <div
-            style={{
-              margin: "46px auto 0",
-              width: rule * 300,
-              height: 1,
-              background: C.onDarkLine2,
+              width: 20,
+              height: 20,
+              background: C.brand,
+              transform: `rotate(${45 + (1 - build) * 90}deg)`,
+              display: "inline-block",
             }}
           />
-
-          <div
+          <span
             style={{
-              marginTop: 40,
-              fontSize: 46,
-              fontWeight: 600,
-              letterSpacing: -1.4,
-              color: C.onDark,
-              opacity: pIn(frame, c1, 18),
-              transform: `translateY(${(1 - pIn(frame, c1, 18)) * 14}px)`,
+              fontSize: 30,
+              fontWeight: 700,
+              letterSpacing: track,
+              color: "#fff",
             }}
           >
-            AI agents for financial institutions
-          </div>
+            TREASURER
+          </span>
+        </div>
 
+        <Statement
+          from={c0 + 2}
+          size={92}
+          top={392}
+          lines={[
+            <>The analyst's work,</>,
+            <>
+              run <Em>end to end.</Em>
+            </>,
+          ]}
+        />
+
+        <div
+          style={{
+            position: "absolute",
+            left: 156,
+            top: 684,
+            fontFamily: MONO,
+            fontSize: 19,
+            fontWeight: 700,
+            letterSpacing: 6,
+            color: "#5b8ddb",
+            opacity: pIn(frame, c1 + 2, 18),
+          }}
+        >
+          AI AGENTS FOR FINANCIAL INSTITUTIONS
         </div>
       </AbsoluteFill>
     </AbsoluteFill>

@@ -1,9 +1,9 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { C, FONT, MONO } from "../theme";
+import { C, FONT, MONO, SERIF } from "../theme";
 import { pIn, EASE } from "../lib";
-import { Broll } from "../Footage";
 import { CornerMark } from "../Brand";
+import { VoidStage } from "../ui/Alpha";
 import { cueAt, scene } from "../timing";
 
 /**
@@ -21,9 +21,9 @@ const SIDES = [
 ];
 
 const CW = 560;
-const CY = 356;
+const CY = 406;
 const CH = 236;
-const MERGE_Y = 712;
+const MERGE_Y = 748;
 
 export const S3Layers: React.FC = () => {
   const frame = useCurrentFrame();
@@ -43,20 +43,7 @@ export const S3Layers: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ fontFamily: FONT }}>
-      <Broll
-        id="demo-a"
-        seconds={9.9}
-        opacity={0.13}
-        zoom={0.08}
-        grade="saturate(0.3) brightness(0.7) contrast(1.08)"
-        style={{ position: "absolute", inset: 0 }}
-      />
-      <AbsoluteFill
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(8,14,28,0.9) 0%, rgba(8,14,28,0.72) 46%, rgba(8,14,28,0.94) 100%)",
-        }}
-      />
+      <VoidStage seed={5} count={26} from={0} />
 
       <CornerMark opacity={pIn(frame, 0, 10) * 0.85} />
 
@@ -71,20 +58,32 @@ export const S3Layers: React.FC = () => {
             opacity: pIn(frame, 2, 14),
           }}
         >
-          01 · DATA
+          WHY AN AGENT CAN RUN THEM
         </div>
         <div
           style={{
-            marginTop: 24,
-            fontSize: 58,
-            fontWeight: 700,
-            letterSpacing: -2.4,
+            marginTop: 26,
+            fontFamily: SERIF,
+            fontSize: 64,
+            letterSpacing: -1.6,
             color: C.onDark,
             opacity: pIn(frame, 8, 18),
             transform: `translateY(${(1 - pIn(frame, 8, 18)) * 14}px)`,
           }}
         >
-          Data a better model <span style={{ color: C.brandLite }}>can&apos;t buy</span>.
+          The same jobs read the <span style={{ color: C.brandLite }}>same sources</span>.
+        </div>
+        <div
+          style={{
+            marginTop: 20,
+            fontSize: 30,
+            fontWeight: 600,
+            letterSpacing: -0.9,
+            color: C.onDark2,
+            opacity: pIn(frame, c1 - 26, 16),
+          }}
+        >
+          So we own them.
         </div>
       </div>
 
@@ -125,8 +124,8 @@ export const S3Layers: React.FC = () => {
               top: CY,
               width: CW,
               height: CH,
-              border: `1px solid ${s.hero ? "rgba(96,165,250,0.5)" : C.onDarkLine2}`,
-              background: s.hero ? "rgba(59,130,246,0.09)" : "rgba(148,163,184,0.05)",
+              border: `1px solid ${s.hero ? "rgba(96,165,250,0.55)" : "rgba(148,163,184,0.26)"}`,
+              background: s.hero ? "rgba(13,40,92,0.92)" : "rgba(10,16,32,0.90)",
               borderRadius: 7,
               padding: "28px 32px",
               opacity: p,
@@ -197,7 +196,7 @@ export const S3Layers: React.FC = () => {
         </span>
         <span style={{ width: 1, height: 28, background: C.onDarkLine2 }} />
         <span style={{ fontSize: 30, fontWeight: 600, letterSpacing: -0.9, color: C.onDark }}>
-          Collected and cleaned in real time
+          Ours · collected and cleaned in real time
         </span>
       </div>
 

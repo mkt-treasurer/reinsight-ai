@@ -1,9 +1,10 @@
 import React from "react";
 import { AbsoluteFill, useCurrentFrame } from "remotion";
-import { C, FONT, MONO } from "../theme";
+import { C, FONT, MONO, SERIF } from "../theme";
 import { pIn } from "../lib";
 import { cueAt } from "../timing";
-import { Card, CardHead, PAPER, Say, PathTag } from "../ui/Card";
+import { Card, CardHead } from "../ui/Card";
+import { BlueField } from "../ui/Alpha";
 
 /** 사람이 매주 손으로 하는 일. 우리 제품의 결과물이 아니라 '업무' 자체를 적는다. */
 const JOBS = [
@@ -19,7 +20,8 @@ export const S2What: React.FC = () => {
   const pick = pIn(frame, 86, 20);
 
   return (
-    <AbsoluteFill style={{ fontFamily: FONT, background: PAPER }}>
+    <AbsoluteFill style={{ fontFamily: FONT }}>
+      <BlueField from={0} />
       <div
         style={{
           position: "absolute",
@@ -31,27 +33,50 @@ export const S2What: React.FC = () => {
           opacity: pIn(frame, 0, 12),
         }}
       >
-        <span style={{ width: 12, height: 12, background: C.brand, transform: "rotate(45deg)" }} />
+        <span style={{ width: 12, height: 12, background: "#fff", transform: "rotate(45deg)" }} />
         <span
-          style={{ fontFamily: MONO, fontSize: 15, fontWeight: 700, letterSpacing: 4.5, color: C.ink2 }}
+          style={{ fontFamily: MONO, fontSize: 15, fontWeight: 700, letterSpacing: 4.5, color: "rgba(255,255,255,0.82)" }}
         >
           TREASURER AX
         </span>
       </div>
 
-      <Say
-        y={368}
-        p={pIn(frame, 4, 18)}
-        sub="Work that repeats is work an agent can run."
-        subP={pIn(frame, 94, 18)}
+      <div
+        style={{
+          position: "absolute",
+          left: 120,
+          top: 348,
+          width: 700,
+          fontFamily: SERIF,
+          fontSize: 66,
+          lineHeight: 1.18,
+          letterSpacing: -1.4,
+          color: "#fff",
+          opacity: pIn(frame, 4, 18),
+          transform: `translateY(${(1 - pIn(frame, 4, 18)) * 16}px)`,
+        }}
       >
         Analysts repeat the same
         <br />
         jobs every day.
-      </Say>
+      </div>
 
-      <PathTag p={pIn(frame, 20, 14)}>/ax/agents</PathTag>
-
+      <div
+        style={{
+          position: "absolute",
+          left: 122,
+          top: 580,
+          width: 680,
+          fontSize: 27,
+          fontWeight: 600,
+          letterSpacing: -0.5,
+          color: "rgba(255,255,255,0.82)",
+          opacity: pIn(frame, 94, 18),
+          transform: `translateY(${(1 - pIn(frame, 94, 18)) * 10}px)`,
+        }}
+      >
+        Work that repeats is work an agent can run.
+      </div>
       <Card x={880} y={288} w={912} p={pIn(frame, 8, 16)}>
         <CardHead label="THE DAILY LOOP" right="DONE BY HAND" />
         <div style={{ padding: "6px 28px 10px" }}>
