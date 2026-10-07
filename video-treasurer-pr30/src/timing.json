@@ -1,232 +1,232 @@
 {
   "fps": 30,
   "source": "static:script.json",
-  "total": 44.86,
-  "totalFrames": 1346,
+  "total": 50.96,
+  "totalFrames": 1529,
   "scenes": [
     {
       "id": "s-open",
       "start": 0,
-      "end": 3.8800000000000003,
-      "dur": 3.8800000000000003,
+      "end": 4.279999999999999,
+      "dur": 4.279999999999999,
       "cues": [
         {
-          "sec": 1.8,
+          "sec": 2,
           "sub": "",
           "start": 0,
-          "dur": 1.8,
+          "dur": 2,
           "fromInScene": 0,
-          "framesInScene": 54
+          "framesInScene": 60
         },
         {
-          "sec": 1.8,
+          "sec": 2,
           "sub": "",
-          "start": 1.9000000000000001,
-          "dur": 1.8,
-          "fromInScene": 57,
-          "framesInScene": 54
+          "start": 2.1,
+          "dur": 2,
+          "fromInScene": 63,
+          "framesInScene": 60
         }
       ],
       "from": 0,
-      "durationInFrames": 116
+      "durationInFrames": 128
     },
     {
       "id": "s-what",
-      "start": 3.8800000000000003,
-      "end": 8.76,
-      "dur": 4.879999999999999,
+      "start": 4.279999999999999,
+      "end": 10.959999999999999,
+      "dur": 6.68,
       "cues": [
         {
-          "sec": 1.5,
+          "sec": 2.1,
           "sub": "",
-          "start": 3.8800000000000003,
-          "dur": 1.5,
+          "start": 4.279999999999999,
+          "dur": 2.1,
           "fromInScene": 0,
-          "framesInScene": 45
+          "framesInScene": 63
         },
         {
-          "sec": 1.5,
+          "sec": 2.1,
           "sub": "",
-          "start": 5.48,
-          "dur": 1.5,
-          "fromInScene": 48,
-          "framesInScene": 45
+          "start": 6.4799999999999995,
+          "dur": 2.1,
+          "fromInScene": 66,
+          "framesInScene": 63
         },
         {
-          "sec": 1.5,
+          "sec": 2.1,
           "sub": "",
-          "start": 7.08,
-          "dur": 1.5,
-          "fromInScene": 96,
-          "framesInScene": 45
+          "start": 8.68,
+          "dur": 2.1,
+          "fromInScene": 132,
+          "framesInScene": 63
         }
       ],
-      "from": 116,
-      "durationInFrames": 147
+      "from": 128,
+      "durationInFrames": 201
     },
     {
-      "id": "s-demo",
-      "start": 8.76,
-      "end": 17.54,
-      "dur": 8.78,
+      "id": "s-layers",
+      "start": 10.959999999999999,
+      "end": 18.54,
+      "dur": 7.58,
       "cues": [
         {
-          "sec": 2.6,
+          "sec": 2.4,
           "sub": "",
-          "start": 8.76,
-          "dur": 2.6,
+          "start": 10.959999999999999,
+          "dur": 2.4,
           "fromInScene": 0,
-          "framesInScene": 78
-        },
-        {
-          "sec": 2.6,
-          "sub": "",
-          "start": 11.46,
-          "dur": 2.6,
-          "fromInScene": 81,
-          "framesInScene": 78
-        },
-        {
-          "sec": 3.2,
-          "sub": "",
-          "start": 14.16,
-          "dur": 3.2,
-          "fromInScene": 162,
-          "framesInScene": 96
-        }
-      ],
-      "from": 263,
-      "durationInFrames": 263
-    },
-    {
-      "id": "s-graph",
-      "start": 17.54,
-      "end": 25.12,
-      "dur": 7.580000000000002,
-      "cues": [
-        {
-          "sec": 2.2,
-          "sub": "",
-          "start": 17.54,
-          "dur": 2.2,
-          "fromInScene": 0,
-          "framesInScene": 66
+          "framesInScene": 72
         },
         {
           "sec": 2.4,
           "sub": "",
-          "start": 19.84,
+          "start": 13.459999999999999,
           "dur": 2.4,
-          "fromInScene": 69,
+          "fromInScene": 75,
           "framesInScene": 72
         },
         {
-          "sec": 2.6,
+          "sec": 2.4,
           "sub": "",
-          "start": 22.34,
-          "dur": 2.6,
-          "fromInScene": 144,
-          "framesInScene": 78
+          "start": 15.959999999999999,
+          "dur": 2.4,
+          "fromInScene": 150,
+          "framesInScene": 72
         }
       ],
-      "from": 526,
-      "durationInFrames": 228
+      "from": 329,
+      "durationInFrames": 227
+    },
+    {
+      "id": "s-graph",
+      "start": 18.54,
+      "end": 26.92,
+      "dur": 8.380000000000003,
+      "cues": [
+        {
+          "sec": 2.5,
+          "sub": "",
+          "start": 18.54,
+          "dur": 2.5,
+          "fromInScene": 0,
+          "framesInScene": 75
+        },
+        {
+          "sec": 2.7,
+          "sub": "",
+          "start": 21.14,
+          "dur": 2.7,
+          "fromInScene": 78,
+          "framesInScene": 81
+        },
+        {
+          "sec": 2.8,
+          "sub": "",
+          "start": 23.94,
+          "dur": 2.8,
+          "fromInScene": 162,
+          "framesInScene": 84
+        }
+      ],
+      "from": 556,
+      "durationInFrames": 252
     },
     {
       "id": "s-deploy",
-      "start": 25.12,
-      "end": 29.8,
-      "dur": 4.68,
+      "start": 26.92,
+      "end": 32.5,
+      "dur": 5.579999999999998,
       "cues": [
         {
-          "sec": 2.2,
+          "sec": 2.6,
           "sub": "",
-          "start": 25.12,
-          "dur": 2.2,
+          "start": 26.92,
+          "dur": 2.6,
           "fromInScene": 0,
-          "framesInScene": 66
+          "framesInScene": 78
         },
         {
-          "sec": 2.2,
+          "sec": 2.7,
           "sub": "",
-          "start": 27.42,
-          "dur": 2.2,
-          "fromInScene": 69,
-          "framesInScene": 66
+          "start": 29.62,
+          "dur": 2.7,
+          "fromInScene": 81,
+          "framesInScene": 81
         }
       ],
-      "from": 754,
-      "durationInFrames": 140
+      "from": 808,
+      "durationInFrames": 167
     },
     {
       "id": "s-bench",
-      "start": 29.8,
-      "end": 36.08,
-      "dur": 6.279999999999998,
+      "start": 32.5,
+      "end": 39.980000000000004,
+      "dur": 7.480000000000004,
       "cues": [
         {
-          "sec": 3,
+          "sec": 3.6,
           "sub": "",
-          "start": 29.8,
-          "dur": 3,
+          "start": 32.5,
+          "dur": 3.6,
           "fromInScene": 0,
-          "framesInScene": 90
+          "framesInScene": 108
         },
         {
-          "sec": 3,
+          "sec": 3.6,
           "sub": "",
-          "start": 32.9,
-          "dur": 3,
-          "fromInScene": 93,
-          "framesInScene": 90
+          "start": 36.2,
+          "dur": 3.6,
+          "fromInScene": 111,
+          "framesInScene": 108
         }
       ],
-      "from": 894,
-      "durationInFrames": 188
+      "from": 975,
+      "durationInFrames": 224
     },
     {
       "id": "s-reach",
-      "start": 36.08,
-      "end": 40.56,
-      "dur": 4.480000000000004,
+      "start": 39.980000000000004,
+      "end": 45.660000000000004,
+      "dur": 5.68,
       "cues": [
         {
-          "sec": 2.1,
+          "sec": 2.7,
           "sub": "",
-          "start": 36.08,
-          "dur": 2.1,
+          "start": 39.980000000000004,
+          "dur": 2.7,
           "fromInScene": 0,
-          "framesInScene": 63
+          "framesInScene": 81
         },
         {
-          "sec": 2.1,
+          "sec": 2.7,
           "sub": "",
-          "start": 38.28,
-          "dur": 2.1,
-          "fromInScene": 66,
-          "framesInScene": 63
+          "start": 42.78,
+          "dur": 2.7,
+          "fromInScene": 84,
+          "framesInScene": 81
         }
       ],
-      "from": 1082,
-      "durationInFrames": 135
+      "from": 1199,
+      "durationInFrames": 171
     },
     {
       "id": "s-close",
-      "start": 40.56,
-      "end": 43.96,
-      "dur": 3.3999999999999986,
+      "start": 45.660000000000004,
+      "end": 50.06,
+      "dur": 4.399999999999999,
       "cues": [
         {
-          "sec": 3.4,
+          "sec": 4.4,
           "sub": "",
-          "start": 40.56,
-          "dur": 3.4,
+          "start": 45.660000000000004,
+          "dur": 4.4,
           "fromInScene": 0,
-          "framesInScene": 102
+          "framesInScene": 132
         }
       ],
-      "from": 1217,
-      "durationInFrames": 129
+      "from": 1370,
+      "durationInFrames": 159
     }
   ]
 }

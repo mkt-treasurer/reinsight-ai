@@ -6,7 +6,7 @@ import { SceneFootage } from "./Footage";
 import { C } from "./theme";
 import { S1Open } from "./scenes/S1Open";
 import { S2What } from "./scenes/S2What";
-import { S2Demo } from "./scenes/S2Demo";
+import { S3Layers } from "./scenes/S3Layers";
 import { S3Graph } from "./scenes/S3Graph";
 import { S5Deploy } from "./scenes/S5Deploy";
 import { S4Bench } from "./scenes/S4Bench";
@@ -16,7 +16,7 @@ import { S7Close } from "./scenes/S7Close";
 const MAP: Record<string, React.FC> = {
   "s-open": S1Open,
   "s-what": S2What,
-  "s-demo": S2Demo,
+  "s-layers": S3Layers,
   "s-graph": S3Graph,
   "s-deploy": S5Deploy,
   "s-bench": S4Bench,
@@ -27,7 +27,7 @@ const MAP: Record<string, React.FC> = {
 const TRANS: Record<string, Trans> = {
   "s-open": "fade",
   "s-what": "wipeR",
-  "s-demo": "zoomIn",
+  "s-layers": "slideUp",
   "s-graph": "zoomIn",
   "s-deploy": "slideL",
   "s-bench": "wipeR",

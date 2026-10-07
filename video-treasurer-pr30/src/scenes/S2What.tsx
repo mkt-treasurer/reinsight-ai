@@ -47,13 +47,13 @@ export const S2What: React.FC = () => {
       >
         Analysts repeat the same
         <br />
-        three jobs every week.
+        jobs every day.
       </Say>
 
       <PathTag p={pIn(frame, 20, 14)}>/ax/agents</PathTag>
 
       <Card x={880} y={288} w={912} p={pIn(frame, 8, 16)}>
-        <CardHead label="THE WEEKLY LOOP" right="DONE BY HAND" />
+        <CardHead label="THE DAILY LOOP" right="DONE BY HAND" />
         <div style={{ padding: "6px 28px 10px" }}>
           {JOBS.map((j, i) => {
             const on = i === 1;
@@ -128,7 +128,7 @@ export const S2What: React.FC = () => {
               color: C.ink4,
             }}
           >
-            SAME LOOP, EVERY WEEK
+            SAME LOOP, EVERY DAY
           </span>
         </div>
       </Card>

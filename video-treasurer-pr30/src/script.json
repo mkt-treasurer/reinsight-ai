@@ -1,19 +1,28 @@
 {
-  "title": "Treasurer — 45s festival film",
+  "title": "Treasurer — 50s festival film",
   "audience": "SFF Singapore · booth loop · no sound",
-  "register": "Visual first. One idea per shot. Under 90 words on screen, total.",
-  "note": "v6: 45s. Adds what-we-do, the ontology graph the dots assemble into, deployment, and reach.",
+  "register": "Visual first. One idea per shot, held long enough to read.",
+  "note": "v7: the product mockup is gone. Jobs repeat → an agent can run them → here is the stack that runs them → TA7Z ontology. Every shot held longer.",
   "gapCue": 0.1,
   "gapScene": 0.18,
   "tailHold": 0.9,
   "scenes": [
-    { "id": "s-open", "cues": [{ "sec": 1.8, "sub": "" }, { "sec": 1.8, "sub": "" }] },
-    { "id": "s-what", "cues": [{ "sec": 1.5, "sub": "" }, { "sec": 1.5, "sub": "" }, { "sec": 1.5, "sub": "" }] },
-    { "id": "s-demo", "cues": [{ "sec": 2.6, "sub": "" }, { "sec": 2.6, "sub": "" }, { "sec": 3.2, "sub": "" }] },
-    { "id": "s-graph", "cues": [{ "sec": 2.2, "sub": "" }, { "sec": 2.4, "sub": "" }, { "sec": 2.6, "sub": "" }] },
-    { "id": "s-deploy", "cues": [{ "sec": 2.2, "sub": "" }, { "sec": 2.2, "sub": "" }] },
-    { "id": "s-bench", "cues": [{ "sec": 3.0, "sub": "" }, { "sec": 3.0, "sub": "" }] },
-    { "id": "s-reach", "cues": [{ "sec": 2.1, "sub": "" }, { "sec": 2.1, "sub": "" }] },
-    { "id": "s-close", "cues": [{ "sec": 3.4, "sub": "" }] }
+    { "id": "s-open", "cues": [{ "sec": 2.0, "sub": "" }, { "sec": 2.0, "sub": "" }] },
+    {
+      "id": "s-what",
+      "cues": [{ "sec": 2.1, "sub": "" }, { "sec": 2.1, "sub": "" }, { "sec": 2.1, "sub": "" }]
+    },
+    {
+      "id": "s-layers",
+      "cues": [{ "sec": 2.4, "sub": "" }, { "sec": 2.4, "sub": "" }, { "sec": 2.4, "sub": "" }]
+    },
+    {
+      "id": "s-graph",
+      "cues": [{ "sec": 2.5, "sub": "" }, { "sec": 2.7, "sub": "" }, { "sec": 2.8, "sub": "" }]
+    },
+    { "id": "s-deploy", "cues": [{ "sec": 2.6, "sub": "" }, { "sec": 2.7, "sub": "" }] },
+    { "id": "s-bench", "cues": [{ "sec": 3.6, "sub": "" }, { "sec": 3.6, "sub": "" }] },
+    { "id": "s-reach", "cues": [{ "sec": 2.7, "sub": "" }, { "sec": 2.7, "sub": "" }] },
+    { "id": "s-close", "cues": [{ "sec": 4.4, "sub": "" }] }
   ]
 }

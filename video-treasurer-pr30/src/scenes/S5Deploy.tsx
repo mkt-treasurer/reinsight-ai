@@ -6,31 +6,63 @@ import { CornerMark } from "../Brand";
 import { GraphStatic } from "../ui/Graph";
 import { cueAt } from "../timing";
 
-const BOX = { x: 520, y: 372, w: 880, h: 448 };
-const BC = { x: BOX.x + BOX.w / 2, y: BOX.y + BOX.h / 2 - 10 };
+const RED = "#f87171";
 
-/** Catches the graph from the previous shot and draws a boundary around it */
+/** 왼쪽은 고객 경계 안, 오른쪽은 바깥 — 가운데 선에서 데이터가 막힌다 */
+const SPLIT = 1180;
+const BOX = { x: 150, y: 338, w: SPLIT - 150 - 46, h: 470 };
+const BC = { x: BOX.x + BOX.w / 2, y: BOX.y + BOX.h / 2 + 30 };
+
+/** 고객 환경 안의 DB */
+const DB: React.FC<{ x: number; y: number; w: number; label: string; sub: string; p: number }> = ({
+  x,
+  y,
+  w,
+  label,
+  sub,
+  p,
+}) => (
+  <div style={{ position: "absolute", left: x, top: y, width: w, opacity: p }}>
+    <svg width={w} height={74} style={{ display: "block" }}>
+      <ellipse cx={w / 2} cy={14} rx={w / 2 - 2} ry={13} fill="rgba(59,130,246,0.22)" stroke={C.brand} />
+      <path
+        d={`M 2 14 L 2 56 A ${w / 2 - 2} 13 0 0 0 ${w - 2} 56 L ${w - 2} 14`}
+        fill="rgba(59,130,246,0.12)"
+        stroke={C.brand}
+      />
+      <ellipse cx={w / 2} cy={34} rx={w / 2 - 2} ry={12} fill="none" stroke="rgba(96,165,250,0.4)" />
+    </svg>
+    <div style={{ marginTop: 10, textAlign: "center" }}>
+      <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: -0.6, color: C.onDark }}>{label}</div>
+      <div style={{ marginTop: 4, fontFamily: MONO, fontSize: 13, letterSpacing: 1.6, color: C.onDark3 }}>
+        {sub}
+      </div>
+    </div>
+  </div>
+);
+
 export const S5Deploy: React.FC = () => {
   const frame = useCurrentFrame();
   const [c0, c1] = cueAt("s-deploy");
 
-  // the graph keeps shrinking from where the last shot left it, then settles
-  const s = interpolate(frame, [0, 26], [0.62, 0.34], {
+  const s = interpolate(frame, [0, 26], [0.62, 0.3], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: EASE,
   });
-  const box = pIn(frame, 18, 18);
+  const box = pIn(frame, 16, 18);
 
-  const t = interpolate(frame - (c1 - 6), [0, 24], [0, 1], {
+  // 밖으로 나가려다 경계에서 막힌다
+  const t = interpolate(frame - (c1 - 10), [0, 22], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: EASE,
   });
-  const raw = BC.x + t * 560;
-  const edge = BOX.x + BOX.w - 18;
+  const raw = BC.x + t * 700;
+  const edge = SPLIT - 30;
   const px = Math.min(raw, edge);
   const blocked = raw >= edge;
+  const beat = blocked ? 0.5 + 0.5 * Math.abs(Math.sin((frame - c1) / 7)) : 0;
 
   return (
     <AbsoluteFill style={{ fontFamily: FONT }}>
@@ -41,19 +73,69 @@ export const S5Deploy: React.FC = () => {
           position: "absolute",
           left: 0,
           right: 0,
-          top: 158,
+          top: 150,
           textAlign: "center",
-          fontSize: 58,
+          fontSize: 56,
           fontWeight: 700,
           letterSpacing: -2.4,
           color: C.onDark,
           opacity: pIn(frame, 4, 16),
         }}
       >
-        Treasurer AX runs inside <span style={{ color: C.brandLite }}>your</span> cloud.
+        Treasurer AX runs inside <span style={{ color: C.brandLite }}>your</span> system.
       </div>
 
-      {/* the boundary */}
+      {/* 경계선 */}
+      <div
+        style={{
+          position: "absolute",
+          left: SPLIT,
+          top: 300,
+          width: 2,
+          height: 560,
+          background: `linear-gradient(180deg, rgba(96,165,250,0) 0%, rgba(96,165,250,${
+            0.5 + beat * 0.4
+          }) 18%, rgba(96,165,250,${0.5 + beat * 0.4}) 82%, rgba(96,165,250,0) 100%)`,
+          opacity: box,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          left: SPLIT - 104,
+          top: 262,
+          width: 208,
+          textAlign: "center",
+          fontFamily: MONO,
+          fontSize: 14,
+          fontWeight: 700,
+          letterSpacing: 2.6,
+          color: C.onDark3,
+          opacity: box,
+        }}
+      >
+        BOUNDARY
+      </div>
+
+      {/* 바깥쪽이 어디인지 명시 */}
+      <div style={{ position: "absolute", left: SPLIT + 64, top: 300, opacity: box }}>
+        <div
+          style={{
+            fontFamily: MONO,
+            fontSize: 15,
+            fontWeight: 700,
+            letterSpacing: 3,
+            color: C.onDark3,
+          }}
+        >
+          OUTSIDE
+        </div>
+        <div style={{ marginTop: 8, fontSize: 24, fontWeight: 600, color: C.onDark2 }}>
+          internet · vendor cloud
+        </div>
+      </div>
+
+      {/* 고객 환경 */}
       <div
         style={{
           position: "absolute",
@@ -61,11 +143,10 @@ export const S5Deploy: React.FC = () => {
           top: BOX.y,
           width: BOX.w,
           height: BOX.h,
-          border: `2px dashed rgba(96,165,250,0.55)`,
+          border: `2px dashed rgba(96,165,250,0.5)`,
           borderRadius: 8,
           background: "rgba(59,130,246,0.05)",
           opacity: box,
-          transform: `scale(${0.97 + box * 0.03})`,
         }}
       >
         <div
@@ -73,10 +154,10 @@ export const S5Deploy: React.FC = () => {
             position: "absolute",
             left: 26,
             top: -14,
-            background: "rgba(8,14,28,0.9)",
+            background: C.dark,
             padding: "0 12px",
             fontFamily: MONO,
-            fontSize: 18,
+            fontSize: 17,
             fontWeight: 700,
             letterSpacing: 3,
             color: C.brandLite,
@@ -86,67 +167,175 @@ export const S5Deploy: React.FC = () => {
         </div>
       </div>
 
-      <GraphStatic cx={BC.x} cy={BC.y} scale={s} />
+      <DB
+        x={BOX.x + 56}
+        y={BOX.y + 58}
+        w={190}
+        label="Your data"
+        sub="NEVER COPIED OUT"
+        p={pIn(frame, c0 + 10, 16)}
+      />
+      <DB
+        x={BOX.x + 286}
+        y={BOX.y + 58}
+        w={190}
+        label="Indexes"
+        sub="BUILT IN PLACE"
+        p={pIn(frame, c0 + 18, 16)}
+      />
+
+      <GraphStatic cx={BC.x + 170} cy={BC.y + 60} scale={s} />
 
       <div
         style={{
           position: "absolute",
           left: BOX.x,
-          top: BOX.y + BOX.h - 78,
+          top: BOX.y + BOX.h - 62,
           width: BOX.w,
           textAlign: "center",
           fontFamily: MONO,
-          fontSize: 19,
+          fontSize: 16,
           fontWeight: 700,
-          letterSpacing: 2.6,
+          letterSpacing: 2.2,
           color: C.onDark2,
           opacity: pIn(frame, c0 + 26, 16),
         }}
       >
-        AGENTS + YOUR DATA · CUSTOMER-HELD KEYS · ISO 27001
+        AGENTS + YOUR DATA · CUSTOMER-HELD KEYS
       </div>
 
-      {/* what tries to leave */}
-      {t > 0.06 ? (
+      {/* 바깥으로 나가려다 경계에서 되돌아오는 데이터 */}
+      {t > 0.05 ? (
         <>
+          {[0, 1, 2].map((k) => {
+            const tk = interpolate(frame - (c1 - 14 + k * 11), [0, 20], [0, 1], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+              easing: EASE,
+            });
+            if (tk <= 0.02) return null;
+            const rawK = BC.x + tk * 760;
+            const hit = rawK >= edge;
+            // 경계에 닿으면 튕겨 되돌아간다
+            const back = hit ? Math.min(1, (rawK - edge) / 260) : 0;
+            const xk = hit ? edge - back * 150 : rawK;
+            const yk = BC.y - 60 + k * 72;
+            return (
+              <React.Fragment key={k}>
+                <div
+                  style={{
+                    position: "absolute",
+                    left: xk,
+                    top: yk,
+                    width: 44,
+                    height: 20,
+                    borderRadius: 3,
+                    background: hit ? "rgba(248,113,113,0.22)" : "rgba(148,163,184,0.2)",
+                    border: `1px solid ${hit ? RED : "rgba(148,163,184,0.5)"}`,
+                    opacity: 1 - back * 0.7,
+                  }}
+                />
+                {hit && back < 0.5 ? (
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: edge - 6,
+                      top: yk - 16,
+                      width: 14,
+                      height: 52,
+                      background: RED,
+                      borderRadius: 3,
+                      opacity: (1 - back * 2) * (0.5 + beat * 0.5),
+                      filter: "blur(2px)",
+                    }}
+                  />
+                ) : null}
+              </React.Fragment>
+            );
+          })}
+
           <div
             style={{
               position: "absolute",
-              left: px,
-              top: BC.y - 9,
-              width: 18,
-              height: 18,
-              borderRadius: 4,
-              background: blocked ? C.red : C.onDark2,
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              left: BOX.x + BOX.w - 4,
-              top: BC.y - 54,
-              width: 5,
-              height: 108,
-              background: C.red,
-              opacity: blocked ? 0.85 : 0,
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              left: BOX.x + BOX.w + 44,
-              top: BC.y - 20,
-              fontSize: 34,
-              fontWeight: 700,
-              letterSpacing: -1,
-              color: C.red,
-              opacity: blocked ? pIn(frame, c1 + 14, 12) : 0,
+              left: SPLIT + 64,
+              top: 648,
+              opacity: blocked ? pIn(frame, c1 + 12, 14) : 0,
             }}
           >
-            Nothing leaves.
+            <div
+              style={{
+                fontSize: 46,
+                fontWeight: 700,
+                letterSpacing: -1.8,
+                color: RED,
+              }}
+            >
+              Nothing leaves.
+            </div>
+            <div
+              style={{
+                marginTop: 12,
+                fontFamily: MONO,
+                fontSize: 16,
+                letterSpacing: 2,
+                color: C.onDark3,
+              }}
+            >
+              NO DATA EGRESS · NO TRAINING ON YOUR DATA
+            </div>
           </div>
         </>
       ) : null}
+
+      {/* 보안 인증 */}
+      <div
+        style={{
+          position: "absolute",
+          left: SPLIT + 64,
+          top: 418,
+          display: "flex",
+          alignItems: "center",
+          gap: 20,
+          border: `1px solid rgba(52,211,153,0.5)`,
+          background: "rgba(52,211,153,0.08)",
+          borderRadius: 8,
+          padding: "22px 30px 24px",
+          opacity: pIn(frame, c0 + 2, 18),
+          transform: `translateY(${(1 - pIn(frame, c0 + 2, 18)) * 14}px)`,
+        }}
+      >
+        <svg width={46} height={54}>
+          <path
+            d="M23 2 L44 11 V28 C44 41 34 49 23 52 C12 49 2 41 2 28 V11 Z"
+            fill="rgba(52,211,153,0.14)"
+            stroke={C.emerald}
+            strokeWidth={2}
+          />
+          <path
+            d="M13 27 L20 34 L33 20"
+            fill="none"
+            stroke={C.emerald}
+            strokeWidth={3.4}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <div>
+          <div style={{ fontSize: 38, fontWeight: 700, letterSpacing: -1.4, color: C.onDark }}>
+            ISO/IEC <span style={{ color: C.emerald }}>27001</span>
+          </div>
+          <div
+            style={{
+              marginTop: 8,
+              fontSize: 20,
+              fontWeight: 600,
+              color: C.onDark2,
+            }}
+          >
+            Information Security Management certified
+          </div>
+        </div>
+      </div>
     </AbsoluteFill>
   );
 };

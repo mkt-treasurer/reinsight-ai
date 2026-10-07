@@ -38,12 +38,12 @@ const add = (i, l, r) => {
 // 씬별 에너지 (0 = 정지, 1 = 풀)
 const ENERGY = {
   "s-open": 0.38,
-  "s-what": 0.56,
-  "s-demo": 0.72,
-  "s-graph": 0.86,
+  "s-what": 0.54,
+  "s-layers": 0.74,
+  "s-graph": 0.88,
   "s-deploy": 0.64,
   "s-bench": 0.90,
-  "s-reach": 0.78,
+  "s-reach": 0.76,
   "s-close": 0.50,
 };
 const scenes = timing.scenes.map((s) => ({

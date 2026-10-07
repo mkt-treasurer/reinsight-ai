@@ -53,7 +53,8 @@ export const Broll: React.FC<{
 const FULL: Record<string, number> = {
   "s-open": 0.88,
   "s-graph": 0.18,
-  "s-deploy": 0.46,
+  "s-deploy": 0.30,
+  "s-reach": 0.22,
   "s-close": 0.82,
 };
 
