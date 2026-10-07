@@ -39,15 +39,10 @@ export const S2What: React.FC = () => {
         </span>
       </div>
 
-      <Say
-        y={368}
-        p={pIn(frame, 4, 18)}
-        sub="Work that repeats is work an agent can run."
-        subP={pIn(frame, 94, 18)}
-      >
-        Analysts repeat the same
+      <Say y={368} p={pIn(frame, 70, 20)}>
+        Work that repeats is
         <br />
-        jobs every day.
+        work an agent can run.
       </Say>
 
       <PathTag p={pIn(frame, 20, 14)}>/ax/agents</PathTag>

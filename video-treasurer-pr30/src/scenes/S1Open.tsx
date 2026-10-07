@@ -62,9 +62,9 @@ export const S1Open: React.FC = () => {
           size={92}
           top={392}
           lines={[
-            <>The analyst's work,</>,
+            <>Analysts repeat the same</>,
             <>
-              run <Em>end to end.</Em>
+              jobs <Em>every day.</Em>
             </>,
           ]}
         />
