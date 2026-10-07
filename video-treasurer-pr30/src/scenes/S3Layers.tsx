@@ -1,9 +1,9 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { C, FONT, MONO, SERIF } from "../theme";
+import { C, FONT, MONO } from "../theme";
 import { pIn, EASE } from "../lib";
 import { CornerMark } from "../Brand";
-import { VoidStage } from "../ui/Alpha";
+import { Stage } from "../ui/Stage";
 import { cueAt, scene } from "../timing";
 
 /**
@@ -43,7 +43,7 @@ export const S3Layers: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ fontFamily: FONT }}>
-      <VoidStage seed={5} count={26} from={0} />
+      <Stage seed={5} count={20} from={0} lattice={0.7} />
 
       <CornerMark opacity={pIn(frame, 0, 10) * 0.85} />
 
@@ -63,9 +63,9 @@ export const S3Layers: React.FC = () => {
         <div
           style={{
             marginTop: 26,
-            fontFamily: SERIF,
-            fontSize: 64,
-            letterSpacing: -1.6,
+            fontSize: 58,
+            fontWeight: 700,
+            letterSpacing: -2.4,
             color: C.onDark,
             opacity: pIn(frame, 8, 18),
             transform: `translateY(${(1 - pIn(frame, 8, 18)) * 14}px)`,

@@ -2,7 +2,7 @@ import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { C, FONT, MONO } from "../theme";
 import { pIn, EASE } from "../lib";
-import { VoidStage, Statement, Em } from "../ui/Alpha";
+import { Stage, Statement, Em } from "../ui/Stage";
 import { cueAt, scene } from "../timing";
 
 /** Open — 타일이 켜지면서 무대가 서고, 그 위에 한 줄 선언 */
@@ -21,7 +21,7 @@ export const S1Open: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ fontFamily: FONT }}>
-      <VoidStage seed={11} count={34} from={0} />
+      <Stage seed={11} count={24} from={0} />
 
       <AbsoluteFill style={{ transform: `translateY(${drift}px)` }}>
         {/* 워드마크 */}

@@ -2,7 +2,7 @@ import React from "react";
 import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { C, FONT, MONO } from "../theme";
 import { pIn } from "../lib";
-import { VoidStage, Statement, Em } from "../ui/Alpha";
+import { Stage, Statement, Em } from "../ui/Stage";
 import { scene } from "../timing";
 
 /** Close — 선언문이 먼저, 그 다음 부스에서 찍어 갈 락업 */
@@ -17,7 +17,7 @@ export const S7Close: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ fontFamily: FONT }}>
-      <VoidStage seed={23} count={30} from={0} tiles={1 - pIn(frame, lock - 4, 22) * 0.78} />
+      <Stage seed={23} count={28} from={0} lattice={1 - pIn(frame, lock - 4, 22) * 0.8} />
 
       <AbsoluteFill style={{ opacity: out }}>
         <Statement

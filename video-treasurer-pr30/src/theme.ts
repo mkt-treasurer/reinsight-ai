@@ -42,20 +42,3 @@ export const MONO = "'JetBrains Mono', 'Consolas', monospace";
 
 export const SAFE = 128;
 
-/** AlphaSense 계열 — 모자이크 배경과 풀블리드 블루 화면에 쓰는 값 */
-export const SERIF = "Georgia, 'Times New Roman', serif";
-
-export const A = {
-  void: "#05070f",          // 모자이크 바탕
-  field: "#1263e0",         // 풀블리드 블루
-  fieldDeep: "#0b47ab",
-  onField: "#ffffff",
-  onField2: "rgba(255,255,255,0.72)",
-  tile: [
-    "rgba(37,99,235,0.16)",
-    "rgba(37,99,235,0.30)",
-    "rgba(45,110,240,0.52)",
-    "rgba(70,140,255,0.82)",
-    "#3d8bff",
-  ],
-};

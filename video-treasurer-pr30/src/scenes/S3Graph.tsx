@@ -1,9 +1,9 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { FONT, MONO, SERIF } from "../theme";
+import { C, FONT, MONO } from "../theme";
 import { pIn, EASE } from "../lib";
+import { CornerMark } from "../Brand";
 import { NODES, EDGES } from "../ui/Graph";
-import { BlueField } from "../ui/Alpha";
 import { cueAt, scene } from "../timing";
 
 const rnd = (seed: number) => {
@@ -13,19 +13,19 @@ const rnd = (seed: number) => {
 
 const DOTS = Array.from({ length: 170 }, (_, i) => ({
   x: 180 + rnd(i + 3) * 1560,
-  y: 320 + rnd(i + 77) * 520,
+  y: 300 + rnd(i + 77) * 540,
   r: 1.8 + rnd(i + 151) * 1.7,
   n: i % NODES.length,
   d: Math.round(rnd(i + 233) * 34),
 }));
 
-/** 앞 씬이 남긴 질문에 답한다 — 모은 자료를 무엇으로 묶는가 */
+/** Answers the shot before it: this is how the agent knew. */
 export const S3Graph: React.FC = () => {
   const frame = useCurrentFrame();
   const [c0, c1, c2] = cueAt("s-graph");
   const life = scene("s-graph").durationInFrames;
 
-  // 완성된 그래프를 다음 씬이 경계 안에서 받아 간다
+  // hands the finished graph to the next shot, which catches it inside a boundary
   const handoff = interpolate(frame, [life - 26, life - 1], [1, 0.62], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -34,28 +34,28 @@ export const S3Graph: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ fontFamily: FONT }}>
-      <BlueField from={0} />
+      <CornerMark opacity={pIn(frame, 0, 10) * 0.85} />
 
-      <div style={{ position: "absolute", left: 0, right: 0, top: 128, textAlign: "center" }}>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 130, textAlign: "center" }}>
         <div
           style={{
-            fontFamily: SERIF,
-            fontSize: 62,
-            letterSpacing: -1.4,
-            color: "rgba(255,255,255,0.74)",
+            fontSize: 56,
+            fontWeight: 700,
+            letterSpacing: -2.4,
+            color: C.onDark,
             opacity: pIn(frame, 2, 16),
             transform: `translateY(${(1 - pIn(frame, 2, 16)) * 12}px)`,
           }}
         >
-          We don&rsquo;t just collect the data.
+          We don't just collect the data.
         </div>
         <div
           style={{
-            marginTop: 12,
-            fontFamily: SERIF,
-            fontSize: 62,
-            letterSpacing: -1.4,
-            color: "#fff",
+            marginTop: 10,
+            fontSize: 56,
+            fontWeight: 700,
+            letterSpacing: -2.4,
+            color: C.brandLite,
             opacity: pIn(frame, c2 - 24, 16),
             transform: `translateY(${(1 - pIn(frame, c2 - 24, 16)) * 12}px)`,
           }}
@@ -82,8 +82,8 @@ export const S3Graph: React.FC = () => {
                 cx={p.x + (target.x - p.x) * travel}
                 cy={p.y + (target.y - p.y) * travel}
                 r={p.r}
-                fill="#fff"
-                opacity={o * (travel > 0.1 ? 1 : 0.55)}
+                fill={travel > 0.1 ? C.brandLite : "rgba(148,163,184,0.55)"}
+                opacity={o}
               />
             );
           })}
@@ -104,8 +104,8 @@ export const S3Graph: React.FC = () => {
                 y1={A.y}
                 x2={A.x + (B.x - A.x) * p}
                 y2={A.y + (B.y - A.y) * p}
-                stroke="rgba(255,255,255,0.62)"
-                strokeWidth={1.6}
+                stroke="rgba(96,165,250,0.45)"
+                strokeWidth={1.8}
               />
             );
           })}
@@ -119,10 +119,16 @@ export const S3Graph: React.FC = () => {
                   cx={nd.x}
                   cy={nd.y}
                   r={nd.r * p * 2.1}
-                  fill="rgba(255,255,255,0.16)"
+                  fill={nd.hub ? "rgba(59,130,246,0.16)" : "rgba(96,165,250,0.10)"}
                   opacity={p}
                 />
-                <circle cx={nd.x} cy={nd.y} r={nd.r * p} fill="#fff" opacity={p} />
+                <circle
+                  cx={nd.x}
+                  cy={nd.y}
+                  r={nd.r * p}
+                  fill={nd.hub ? C.brand : C.brandLite}
+                  opacity={p}
+                />
               </g>
             );
           })}
@@ -143,7 +149,7 @@ export const S3Graph: React.FC = () => {
                 fontSize: nd.hub ? 22 : 19,
                 fontWeight: 700,
                 letterSpacing: 2.2,
-                color: nd.hub ? "#fff" : "rgba(255,255,255,0.78)",
+                color: nd.hub ? C.onDark : C.onDark2,
                 opacity: p,
               }}
             >
@@ -158,13 +164,13 @@ export const S3Graph: React.FC = () => {
           position: "absolute",
           left: 0,
           right: 0,
-          bottom: 92,
+          bottom: 96,
           textAlign: "center",
           fontFamily: MONO,
           fontSize: 21,
           fontWeight: 700,
           letterSpacing: 5,
-          color: "rgba(255,255,255,0.78)",
+          color: C.onDark2,
           opacity: pIn(frame, c2 + 6, 16),
         }}
       >
