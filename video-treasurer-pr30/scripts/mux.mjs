@@ -13,12 +13,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const video = path.join(root, "out", "video-silent.mp4");
+const video = path.join(root, "out", process.env.SILENT || "video-silent.mp4");
 const narration = path.join(root, "audio", "narration.wav");
-const final = path.join(root, "treasurer-45s-fintech-festival.mp4");
+const final = path.join(root, process.env.OUT_NAME || "treasurer-45s-fintech-festival.mp4");
 
 if (!existsSync(video)) {
-  throw new Error("먼저 렌더하세요: npx remotion render src/index.ts Main out/video-silent.mp4");
+  throw new Error(`먼저 렌더하세요. 없는 파일: ${video}`);
 }
 
 const NO_VO = process.env.NO_VO === "1" || !existsSync(narration);

@@ -22,15 +22,17 @@ export const Lattice: React.FC<{
   from?: number;
   opacity?: number;
   drift?: number;
-}> = ({ seed = 7, count = 26, from = 0, opacity = 1, drift = 1 }) => {
+  w?: number;
+  h?: number;
+}> = ({ seed = 7, count = 26, from = 0, opacity = 1, drift = 1, w = 1920, h = 1080 }) => {
   const frame = useCurrentFrame();
 
   const { pts, links } = React.useMemo(() => {
     const pts: Pt[] = [];
     for (let i = 0; i < count; i++) {
       pts.push({
-        x: 60 + rnd(seed + i * 1.7) * 1800,
-        y: 70 + rnd(seed + i * 2.9 + 40) * 940,
+        x: 60 + rnd(seed + i * 1.7) * (w - 120),
+        y: 70 + rnd(seed + i * 2.9 + 40) * (h - 140),
         r: 2.4 + rnd(seed + i * 3.7 + 80) * 2.6,
         hot: rnd(seed + i * 5.1 + 120) > 0.84,
         d: Math.floor(rnd(seed + i * 6.3 + 170) * 40),
@@ -53,7 +55,7 @@ export const Lattice: React.FC<{
       });
     });
     return { pts, links };
-  }, [seed, count]);
+  }, [seed, count, w, h]);
 
   const slide = interpolate(frame, [0, 300], [0, -26 * drift], {
     extrapolateLeft: "clamp",
@@ -63,8 +65,8 @@ export const Lattice: React.FC<{
   return (
     <AbsoluteFill style={{ opacity }}>
       <svg
-        width={1920}
-        height={1080}
+        width={w}
+        height={h}
         style={{ position: "absolute", left: 0, top: 0, transform: `translateY(${slide}px)` }}
       >
         {links.map(([a, b], i) => {
@@ -124,13 +126,17 @@ export const Stage: React.FC<{
   count?: number;
   from?: number;
   lattice?: number;
+  w?: number;
+  h?: number;
+  wash?: string;
   children?: React.ReactNode;
-}> = ({ seed = 7, count = 26, from = 0, lattice = 1, children }) => (
+}> = ({ seed = 7, count = 26, from = 0, lattice = 1, w = 1920, h = 1080, wash, children }) => (
   <AbsoluteFill style={{ background: C.darkDeep, fontFamily: FONT }}>
-    <Lattice seed={seed} count={count} from={from} opacity={lattice} />
+    <Lattice seed={seed} count={count} from={from} opacity={lattice} w={w} h={h} />
     <AbsoluteFill
       style={{
         background:
+          wash ??
           "radial-gradient(ellipse 62% 86% at 24% 52%, rgba(8,14,28,0.92) 0%, rgba(8,14,28,0.52) 56%, rgba(8,14,28,0) 100%)",
       }}
     />
