@@ -3,14 +3,13 @@ import { AbsoluteFill, Sequence } from "remotion";
 import { T } from "../timing";
 import { Enter, Trans } from "../transitions";
 import { C } from "../theme";
-import { V1Open, V2What, V3Layers, V4Graph } from "./VA";
+import { V1Open, V2What, V4Graph } from "./VA";
 import { V5Deploy, V6Bench, V8Close } from "./VB";
 
 /** 세로판은 가로판과 같은 timing.json 을 쓴다 — 사운드가 그대로 맞는다 */
 const MAP: Record<string, React.FC> = {
   "s-open": V1Open,
   "s-what": V2What,
-  "s-layers": V3Layers,
   "s-graph": V4Graph,
   "s-deploy": V5Deploy,
   "s-bench": V6Bench,
@@ -21,7 +20,6 @@ const MAP: Record<string, React.FC> = {
 const TRANS: Record<string, Trans> = {
   "s-open": "fade",
   "s-what": "slideUp",
-  "s-layers": "slideUp",
   "s-graph": "zoomIn",
   "s-deploy": "slideUp",
   "s-bench": "fade",

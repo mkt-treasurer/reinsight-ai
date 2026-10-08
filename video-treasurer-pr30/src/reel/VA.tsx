@@ -255,195 +255,15 @@ export const V2What: React.FC = () => {
   );
 };
 
-/* ──────────────────── 03 우리가 가진 자료 ──────────────────── */
-
-const SIDES = [
-  { k: "PUBLIC", items: ["Korean filings", "Market data"], hero: false },
-  {
-    k: "PRIVATE",
-    items: ["Private-company financials", "Ownership & relationships"],
-    hero: true,
-  },
-];
-
-export const V3Layers: React.FC = () => {
-  const frame = useCurrentFrame();
-  const [, c1, c2] = cueAt("s-layers");
-  const life = scene("s-layers").durationInFrames;
-
-  const flow = interpolate(frame, [c2 - 26, c2 + 20], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: EASE,
-  });
-  const hand = interpolate(frame, [life - 48, life - 14], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: EASE,
-  });
-
-  return (
-    <AbsoluteFill style={{ fontFamily: FONT }}>
-      <VStage seed={5} count={18} lattice={0.7} />
-      <VMark p={pIn(frame, 0, 12)} />
-
-      <VKick p={pIn(frame, 2, 14)} top={344}>
-        THE DATA THOSE JOBS RUN ON
-      </VKick>
-
-      <VSay
-        from={8}
-        size={64}
-        top={414}
-        lines={[
-          <>
-            Public and private — <VEm>already collected</VEm>.
-          </>,
-        ]}
-      />
-
-      {SIDES.map((s, i) => {
-        const p = pIn(frame, c1 - 20 + i * 12, 16);
-        return (
-          <div
-            key={s.k}
-            style={{
-              position: "absolute",
-              left: PAD,
-              right: PAD,
-              top: 644 + i * 228,
-              border: `1px solid ${s.hero ? "rgba(96,165,250,0.55)" : "rgba(148,163,184,0.26)"}`,
-              background: s.hero ? "rgba(13,40,92,0.92)" : "rgba(10,16,32,0.90)",
-              borderRadius: 10,
-              padding: "28px 32px 32px",
-              opacity: p,
-              transform: `translateY(${(1 - p) * 16}px)`,
-            }}
-          >
-            <div
-              style={{
-                fontFamily: MONO,
-                fontSize: 21,
-                fontWeight: 700,
-                letterSpacing: 3.4,
-                color: s.hero ? C.brandLite : C.onDark3,
-              }}
-            >
-              {s.k}
-            </div>
-            <div style={{ marginTop: 16 }}>
-              {s.items.map((it, k) => (
-                <div
-                  key={it}
-                  style={{
-                    fontSize: 38,
-                    fontWeight: 600,
-                    letterSpacing: -1,
-                    lineHeight: 1.44,
-                    color: C.onDark,
-                    opacity: pIn(frame, c1 - 12 + i * 12 + k * 7, 14),
-                  }}
-                >
-                  {it}
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      })}
-
-      {/* 둘이 아래로 모인다 */}
-      <svg width={W} height={H} style={{ position: "absolute", left: 0, top: 0 }}>
-        {[0, 1].map((i) => {
-          const p = interpolate(frame - (c2 - 30 + i * 6), [0, 20], [0, 1], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-            easing: EASE,
-          });
-          if (p <= 0.01) return null;
-          const x = i === 0 ? PAD + 150 : W - PAD - 150;
-          const y1 = i === 0 ? 644 + 196 : 872 + 224;
-          return (
-            <path
-              key={i}
-              d={`M ${x} ${y1} C ${x} ${y1 + 50}, ${W / 2} ${1142 - 50}, ${W / 2} ${1142}`}
-              stroke={i === 1 ? "rgba(96,165,250,0.7)" : "rgba(148,163,184,0.5)"}
-              strokeWidth={2.2}
-              fill="none"
-              strokeDasharray={420}
-              strokeDashoffset={420 * (1 - p)}
-            />
-          );
-        })}
-      </svg>
-
-      <div
-        style={{
-          position: "absolute",
-          left: PAD,
-          right: PAD,
-          top: 1152,
-          border: `1px solid rgba(96,165,250,${0.35 + flow * 0.4})`,
-          background: `rgba(59,130,246,${0.08 + flow * 0.08})`,
-          borderRadius: 10,
-          padding: "24px 30px 28px",
-          opacity: pIn(frame, c2 - 20, 16),
-          boxShadow: `0 0 ${flow * 54}px rgba(59,130,246,0.3)`,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: MONO,
-            fontSize: 21,
-            fontWeight: 700,
-            letterSpacing: 3.4,
-            color: C.brandLite,
-          }}
-        >
-          ONE LAYER
-        </div>
-        <div
-          style={{
-            marginTop: 10,
-            fontSize: 36,
-            fontWeight: 600,
-            letterSpacing: -1,
-            color: C.onDark,
-          }}
-        >
-          Cleaned and refreshed in real time
-        </div>
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          left: PAD,
-          right: PAD,
-          top: 1348,
-          fontSize: 34,
-          fontWeight: 600,
-          letterSpacing: -0.9,
-          color: C.onDark2,
-          opacity: hand,
-          transform: `translateY(${(1 - hand) * 10}px)`,
-        }}
-      >
-        Then linked — <span style={{ color: C.onDark, fontWeight: 700 }}>who owns what, as of when</span>.
-      </div>
-    </AbsoluteFill>
-  );
-};
-
 /* ──────────────────── 04 온톨로지 (간소화) ──────────────────── */
 
 /** 모바일에서 읽히도록 노드를 다섯으로 줄이고 크게 */
 const VN = [
-  { k: "COMPANY", x: 540, y: 900, r: 44, hub: true },
-  { k: "PERSON", x: 268, y: 712, r: 26 },
-  { k: "FILING", x: 812, y: 712, r: 26 },
-  { k: "ASSET", x: 268, y: 1096, r: 26 },
-  { k: "EVENT", x: 812, y: 1096, r: 26 },
+  { k: "COMPANY", x: 540, y: 898, r: 42, hub: true },
+  { k: "PERSON", x: 262, y: 726, r: 25 },
+  { k: "FILING", x: 818, y: 726, r: 25 },
+  { k: "ASSET", x: 262, y: 1064, r: 25 },
+  { k: "EVENT", x: 818, y: 1064, r: 25 },
 ];
 const VE: [number, number][] = [
   [0, 1],
@@ -454,21 +274,33 @@ const VE: [number, number][] = [
   [2, 4],
 ];
 
+/** 왼쪽 줄기가 공개 자료, 오른쪽이 비공개 자료 */
+const VSTREAMS = [
+  { k: "PUBLIC", items: "Filings · Market data", x0: PAD, hero: false },
+  { k: "PRIVATE", items: "Private financials · Ownership", x0: 566, hero: true },
+];
+const SW = 438;
+
 const rnd = (s: number) => {
   const x = Math.sin(s * 12.9898) * 43758.5453;
   return x - Math.floor(x);
 };
-const VDOTS = Array.from({ length: 70 }, (_, i) => ({
-  x: 90 + rnd(i + 3) * 900,
-  y: 640 + rnd(i + 77) * 540,
-  r: 2.2 + rnd(i + 151) * 2,
-  n: i % VN.length,
-  d: Math.round(rnd(i + 233) * 30),
-}));
+const VDOTS = Array.from({ length: 80 }, (_, i) => {
+  const side = i % 2;
+  return {
+    side,
+    x: VSTREAMS[side].x0 + rnd(i + 3) * SW,
+    y: 666 + rnd(i + 77) * 150,
+    r: 2.2 + rnd(i + 151) * 2,
+    n: i % VN.length,
+    d: Math.round(rnd(i + 233) * 30),
+  };
+});
 
 export const V4Graph: React.FC = () => {
   const frame = useCurrentFrame();
   const [c0, c1, c2] = cueAt("s-graph");
+  const tags = 1 - pIn(frame, c1 + 18, 20);
 
   return (
     <AbsoluteFill style={{ fontFamily: FONT }}>
@@ -477,15 +309,64 @@ export const V4Graph: React.FC = () => {
 
       <VSay
         from={2}
-        size={62}
-        top={362}
+        size={58}
+        top={318}
         lines={[
-          <>We don&rsquo;t just collect it.</>,
+          <>We collect</>,
           <>
-            <VEm>TA7Z connects it.</VEm>
+            <VEm>public and private</VEm> data.
           </>,
         ]}
       />
+
+      <VSay
+        from={c2 - 30}
+        size={58}
+        top={476}
+        lines={[
+          <>
+            <VEm>TA7Z</VEm> connects it.
+          </>,
+        ]}
+      />
+
+      {/* 두 줄기가 무엇인지 */}
+      {VSTREAMS.map((s) => (
+        <div
+          key={s.k}
+          style={{
+            position: "absolute",
+            left: s.x0,
+            width: SW,
+            top: 582,
+            textAlign: "center",
+            opacity: tags * pIn(frame, 10, 16),
+          }}
+        >
+          <div
+            style={{
+              fontFamily: MONO,
+              fontSize: 19,
+              fontWeight: 700,
+              letterSpacing: 3.2,
+              color: s.hero ? C.brandLite : C.onDark3,
+            }}
+          >
+            {s.k}
+          </div>
+          <div
+            style={{
+              marginTop: 7,
+              fontSize: 23,
+              fontWeight: 600,
+              letterSpacing: -0.4,
+              color: C.onDark2,
+            }}
+          >
+            {s.items}
+          </div>
+        </div>
+      ))}
 
       <svg width={W} height={H} style={{ position: "absolute", left: 0, top: 0 }}>
         {VDOTS.map((p, i) => {
@@ -504,7 +385,13 @@ export const V4Graph: React.FC = () => {
               cx={p.x + (t.x - p.x) * travel}
               cy={p.y + (t.y - p.y) * travel}
               r={p.r}
-              fill={travel > 0.1 ? C.brandLite : "rgba(148,163,184,0.55)"}
+              fill={
+                travel > 0.1
+                  ? C.brandLite
+                  : p.side === 1
+                    ? "rgba(96,165,250,0.70)"
+                    : "rgba(148,163,184,0.55)"
+              }
               opacity={o}
             />
           );
@@ -513,7 +400,7 @@ export const V4Graph: React.FC = () => {
         {VE.map(([a, b], i) => {
           const A = VN[a];
           const B = VN[b];
-          const p = interpolate(frame - (c1 + 30 + i * 4), [0, 18], [0, 1], {
+          const p = interpolate(frame - (c1 + 36 + i * 4), [0, 18], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
             easing: EASE,
@@ -533,7 +420,7 @@ export const V4Graph: React.FC = () => {
         })}
 
         {VN.map((nd, i) => {
-          const p = pIn(frame, c1 + 16 + i * 5, 14);
+          const p = pIn(frame, c1 + 22 + i * 5, 14);
           if (p <= 0.01) return null;
           return (
             <g key={nd.k}>
@@ -550,18 +437,18 @@ export const V4Graph: React.FC = () => {
       </svg>
 
       {VN.map((nd, i) => {
-        const p = pIn(frame, c1 + 28 + i * 4, 13);
+        const p = pIn(frame, c1 + 34 + i * 4, 13);
         return (
           <div
             key={nd.k}
             style={{
               position: "absolute",
               left: nd.x - 170,
-              top: nd.y + nd.r + 16,
+              top: nd.y + nd.r + 14,
               width: 340,
               textAlign: "center",
               fontFamily: MONO,
-              fontSize: nd.hub ? 27 : 23,
+              fontSize: nd.hub ? 26 : 22,
               fontWeight: 700,
               letterSpacing: 2.4,
               color: nd.hub ? C.onDark : C.onDark2,
@@ -578,19 +465,19 @@ export const V4Graph: React.FC = () => {
           position: "absolute",
           left: PAD,
           right: PAD,
-          top: 1292,
+          top: 1254,
           textAlign: "center",
-          opacity: pIn(frame, c2 + 4, 16),
+          opacity: pIn(frame, c2 + 2, 16),
         }}
       >
-        <div style={{ fontSize: 92, fontWeight: 700, letterSpacing: -3, color: C.onDark }}>
+        <div style={{ fontSize: 86, fontWeight: 700, letterSpacing: -3, color: C.onDark }}>
           6,800<span style={{ color: C.brandLite }}>+</span>
         </div>
         <div
           style={{
             marginTop: 6,
             fontFamily: MONO,
-            fontSize: 22,
+            fontSize: 21,
             fontWeight: 700,
             letterSpacing: 4,
             color: C.onDark2,
