@@ -1,0 +1,124 @@
+{
+  "clips": {
+    "open-a": {
+      "scene": "s-open",
+      "query": "stock exchange trading floor screens",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/dynamic-stock-market-display-analysis-38557069/",
+      "author": "Rafael Minguet Delgado",
+      "authorUrl": "https://www.pexels.com/@thales13",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 5.8
+    },
+    "gap-a": {
+      "scene": "unused",
+      "query": "analyst working late multiple monitors office",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/overworked-programmer-in-dimly-lit-room-33656654/",
+      "author": "Attila Pergel",
+      "authorUrl": "https://www.pexels.com/@attilapergel",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 6
+    },
+    "res-a": {
+      "scene": "unused",
+      "query": "business documents reports on desk close up",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/close-up-shot-of-a-document-with-graph-on-a-table-7651532/",
+      "author": "Kindel Media",
+      "authorUrl": "https://www.pexels.com/@kindelmedia",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 5
+    },
+    "mon-a": {
+      "scene": "unused",
+      "query": "stock market chart moving on screen",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/analyzing-stock-market-trading-charts-30289537/",
+      "author": "Sourav Sharma",
+      "authorUrl": "https://www.pexels.com/@sourav-sharma-838142344",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 5
+    },
+    "rep-a": {
+      "scene": "unused",
+      "query": "professional office meeting business documents",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/lawyers-writing-on-documents-8731515/",
+      "author": "Mikhail Nilov",
+      "authorUrl": "https://www.pexels.com/@mikhail-nilov",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 5
+    },
+    "close-a": {
+      "scene": "s-close",
+      "query": "modern financial district skyline aerial",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/aerial-drone-view-of-montreal-skyline-37298364/",
+      "author": "Matthew Padilla",
+      "authorUrl": "https://www.pexels.com/@matthew-padilla-44740216",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 6.7
+    },
+    "moat-a": {
+      "scene": "s-reach",
+      "query": "hong kong night skyline business district",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/vibrant-night-skyline-of-hong-kong-harbor-36617176/",
+      "author": "LayG Traveller",
+      "authorUrl": "https://www.pexels.com/@layg-traveller-593127578",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 13.2
+    },
+    "deploy-a": {
+      "scene": "s-deploy",
+      "query": "server room data center racks",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/inserting-hard-drive-into-storage-device-38496192/",
+      "author": "Media Hopper Studio",
+      "authorUrl": "https://www.pexels.com/@media-hopper-studio-328305910",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 5.866666666666667
+    },
+    "what-a": {
+      "scene": "unused",
+      "query": "financial analyst office team working",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/business-professionals-discussing-documents-8348731/",
+      "author": "Kampus Production",
+      "authorUrl": "https://www.pexels.com/@kampus",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 6.1000000000000005
+    },
+    "reach-a": {
+      "scene": "unused",
+      "query": "singapore marina bay skyline night",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/breathtaking-nighttime-view-of-singapore-skyline-35061521/",
+      "author": "Nirjhar Basak",
+      "authorUrl": "https://www.pexels.com/@nbasak",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 5.7
+    },
+    "demo-a": {
+      "scene": "unused",
+      "query": "trading floor traders monitors wide",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/dynamic-cryptocurrency-trading-desk-footage-38055931/",
+      "author": "Rafael Minguet Delgado",
+      "authorUrl": "https://www.pexels.com/@thales13",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 9.96
+    },
+    "graph-a": {
+      "scene": "s-graph",
+      "query": "abstract digital network data lines dark",
+      "provider": "pexels",
+      "page": "https://www.pexels.com/video/dynamic-neon-network-animation-36246162/",
+      "author": "Nicola Narracci",
+      "authorUrl": "https://www.pexels.com/@nicola-narracci-157460431",
+      "license": "Pexels License (상업적 사용 가능 · 출처 표기 불필요)",
+      "seconds": 8.799999999999999
+    }
+  }
+}

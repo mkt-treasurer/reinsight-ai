@@ -1,0 +1,93 @@
+{
+  "title": "Treasurer — 30s festival / reels film",
+  "audience": "SFF Singapore 부스 루프 · 인스타 릴스 · 무음",
+  "register": "Visual first. One idea per shot, held long enough to read.",
+  "note": "v9: 데이터 레이어 씬을 없애고 그래프 씬 하나로 합쳤다. 들어오는 점을 PUBLIC/PRIVATE 두 줄기로 갈라 모으는 과정을 보이고, 같은 씬에서 TA7Z 가 잇는다.",
+  "gapCue": 0.1,
+  "gapScene": 0.18,
+  "tailHold": 0.9,
+  "scenes": [
+    {
+      "id": "s-open",
+      "cues": [
+        {
+          "sec": 1.7,
+          "sub": ""
+        },
+        {
+          "sec": 1.7,
+          "sub": ""
+        }
+      ]
+    },
+    {
+      "id": "s-what",
+      "cues": [
+        {
+          "sec": 1.5,
+          "sub": ""
+        },
+        {
+          "sec": 1.5,
+          "sub": ""
+        },
+        {
+          "sec": 1.5,
+          "sub": ""
+        }
+      ]
+    },
+    {
+      "id": "s-graph",
+      "cues": [
+        {
+          "sec": 2.3,
+          "sub": ""
+        },
+        {
+          "sec": 2.3,
+          "sub": ""
+        },
+        {
+          "sec": 2.3,
+          "sub": ""
+        }
+      ]
+    },
+    {
+      "id": "s-deploy",
+      "cues": [
+        {
+          "sec": 2.2,
+          "sub": ""
+        },
+        {
+          "sec": 2.2,
+          "sub": ""
+        }
+      ]
+    },
+    {
+      "id": "s-bench",
+      "cues": [
+        {
+          "sec": 2.2,
+          "sub": ""
+        },
+        {
+          "sec": 2.2,
+          "sub": ""
+        }
+      ]
+    },
+    {
+      "id": "s-close",
+      "cues": [
+        {
+          "sec": 3.6,
+          "sub": ""
+        }
+      ]
+    }
+  ]
+}

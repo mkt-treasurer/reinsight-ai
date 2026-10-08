@@ -1,0 +1,172 @@
+{
+  "fps": 30,
+  "source": "static:script.json",
+  "total": 29.7,
+  "totalFrames": 891,
+  "scenes": [
+    {
+      "id": "s-open",
+      "start": 0,
+      "end": 3.68,
+      "dur": 3.68,
+      "cues": [
+        {
+          "sec": 1.7,
+          "sub": "",
+          "start": 0,
+          "dur": 1.7,
+          "fromInScene": 0,
+          "framesInScene": 51
+        },
+        {
+          "sec": 1.7,
+          "sub": "",
+          "start": 1.8,
+          "dur": 1.7,
+          "fromInScene": 54,
+          "framesInScene": 51
+        }
+      ],
+      "from": 0,
+      "durationInFrames": 110
+    },
+    {
+      "id": "s-what",
+      "start": 3.68,
+      "end": 8.56,
+      "dur": 4.880000000000001,
+      "cues": [
+        {
+          "sec": 1.5,
+          "sub": "",
+          "start": 3.68,
+          "dur": 1.5,
+          "fromInScene": 0,
+          "framesInScene": 45
+        },
+        {
+          "sec": 1.5,
+          "sub": "",
+          "start": 5.28,
+          "dur": 1.5,
+          "fromInScene": 48,
+          "framesInScene": 45
+        },
+        {
+          "sec": 1.5,
+          "sub": "",
+          "start": 6.880000000000001,
+          "dur": 1.5,
+          "fromInScene": 96,
+          "framesInScene": 45
+        }
+      ],
+      "from": 110,
+      "durationInFrames": 147
+    },
+    {
+      "id": "s-graph",
+      "start": 8.56,
+      "end": 15.84,
+      "dur": 7.279999999999999,
+      "cues": [
+        {
+          "sec": 2.3,
+          "sub": "",
+          "start": 8.56,
+          "dur": 2.3,
+          "fromInScene": 0,
+          "framesInScene": 69
+        },
+        {
+          "sec": 2.3,
+          "sub": "",
+          "start": 10.96,
+          "dur": 2.3,
+          "fromInScene": 72,
+          "framesInScene": 69
+        },
+        {
+          "sec": 2.3,
+          "sub": "",
+          "start": 13.360000000000001,
+          "dur": 2.3,
+          "fromInScene": 144,
+          "framesInScene": 69
+        }
+      ],
+      "from": 257,
+      "durationInFrames": 218
+    },
+    {
+      "id": "s-deploy",
+      "start": 15.84,
+      "end": 20.52,
+      "dur": 4.68,
+      "cues": [
+        {
+          "sec": 2.2,
+          "sub": "",
+          "start": 15.84,
+          "dur": 2.2,
+          "fromInScene": 0,
+          "framesInScene": 66
+        },
+        {
+          "sec": 2.2,
+          "sub": "",
+          "start": 18.14,
+          "dur": 2.2,
+          "fromInScene": 69,
+          "framesInScene": 66
+        }
+      ],
+      "from": 475,
+      "durationInFrames": 141
+    },
+    {
+      "id": "s-bench",
+      "start": 20.52,
+      "end": 25.2,
+      "dur": 4.68,
+      "cues": [
+        {
+          "sec": 2.2,
+          "sub": "",
+          "start": 20.52,
+          "dur": 2.2,
+          "fromInScene": 0,
+          "framesInScene": 66
+        },
+        {
+          "sec": 2.2,
+          "sub": "",
+          "start": 22.82,
+          "dur": 2.2,
+          "fromInScene": 69,
+          "framesInScene": 66
+        }
+      ],
+      "from": 616,
+      "durationInFrames": 140
+    },
+    {
+      "id": "s-close",
+      "start": 25.2,
+      "end": 28.8,
+      "dur": 3.6000000000000014,
+      "cues": [
+        {
+          "sec": 3.6,
+          "sub": "",
+          "start": 25.2,
+          "dur": 3.6,
+          "fromInScene": 0,
+          "framesInScene": 108
+        }
+      ],
+      "from": 756,
+      "durationInFrames": 135
+    }
+  ]
+}
