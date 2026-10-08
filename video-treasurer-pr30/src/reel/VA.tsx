@@ -288,7 +288,7 @@ export const V3Layers: React.FC = () => {
       <VMark p={pIn(frame, 0, 12)} />
 
       <VKick p={pIn(frame, 2, 14)} top={344}>
-        WHY AN AGENT CAN RUN THEM
+        THE DATA THOSE JOBS RUN ON
       </VKick>
 
       <VSay
@@ -297,7 +297,7 @@ export const V3Layers: React.FC = () => {
         top={414}
         lines={[
           <>
-            The same jobs read the <VEm>same sources</VEm>.
+            Public and private — <VEm>already collected</VEm>.
           </>,
         ]}
       />
@@ -411,7 +411,7 @@ export const V3Layers: React.FC = () => {
             color: C.onDark,
           }}
         >
-          Ours · collected and cleaned in real time
+          Cleaned and refreshed in real time
         </div>
       </div>
 

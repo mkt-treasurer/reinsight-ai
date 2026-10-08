@@ -35,9 +35,9 @@ export const V5Deploy: React.FC = () => {
         size={62}
         top={344}
         lines={[
-          <>Treasurer AX runs</>,
+          <>Your data. Your machine.</>,
           <>
-            inside <VEm>your system.</VEm>
+            <VEm>Your agent.</VEm>
           </>,
         ]}
       />
@@ -70,7 +70,7 @@ export const V5Deploy: React.FC = () => {
             color: C.brandLite,
           }}
         >
-          YOUR OWN CLOUD OR SERVERS
+          HARDWARE YOU OWN
         </div>
       </div>
 
@@ -230,11 +230,11 @@ export const V5Deploy: React.FC = () => {
           fontSize: 74,
           fontWeight: 700,
           letterSpacing: -2.6,
-          color: RED,
+          color: C.brandLite,
           opacity: blocked ? pIn(frame, c1 + 12, 14) : 0,
         }}
       >
-        Nothing leaves.
+        It stays yours.
       </div>
 
       {/* 보안 인증 */}
@@ -586,6 +586,21 @@ export const V8Close: React.FC = () => {
               background: "rgba(255,255,255,0.22)",
             }}
           />
+          <div
+            style={{
+              marginTop: 30,
+              fontSize: 34,
+              fontWeight: 600,
+              letterSpacing: -0.6,
+              lineHeight: 1.4,
+              color: C.onDark2,
+              opacity: pIn(frame, lock + 14, 18),
+            }}
+          >
+            <span style={{ color: C.onDark, fontWeight: 700 }}>60+</span> institutions
+            <br />
+            already run Treasurer AX
+          </div>
           <div
             style={{
               marginTop: 32,

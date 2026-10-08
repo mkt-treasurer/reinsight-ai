@@ -66,6 +66,19 @@ export const S7Close: React.FC = () => {
           <div
             style={{ margin: "40px auto 0", width: rule * 320, height: 1, background: "rgba(255,255,255,0.22)" }}
           />
+          <div
+            style={{
+              marginTop: 30,
+              fontSize: 26,
+              fontWeight: 600,
+              letterSpacing: -0.4,
+              color: C.onDark2,
+              opacity: pIn(frame, lock + 14, 18),
+            }}
+          >
+            <span style={{ color: C.onDark, fontWeight: 700 }}>60+</span> institutions already run
+            Treasurer AX
+          </div>
 
           <div
             style={{

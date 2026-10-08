@@ -1,28 +1,27 @@
 {
-  "title": "Treasurer — 50s festival film",
-  "audience": "SFF Singapore · booth loop · no sound",
+  "title": "Treasurer — 30s festival / reels film",
+  "audience": "SFF Singapore 부스 루프 · 인스타 릴스 · 무음",
   "register": "Visual first. One idea per shot, held long enough to read.",
-  "note": "v7: the product mockup is gone. Jobs repeat → an agent can run them → here is the stack that runs them → TA7Z ontology. Every shot held longer.",
+  "note": "v8: 30초로 줄이고 '같은 일은 같은 자료를 읽는다' 우회를 걷어냈다. 매일 반복하는 업무 → 그 업무가 필요한 공개·비공개 자료를 우리가 모아 둔다 로 바로 잇는다. 배포 씬은 보안이 아니라 소유권으로 말한다(10/7 회의록 6항). 도입 현황 씬은 빼고 60+ 는 마지막에 한 줄로 남긴다.",
   "gapCue": 0.1,
   "gapScene": 0.18,
   "tailHold": 0.9,
   "scenes": [
-    { "id": "s-open", "cues": [{ "sec": 2.0, "sub": "" }, { "sec": 2.0, "sub": "" }] },
+    { "id": "s-open", "cues": [{ "sec": 1.7, "sub": "" }, { "sec": 1.7, "sub": "" }] },
     {
       "id": "s-what",
-      "cues": [{ "sec": 2.1, "sub": "" }, { "sec": 2.1, "sub": "" }, { "sec": 2.1, "sub": "" }]
+      "cues": [{ "sec": 1.5, "sub": "" }, { "sec": 1.5, "sub": "" }, { "sec": 1.5, "sub": "" }]
     },
     {
       "id": "s-layers",
-      "cues": [{ "sec": 2.4, "sub": "" }, { "sec": 2.4, "sub": "" }, { "sec": 2.4, "sub": "" }]
+      "cues": [{ "sec": 1.3, "sub": "" }, { "sec": 1.3, "sub": "" }, { "sec": 1.3, "sub": "" }]
     },
     {
       "id": "s-graph",
-      "cues": [{ "sec": 2.5, "sub": "" }, { "sec": 2.7, "sub": "" }, { "sec": 2.8, "sub": "" }]
+      "cues": [{ "sec": 1.3, "sub": "" }, { "sec": 1.3, "sub": "" }, { "sec": 1.3, "sub": "" }]
     },
-    { "id": "s-deploy", "cues": [{ "sec": 2.6, "sub": "" }, { "sec": 2.7, "sub": "" }] },
-    { "id": "s-bench", "cues": [{ "sec": 3.6, "sub": "" }, { "sec": 3.6, "sub": "" }] },
-    { "id": "s-reach", "cues": [{ "sec": 2.7, "sub": "" }, { "sec": 2.7, "sub": "" }] },
-    { "id": "s-close", "cues": [{ "sec": 4.4, "sub": "" }] }
+    { "id": "s-deploy", "cues": [{ "sec": 2.0, "sub": "" }, { "sec": 2.0, "sub": "" }] },
+    { "id": "s-bench", "cues": [{ "sec": 2.0, "sub": "" }, { "sec": 2.0, "sub": "" }] },
+    { "id": "s-close", "cues": [{ "sec": 3.6, "sub": "" }] }
   ]
 }

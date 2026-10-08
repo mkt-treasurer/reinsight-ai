@@ -10,7 +10,6 @@ import { S3Layers } from "./scenes/S3Layers";
 import { S3Graph } from "./scenes/S3Graph";
 import { S5Deploy } from "./scenes/S5Deploy";
 import { S4Bench } from "./scenes/S4Bench";
-import { S7Reach } from "./scenes/S7Reach";
 import { S7Close } from "./scenes/S7Close";
 
 const MAP: Record<string, React.FC> = {
@@ -20,7 +19,6 @@ const MAP: Record<string, React.FC> = {
   "s-graph": S3Graph,
   "s-deploy": S5Deploy,
   "s-bench": S4Bench,
-  "s-reach": S7Reach,
   "s-close": S7Close,
 };
 
@@ -31,7 +29,6 @@ const TRANS: Record<string, Trans> = {
   "s-graph": "zoomIn",
   "s-deploy": "slideL",
   "s-bench": "wipeR",
-  "s-reach": "slideL",
   "s-close": "zoomOut",
 };
 

@@ -4,7 +4,7 @@ import { T } from "../timing";
 import { Enter, Trans } from "../transitions";
 import { C } from "../theme";
 import { V1Open, V2What, V3Layers, V4Graph } from "./VA";
-import { V5Deploy, V6Bench, V7Reach, V8Close } from "./VB";
+import { V5Deploy, V6Bench, V8Close } from "./VB";
 
 /** 세로판은 가로판과 같은 timing.json 을 쓴다 — 사운드가 그대로 맞는다 */
 const MAP: Record<string, React.FC> = {
@@ -14,7 +14,6 @@ const MAP: Record<string, React.FC> = {
   "s-graph": V4Graph,
   "s-deploy": V5Deploy,
   "s-bench": V6Bench,
-  "s-reach": V7Reach,
   "s-close": V8Close,
 };
 
@@ -26,7 +25,6 @@ const TRANS: Record<string, Trans> = {
   "s-graph": "zoomIn",
   "s-deploy": "slideUp",
   "s-bench": "fade",
-  "s-reach": "slideUp",
   "s-close": "zoomOut",
 };
 

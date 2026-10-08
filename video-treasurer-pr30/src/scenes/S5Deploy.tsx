@@ -82,7 +82,7 @@ export const S5Deploy: React.FC = () => {
           opacity: pIn(frame, 4, 16),
         }}
       >
-        Treasurer AX runs inside <span style={{ color: C.brandLite }}>your</span> system.
+        Your data. Your machine. <span style={{ color: C.brandLite }}>Your agent.</span>
       </div>
 
       {/* 경계선 */}
@@ -163,7 +163,7 @@ export const S5Deploy: React.FC = () => {
             color: C.brandLite,
           }}
         >
-          YOUR OWN CLOUD OR SERVERS
+          HARDWARE YOU OWN
         </div>
       </div>
 
@@ -229,7 +229,7 @@ export const S5Deploy: React.FC = () => {
           opacity: pIn(frame, c0 + 26, 16),
         }}
       >
-        AGENTS + YOUR DATA · CUSTOMER-HELD KEYS
+        YOUR DATA NEVER LEAVES THIS BOX
       </div>
 
       {/* 바깥으로 나가려다 경계에서 되돌아오는 데이터 */}
@@ -295,10 +295,10 @@ export const S5Deploy: React.FC = () => {
                 fontSize: 46,
                 fontWeight: 700,
                 letterSpacing: -1.8,
-                color: RED,
+                color: C.brandLite,
               }}
             >
-              Nothing leaves.
+              It stays yours.
             </div>
             <div
               style={{
@@ -309,7 +309,7 @@ export const S5Deploy: React.FC = () => {
                 color: C.onDark3,
               }}
             >
-              NO DATA EGRESS · NO TRAINING ON YOUR DATA
+              NO DATA EGRESS · CUSTOMER-HELD KEYS
             </div>
           </div>
         </>

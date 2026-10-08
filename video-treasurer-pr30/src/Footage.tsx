@@ -53,7 +53,6 @@ export const Broll: React.FC<{
 const FULL: Record<string, number> = {
   "s-graph": 0.18,
   "s-deploy": 0.30,
-  "s-reach": 0.22,
 };
 
 const XF = 16;

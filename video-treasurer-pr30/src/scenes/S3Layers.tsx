@@ -58,7 +58,7 @@ export const S3Layers: React.FC = () => {
             opacity: pIn(frame, 2, 14),
           }}
         >
-          WHY AN AGENT CAN RUN THEM
+          THE DATA THOSE JOBS RUN ON
         </div>
         <div
           style={{
@@ -71,7 +71,7 @@ export const S3Layers: React.FC = () => {
             transform: `translateY(${(1 - pIn(frame, 8, 18)) * 14}px)`,
           }}
         >
-          The same jobs read the <span style={{ color: C.brandLite }}>same sources</span>.
+          Public and private — <span style={{ color: C.brandLite }}>already collected</span>.
         </div>
         <div
           style={{
@@ -83,7 +83,7 @@ export const S3Layers: React.FC = () => {
             opacity: pIn(frame, c1 - 26, 16),
           }}
         >
-          So we own them.
+          Your analysts use it from day one.
         </div>
       </div>
 
@@ -196,7 +196,7 @@ export const S3Layers: React.FC = () => {
         </span>
         <span style={{ width: 1, height: 28, background: C.onDarkLine2 }} />
         <span style={{ fontSize: 30, fontWeight: 600, letterSpacing: -0.9, color: C.onDark }}>
-          Ours · collected and cleaned in real time
+          Cleaned and refreshed in real time
         </span>
       </div>
 
