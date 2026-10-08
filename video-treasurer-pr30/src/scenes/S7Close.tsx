@@ -41,26 +41,17 @@ export const S7Close: React.FC = () => {
         }}
       >
         <div style={{ textAlign: "center" }}>
+          {/* 정식 워드마크 — 자간 넓은 레터링 + 브랜드색 마침표 */}
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 20,
+              fontSize: 54,
+              fontWeight: 500,
+              letterSpacing: 13,
+              color: "#fff",
+              paddingLeft: 13,
             }}
           >
-            <span
-              style={{
-                width: 20,
-                height: 20,
-                background: C.brand,
-                transform: "rotate(45deg)",
-                display: "inline-block",
-              }}
-            />
-            <span style={{ fontSize: 52, fontWeight: 700, letterSpacing: 9, color: "#fff" }}>
-              TREASURER
-            </span>
+            TREASURER<span style={{ color: C.brand, letterSpacing: 0 }}>.</span>
           </div>
 
           <div

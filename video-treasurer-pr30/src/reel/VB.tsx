@@ -572,11 +572,17 @@ export const V8Close: React.FC = () => {
         }}
       >
         <div style={{ textAlign: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18 }}>
-            <span style={{ width: 22, height: 22, background: C.brand, transform: "rotate(45deg)" }} />
-            <span style={{ fontSize: 56, fontWeight: 700, letterSpacing: 9, color: C.onDark }}>
-              TREASURER
-            </span>
+          {/* 정식 워드마크 — 자간 넓은 레터링 + 브랜드색 마침표 */}
+          <div
+            style={{
+              fontSize: 56,
+              fontWeight: 500,
+              letterSpacing: 13,
+              color: "#fff",
+              paddingLeft: 13,
+            }}
+          >
+            TREASURER<span style={{ color: C.brand, letterSpacing: 0 }}>.</span>
           </div>
           <div
             style={{
