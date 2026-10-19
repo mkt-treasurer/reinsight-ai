@@ -50,11 +50,15 @@ npm run studio     # live preview
 
 ## TSMC 3Q26 film (~40s)
 
-`src/tsmc.tsx`, composition `Tsmc`. Styled after the "Core · check a rumor" LinkedIn film rather
-than the gold booth film: light grey stage, the Core answer page full-frame, a black top bar with a
-small caption, one continuous camera that zooms into five points with a spotlight on each, a cursor
-that clicks a citation open, then a black end card. The answer page is rebuilt natively from Core's
-real answer so zooms stay sharp. Figures are from TSMC's Oct 15, 2026 release (investor.tsmc.com).
+Composition `Tsmc` (`src/tsmc-gold.tsx`), in the booth film's style: the thesis first ("When earnings
+land, Core gives the PM the answer first. And makes it an answer you can trust."), then four points,
+one card each over Core's answer page pushed back as a blurred stage: it connects the documents,
+it knows your fund, it says what it doesn't know, every number sourced and fast. ~35s.
+
+`TsmcLight` (`src/tsmc.tsx`) is the earlier take in the "Core · check a rumor" LinkedIn style: light
+stage, answer page full-frame, continuous zoom-ins, cursor click into the source. Kept for reference;
+its `AnswerPage` is what the gold film uses as its stage. Figures in both are from TSMC's Oct 15, 2026
+release (investor.tsmc.com).
 
 Deliberately left out: "% vs midpoint" (Core's figure used the low end of the range) and the
 broker/consensus paragraph (licensed data). The position line is stamped DEMO FUND.

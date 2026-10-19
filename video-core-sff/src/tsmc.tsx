@@ -126,7 +126,7 @@ const Cursor: React.FC<{ x: number; y: number; click?: number }> = ({ x, y, clic
 
 const QUESTION = "TSMC reported 3Q26 results on Oct 15. How did the quarter do against its guidance, what is the 4Q26 guide, and what does it mean for our position?";
 
-const AnswerPage: React.FC<{ frame: number }> = ({ frame }) => {
+export const AnswerPage: React.FC<{ frame: number }> = ({ frame }) => {
   const typed = useTyped(QUESTION, 8, 64);
   // the answer renders in, top to bottom, from frame 105
   const A = (at: number) => fadeIn(frame, 105 + at, 10);
