@@ -10,7 +10,7 @@ import { CaptionTiming, Card3D, CornerMark, DarkCard3D, Headline, Illustrative, 
  * The demo footage as a stage, not a slide: cropped so its burned-in caption is off-frame,
  * pushed back in 3D, dimmed and blurred, drifting slowly. Native cards sit in front of it.
  */
-const Backdrop: React.FC<{ scene: Scene; dim?: number }> = ({ scene, dim = 0.3 }) => {
+export const Backdrop: React.FC<{ scene: Scene; dim?: number }> = ({ scene, dim = 0.3 }) => {
   const frame = useCurrentFrame();
   const n = sceneFrames(scene);
   const p = frame / n;
@@ -49,11 +49,11 @@ const Backdrop: React.FC<{ scene: Scene; dim?: number }> = ({ scene, dim = 0.3 }
 
 /* ------------------------------------------------------------------ pieces */
 
-const Label: React.FC<{ children: React.ReactNode; dark?: boolean }> = ({ children, dark }) => (
+export const Label: React.FC<{ children: React.ReactNode; dark?: boolean }> = ({ children, dark }) => (
   <div style={{ fontFamily: MONO, fontSize: 15, letterSpacing: 4, color: dark ? C.gold : "#6b6f7a", textTransform: "uppercase" }}>{children}</div>
 );
 
-const Big: React.FC<{ children: React.ReactNode; color?: string; size?: number }> = ({ children, color = "#111318", size = 84 }) => (
+export const Big: React.FC<{ children: React.ReactNode; color?: string; size?: number }> = ({ children, color = "#111318", size = 84 }) => (
   <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: size, color, lineHeight: 1.05, letterSpacing: -1 }}>{children}</div>
 );
 
@@ -75,7 +75,7 @@ const Bar: React.FC<{ to: number; delay: number; color?: string }> = ({ to, dela
 };
 
 /** Core's ask box with a typed prompt and a gold run button. */
-const PromptBox: React.FC<{ text: string; delay: number; label: string }> = ({ text, delay, label }) => {
+export const PromptBox: React.FC<{ text: string; delay: number; label: string }> = ({ text, delay, label }) => {
   const frame = useCurrentFrame();
   const t = useTyped(text, delay + 8, 46);
   const run = useEnter(delay + 8 + Math.ceil((text.length / 46) * FPS) + 4, 14);

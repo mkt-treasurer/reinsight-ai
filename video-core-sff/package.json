@@ -7,7 +7,8 @@
   "scripts": {
     "studio": "remotion studio src/index.ts",
     "render": "node scripts/render.mjs",
-    "frames": "node scripts/frames.mjs"
+    "frames": "node scripts/frames.mjs",
+    "clips": "node scripts/render-clips.mjs"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.523",
