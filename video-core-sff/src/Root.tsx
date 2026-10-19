@@ -3,6 +3,7 @@ import { Composition } from "remotion";
 import "./fonts";
 import { Main } from "./Main";
 import { CLIPS } from "./clips";
+import { Tsmc, TSMC_FRAMES } from "./tsmc";
 import { FPS, H, W } from "./theme";
 import { totalFrames } from "./timeline";
 
@@ -17,6 +18,7 @@ export const RemotionRoot: React.FC = () => (
       height={H}
       defaultProps={{ music: false }}
     />
+    <Composition id="Tsmc" component={Tsmc} durationInFrames={TSMC_FRAMES} fps={FPS} width={W} height={H} />
     {CLIPS.map((c) => (
       <Composition key={c.id} id={c.id} component={c.component} durationInFrames={Math.round(c.seconds * FPS)} fps={FPS} width={W} height={H} />
     ))}

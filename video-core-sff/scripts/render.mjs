@@ -17,7 +17,7 @@ const propsFile = path.join(root, "out", "props.json");
 writeFileSync(propsFile, JSON.stringify({ music }));
 
 const args = [
-  "remotion", "render", "src/index.ts", "Main", out,
+  "remotion", "render", "src/index.ts", process.env.COMP || "Main", out,
   "--concurrency=2",
   `--props=${propsFile}`,
 ];

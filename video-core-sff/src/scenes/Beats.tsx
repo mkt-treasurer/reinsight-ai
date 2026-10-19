@@ -10,7 +10,7 @@ import { CaptionTiming, Card3D, CornerMark, DarkCard3D, Headline, Illustrative, 
  * The demo footage as a stage, not a slide: cropped so its burned-in caption is off-frame,
  * pushed back in 3D, dimmed and blurred, drifting slowly. Native cards sit in front of it.
  */
-export const Backdrop: React.FC<{ scene: Scene; dim?: number }> = ({ scene, dim = 0.3 }) => {
+export const Backdrop: React.FC<{ scene: Scene; dim?: number; src?: string; pos?: string }> = ({ scene, dim = 0.3, src = SRC, pos = "50% 95%" }) => {
   const frame = useCurrentFrame();
   const n = sceneFrames(scene);
   const p = frame / n;
@@ -29,11 +29,11 @@ export const Backdrop: React.FC<{ scene: Scene; dim?: number }> = ({ scene, dim 
         }}
       >
         <OffthreadVideo
-          src={staticFile(SRC)}
+          src={staticFile(src)}
           startFrom={Math.round((scene.from as number) * FPS)}
           endAt={Math.round((scene.to as number) * FPS)}
           muted
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 95%" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: pos }}
         />
       </div>
       <div

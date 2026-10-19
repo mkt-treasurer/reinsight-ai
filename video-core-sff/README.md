@@ -48,6 +48,21 @@ npm run frames     # -> out/frames/NN-<scene>.jpg + sheet.jpg, one still per sce
 npm run studio     # live preview
 ```
 
+## TSMC 3Q26 film (~40s)
+
+`src/tsmc.tsx`, composition `Tsmc`. Styled after the "Core · check a rumor" LinkedIn film rather
+than the gold booth film: light grey stage, the Core answer page full-frame, a black top bar with a
+small caption, one continuous camera that zooms into five points with a spotlight on each, a cursor
+that clicks a citation open, then a black end card. The answer page is rebuilt natively from Core's
+real answer so zooms stay sharp. Figures are from TSMC's Oct 15, 2026 release (investor.tsmc.com).
+
+Deliberately left out: "% vs midpoint" (Core's figure used the low end of the range) and the
+broker/consensus paragraph (licensed data). The position line is stamped DEMO FUND.
+
+```bash
+COMP=Tsmc OUT=core-tsmc-40s.mp4 npm run render
+```
+
 ## Source prep
 
 Remotion's compositor intermittently fails on the raw export with "No frame found at position"
