@@ -3,7 +3,7 @@ import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { C, MONO, SANS } from "../theme";
 import { CaptionTiming, Headline, NumCircle, Tag, clamp01, fadeIn, useEnter } from "../ui";
 
-const QUESTIONS = ["What did we have for Q3?", "And were we right last quarter?", "Also this GB300 thing on X, real?"];
+const QUESTIONS = ["What did we have for Q3?", "And were we right last quarter?"];
 
 const Question: React.FC<{ n: number; text: string; delay: number }> = ({ n, text, delay }) => {
   const e = useEnter(delay, 15);
@@ -21,7 +21,7 @@ const Question: React.FC<{ n: number; text: string; delay: number }> = ({ n, tex
   );
 };
 
-/** 7:10 am. Print day. The PM has three questions; all three stay up for 3s+. */
+/** 7:10 am. Print day. The PM has two questions; both stay up for 3s+. */
 export const PrintDay: React.FC<{ timing: CaptionTiming }> = ({ timing }) => {
   const frame = useCurrentFrame();
   const card = useEnter(6, 15);
@@ -54,7 +54,7 @@ export const PrintDay: React.FC<{ timing: CaptionTiming }> = ({ timing }) => {
         <Tag size={15}>Before the numbers drop</Tag>
       </div>
 
-      <Headline text="7:10 am. Print day. The PM has three questions." typed timing={timing} size={76} cps={34} />
+      <Headline text="7:10 am. Print day. The PM has two questions." typed timing={timing} size={76} cps={34} />
 
       {/* chat card, flown in with a perspective tilt */}
       <div

@@ -8,19 +8,29 @@ Reads fully with sound off.
 
 | # | Scene | What happens |
 |---|-------|--------------|
-| 1 | Intro (native) | Glowing tile with the O mark, then the vector lockup sharpens in with a gold light sweep |
-| 2 | Print day (native, 3s) | Typed headline "7:10 am. Print day."; the PM's three questions land one by one |
-| 3–5 | Ask 1+2 → Answer 1 → Answer 2 | Typed prompt box; guide-vs-ours cards with count-ups; last quarter's previews card |
-| 6–7 | Ask 3 → Answer 3 | The X post drops into Check; three claim cards with odds and bars |
-| 8–9 | Notes → Reply | Two contradicting-note rows; typed reply with attachment chips |
-| 10 | Six minutes | 00:00 → 06:00 counter with stat chips |
-| 11 | Private (native) | Your data. Your model. Your machine. + three tiles |
-| 12 | End (footage) | "Ask. It's done." lockup, kept as the final shot |
+One function, one story: the guidance tracker, told as problem → solution. (Rumor check is a
+separate film.)
 
-Scenes 3–10 ("beats", `src/scenes/Beats.tsx`) follow the reference ad's pattern: the demo footage is
-pushed back as a blurred, dimmed, slowly tilting 3D stage (cropped so its burned-in caption is off-frame),
-with one serif headline on top and native animated cards in front. Every cut has a transition: fade,
-slide, wipe, or the gold hairline wipe in `src/transitions.tsx`.
+| # | Scene | What happens |
+|---|-------|--------------|
+| 1 | Intro (native, 2s) | Glowing tile with the O mark, then the vector lockup with a gold light sweep |
+| 2 | Print day (native) | Typed headline; the PM's two questions land one by one and hold for 3s+ |
+| 3 | Problem (native) | "Normally, that's the analyst's whole morning." Clock races, filings and old notes pile up |
+| 4 | The ask | Typed prompt: "Build a guidance tracker for NVDA, with what our previews expected." |
+| 5 | Tracker (footage, unblurred) | The real report, 15.0–17.5s of the demo |
+| 6 | Answer 1 | Guide vs ours cards, then the verdict strip: 3 of 3 printed above range, so we likely run low |
+| 7 | Answer 2 | Previews vs the print: (1.9%) avg, low 2 of 2, from our own notes |
+| 8 | Sources | 7 sources, 4 public filings + the internal preview note in gold |
+| 9 | Done | 00:00 → 06:00 counter; 2 questions · 1 request · 0 manual steps |
+| 10 | Private (native) | "Because Core reads your own notes, on your own machine." + three tiles |
+| 11 | End (footage) | "Ask. It's done." lockup, kept as the final shot |
+
+Footage-backed scenes ("beats", `src/scenes/Beats.tsx`) follow the reference ad's pattern: the demo
+footage is pushed back as a blurred, dimmed, slowly tilting 3D stage (cropped so its burned-in caption
+is off-frame), with one serif headline on top and native animated cards in front. Every cut has a
+transition: fade, slide, wipe, or the gold hairline wipe in `src/transitions.tsx`. Captions never
+overlap: each fades out (0.2s) before the transition and the next fades in (0.3s) after it
+(`captionWindow` in `src/timeline.ts`).
 
 ```
 public/clips/core-demo-draft7.mp4   source demo (not committed) — see "Source prep" below

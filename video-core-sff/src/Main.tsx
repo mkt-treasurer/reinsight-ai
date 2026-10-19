@@ -7,6 +7,7 @@ import { SCENES, Scene, captionWindow, sceneFrames, transitionFrames } from "./t
 import { presentationFor } from "./transitions";
 import { Intro } from "./scenes/Intro";
 import { PrintDay } from "./scenes/PrintDay";
+import { Problem } from "./scenes/Problem";
 import { Beat, Footage } from "./scenes/Beats";
 import { Private } from "./scenes/Private";
 
@@ -17,8 +18,10 @@ const SceneView: React.FC<{ scene: Scene; index: number }> = ({ scene, index }) 
       return <Intro />;
     case "printday":
       return <PrintDay timing={timing} />;
+    case "problem":
+      return <Problem timing={timing} tag={scene.tag} headline={scene.headline ?? ""} />;
     case "private":
-      return <Private timing={timing} />;
+      return <Private timing={timing} headline={scene.headline} />;
     case "beat":
       return <Beat scene={scene} timing={timing} />;
     case "footage":

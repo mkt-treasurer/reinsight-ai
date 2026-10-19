@@ -36,7 +36,7 @@ const Tile: React.FC<{ kicker: string; text: string; meta: string; delay: number
 };
 
 /** Your data. Your model. Your machine. */
-export const Private: React.FC<{ timing: CaptionTiming }> = ({ timing }) => {
+export const Private: React.FC<{ timing: CaptionTiming; headline?: string }> = ({ timing, headline = "Your data. Your model. Your machine." }) => {
   const frame = useCurrentFrame();
   const inA = fadeIn(frame, timing.enter, timing.inLen ?? 9);
   const outA = 1 - fadeIn(frame, timing.exitAt, timing.outLen ?? 6);
@@ -64,9 +64,9 @@ export const Private: React.FC<{ timing: CaptionTiming }> = ({ timing }) => {
         <div style={{ marginBottom: 26 }}>
           <Tag size={28}>Private by design</Tag>
         </div>
-        <div style={{ fontFamily: SERIF, fontSize: 86, color: C.white, lineHeight: 1.1 }}>Your data. Your model. Your machine.</div>
+        <div style={{ fontFamily: SERIF, fontSize: 70, color: C.white, lineHeight: 1.12, maxWidth: 1400, margin: "0 auto", textWrap: "balance" }}>{headline}</div>
         <div style={{ marginTop: 20, fontFamily: SERIF, fontSize: 36, fontStyle: "italic", color: C.white2, opacity: sub }}>
-          Nothing leaves the firm.
+          Your data. Your model. Your machine. Nothing leaves the firm.
         </div>
       </div>
       <div style={{ position: "absolute", left: 180, right: 180, top: 500, display: "flex", gap: 26 }}>

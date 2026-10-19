@@ -4,7 +4,7 @@ export type TransitionKind = "fade" | "goldwipe" | "slide" | "slideup" | "wipe";
 
 export type Scene = {
   id: string;
-  kind: "intro" | "printday" | "beat" | "private" | "footage";
+  kind: "intro" | "printday" | "problem" | "beat" | "private" | "footage";
   dur?: number; // seconds, for native scenes
   from?: number; // seconds into the source, for footage-backed scenes
   to?: number;
