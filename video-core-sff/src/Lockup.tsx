@@ -3,13 +3,17 @@ import { C, SERIF } from "./theme";
 
 const SANS = "Pretendard, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif";
 
-/** The O of CORE: a disc with a pebble-shaped cutout, drawn as vector so it stays sharp. */
+/**
+ * The O of CORE, traced from the brand mark: a disc with a cutout shaped like a tilted
+ * half-moon. Flat along the bottom, sloping up on the left, rounded over the top and right,
+ * sitting slightly above and right of center. Vector, so it stays sharp at any size.
+ */
 export const OMark: React.FC<{ size: number; color?: string }> = ({ size, color = C.white }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: "block" }}>
     <path
       fill={color}
       fillRule="evenodd"
-      d="M50 2a48 48 0 1 0 0 96a48 48 0 1 0 0-96Z M44 24c16-6 34 6 34 24c0 16-12 30-30 30c-14 0-24-10-24-24c0-12 8-26 20-30Z"
+      d="M50 2a48 48 0 1 0 0 96a48 48 0 1 0 0-96Z M28.5 63C29 52 33.5 36.5 40 28.5C46 21.5 62 18.5 73 25C80 29.5 83.5 39 81.5 48C79.5 56.5 76.5 62.5 71.5 63.8C58 65 42 64.8 28.5 63Z"
     />
   </svg>
 );
