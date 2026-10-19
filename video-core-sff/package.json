@@ -1,0 +1,23 @@
+{
+  "name": "video-core-sff",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Core by Treasurer — 30s promo for the Singapore FinTech Festival booth (silent-safe, gold on black)",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "node scripts/render.mjs",
+    "frames": "node scripts/frames.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.523",
+    "@remotion/transitions": "^4.0.536",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "remotion": "^4.0.523"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.0",
+    "typescript": "5.7.3"
+  }
+}
