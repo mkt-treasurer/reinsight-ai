@@ -50,12 +50,16 @@ npm run studio     # live preview
 
 ## TSMC 3Q26 film (~40s)
 
-Composition `Tsmc` (`src/tsmc-gold.tsx`), in the booth film's style, told as a story in 12 scenes
-(setup → ask → answer → payoff): the press release, ten pages stacking up, the question typed into
-Core (sharp), Core reading the release / last quarter's forecast / your book, the verdict first,
-revenue vs forecast, next quarter's guide, the 2nm reason, your position (DEMO FUND), a cursor
-clicking a citation open to the source sentence (sharp), the release stamped BEAT ✓, end card. ~34s.
-A different effect per scene; captions ≤ 10 words; "4.8%" never shown.
+Composition `Tsmc` (`src/tsmc-ref.tsx`): the 12-scene story (setup → ask → answer → payoff) in the
+look of the "SK hynix rumor check" film: near-black navy stage, Core's page inside a browser window,
+the page dims while a white card pops out with a "| label", captions bottom-centre in serif with a
+tiny gold kicker, an orange-gold stamp, and the same outro (dust → CORE sphere wordmark → TREASURER.).
+Scenes: the press release, ten pages stacking up, the question typed into the real page (sharp),
+Core reading the release / last quarter's forecast / your book, the verdict first, revenue vs
+forecast, next quarter's guide, the 2nm reason, your position (DEMO FUND), a cursor clicking a
+citation open to the source sentence (sharp), the release stamped BEAT ✓, outro. ~36s.
+Captions ≤ 10 words; "4.8%" never shown. `TsmcGold` (`src/tsmc-gold.tsx`) is the same story in the
+booth film's gold-on-black style.
 
 `TsmcLight` (`src/tsmc.tsx`) is the earlier take in the "Core · check a rumor" LinkedIn style: light
 stage, answer page full-frame, continuous zoom-ins, cursor click into the source. Kept for reference;

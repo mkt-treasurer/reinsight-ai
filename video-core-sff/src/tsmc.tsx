@@ -127,7 +127,8 @@ const Cursor: React.FC<{ x: number; y: number; click?: number }> = ({ x, y, clic
 const QUESTION = "TSMC reported 3Q26 results on Oct 15. How did the quarter do against its guidance, what is the 4Q26 guide, and what does it mean for our position?";
 
 export const AnswerPage: React.FC<{ frame: number }> = ({ frame }) => {
-  const typed = useTyped(QUESTION, 8, 64);
+  const tChars = Math.max(0, Math.floor(((frame - 8) / 30) * 64));
+  const typed = { shown: QUESTION.slice(0, tChars), done: tChars >= QUESTION.length, cursor: Math.floor(frame / 8) % 2 === 0 };
   // the answer renders in, top to bottom, from frame 105
   const A = (at: number) => fadeIn(frame, 105 + at, 10);
   const rise = (at: number) => (1 - fadeIn(frame, 105 + at, 12)) * 10;
