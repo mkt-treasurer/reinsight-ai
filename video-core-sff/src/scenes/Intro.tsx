@@ -11,27 +11,27 @@ const rnd = (i: number, k: number) => {
 };
 
 /**
- * Logo reveal in the reference's pattern: a glowing app tile with the mark first,
- * then the tile gives way to the full lockup with a gold light sweep.
+ * 2-second logo reveal: a glowing app tile with the mark, then the tile gives way
+ * to the full lockup with a gold light sweep and the tagline.
  */
 export const Intro: React.FC = () => {
   const frame = useCurrentFrame();
 
-  // phase 1: tile (0–40f)
-  const tileIn = useEnter(2, 12);
-  const tileOut = interpolate(frame, [34, 48], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // phase 1: tile (0–20f)
+  const tileIn = useEnter(0, 11);
+  const tileOut = interpolate(frame, [14, 24], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const tileScale = interpolate(tileIn, [0, 1], [0.5, 1]) * interpolate(tileOut, [0, 1], [1.6, 1]);
   const tileBlur = interpolate(tileIn, [0, 1], [20, 0]) + interpolate(tileOut, [0, 1], [14, 0]);
-  const glowPulse = 0.7 + 0.3 * Math.sin(frame / 5);
+  const glowPulse = 0.7 + 0.3 * Math.sin(frame / 4);
 
-  // phase 2: lockup (from 40f)
-  const lockIn = useEnter(40, 14);
+  // phase 2: lockup (from 18f)
+  const lockIn = useEnter(18, 13);
   const lockScale = interpolate(lockIn, [0, 1], [1.22, 1]);
   const lockBlur = interpolate(lockIn, [0, 1], [16, 0]);
-  const sweep = interpolate(frame, [62, 96], [-50, 150], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const kicker = fadeIn(frame, 74, 12);
-  const rule = useEnter(68, 20);
-  const glow = fadeIn(frame, 0, 30);
+  const sweep = interpolate(frame, [28, 52], [-50, 150], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const kicker = fadeIn(frame, 32, 9);
+  const rule = useEnter(28, 20);
+  const glow = fadeIn(frame, 0, 16);
 
   return (
     <AbsoluteFill style={{ background: C.black, overflow: "hidden" }}>
@@ -50,7 +50,7 @@ export const Intro: React.FC = () => {
 
       {/* expanding rings */}
       {[0, 1, 2, 3].map((i) => {
-        const t = (frame - i * 11) / 64;
+        const t = (frame - i * 7) / 44;
         if (t < 0) return null;
         const s = interpolate(t, [0, 1], [0.1, 1.7]);
         const o = interpolate(t, [0, 0.12, 1], [0, 0.45, 0], { extrapolateRight: "clamp" });
@@ -80,7 +80,7 @@ export const Intro: React.FC = () => {
         const speed = 0.4 + rnd(i, 2) * 0.7;
         const y = ((rnd(i, 3) * 1080 - frame * speed) % 1080 + 1080) % 1080;
         const size = 2 + rnd(i, 4) * 3;
-        const o = (0.25 + 0.5 * rnd(i, 5)) * fadeIn(frame, 4, 24);
+        const o = (0.25 + 0.5 * rnd(i, 5)) * fadeIn(frame, 2, 14);
         return (
           <div
             key={i}
@@ -127,20 +127,19 @@ export const Intro: React.FC = () => {
       ) : null}
 
       {/* phase 2: lockup with light sweep */}
-      {frame >= 40 ? (
+      {frame >= 18 ? (
         <div
           style={{
             position: "absolute",
             left: "50%",
             top: "50%",
-            transform: `translate(-50%, -58%) scale(${lockScale})`,
+            transform: `translate(-50%, -60%) scale(${lockScale})`,
             opacity: clamp01(lockIn * 1.3),
             filter: `blur(${lockBlur}px)`,
           }}
         >
           <div style={{ position: "relative" }}>
             <Lockup size={150} />
-            {/* light sweep: gold band clipped to the glyphs via a second copy */}
             <div
               style={{
                 position: "absolute",
@@ -159,9 +158,9 @@ export const Intro: React.FC = () => {
         style={{
           position: "absolute",
           left: "50%",
-          top: 760,
-          width: 280,
-          marginLeft: -140,
+          top: 748,
+          width: 320,
+          marginLeft: -160,
           height: 1,
           background: `linear-gradient(90deg, transparent, ${C.gold}, transparent)`,
           transform: `scaleX(${rule})`,
@@ -172,11 +171,11 @@ export const Intro: React.FC = () => {
           position: "absolute",
           left: 0,
           right: 0,
-          top: 788,
+          top: 782,
           textAlign: "center",
           fontFamily: MONO,
-          fontSize: 19,
-          letterSpacing: 8,
+          fontSize: 34,
+          letterSpacing: 7,
           color: C.gold,
           opacity: kicker,
           transform: `translateY(${(1 - kicker) * 8}px)`,

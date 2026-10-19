@@ -2,7 +2,7 @@ import React from "react";
 import { AbsoluteFill, OffthreadVideo, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { C, MONO, SANS, SERIF } from "../theme";
 import { FPS, SRC, Scene, sceneFrames } from "../timeline";
-import { Card3D, CornerMark, DarkCard3D, Headline, Illustrative, Tag, clamp01, fadeIn, useCount, useEnter, useTyped } from "../ui";
+import { CaptionTiming, Card3D, CornerMark, DarkCard3D, Headline, Illustrative, Tag, clamp01, fadeIn, useCount, useEnter, useTyped } from "../ui";
 
 /* ------------------------------------------------------------------ backdrop */
 
@@ -275,33 +275,6 @@ const Notes: React.FC = () => (
   </div>
 );
 
-const Reply: React.FC = () => {
-  const t = useTyped("Tracker and rumor check attached. Cut looks real at 84%.", 14, 52);
-  const chips = useEnter(46, 16);
-  return (
-    <div style={{ position: "absolute", left: 0, right: 0, top: 420, display: "flex", justifyContent: "center" }}>
-      <DarkCard3D delay={6} width={1100} style={{ padding: "30px 36px" }}>
-        <div style={{ display: "flex", gap: 18 }}>
-          <div style={{ width: 54, height: 54, borderRadius: 12, background: `linear-gradient(135deg, ${C.gold}, #8a6d1c)`, color: C.black, fontFamily: SANS, fontWeight: 700, fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>You</div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: SANS, fontSize: 20, color: C.white3, marginBottom: 8 }}>#nvda-desk · 7:16 AM</div>
-            <div style={{ fontFamily: SANS, fontSize: 32, color: C.white, lineHeight: 1.35, minHeight: 86 }}>
-              {t.shown}
-              <span style={{ display: "inline-block", width: 3, height: 30, background: C.gold, marginLeft: 6, verticalAlign: "-0.15em", opacity: t.done ? 0 : 1 }} />
-            </div>
-            <div style={{ display: "flex", gap: 14, marginTop: 18, opacity: clamp01(chips * 1.3), transform: `translateY(${(1 - chips) * 16}px)` }}>
-              {["Guidance tracker · NVDA", "Rumor check · MSFT GB300"].map((c) => (
-                <span key={c} style={{ padding: "10px 16px", borderRadius: 8, border: `1px solid ${C.goldSoft}`, fontFamily: MONO, fontSize: 16, letterSpacing: 2, color: C.gold }}>
-                  ▣ {c}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </DarkCard3D>
-    </div>
-  );
-};
 
 const SixMin: React.FC = () => {
   const frame = useCurrentFrame();
@@ -311,7 +284,7 @@ const SixMin: React.FC = () => {
   const stats: [string, string][] = [
     ["3", "questions"],
     ["2", "asks"],
-    ["0", "bytes left the firm"],
+    ["0", "manual steps"],
   ];
   return (
     <div style={{ position: "absolute", left: 0, right: 0, top: 430, display: "flex", flexDirection: "column", alignItems: "center", gap: 36 }}>
@@ -332,16 +305,16 @@ const SixMin: React.FC = () => {
   );
 };
 
-const BEATS: Record<string, React.FC> = { ask12: Ask12, ans1: Ans1, ans2: Ans2, ask3: Ask3, ans3: Ans3, notes: Notes, reply: Reply, sixmin: SixMin };
+const BEATS: Record<string, React.FC> = { ask12: Ask12, ans1: Ans1, ans2: Ans2, ask3: Ask3, ans3: Ans3, notes: Notes, sixmin: SixMin };
 
 /** One footage-backed beat: backdrop, headline, native card(s). */
-export const Beat: React.FC<{ scene: Scene }> = ({ scene }) => {
+export const Beat: React.FC<{ scene: Scene; timing: CaptionTiming }> = ({ scene, timing }) => {
   const Body = BEATS[scene.id];
   return (
     <AbsoluteFill>
       <Backdrop scene={scene} />
       <CornerMark />
-      {scene.headline ? <Headline tag={scene.tag} text={scene.headline} /> : null}
+      {scene.headline ? <Headline tag={scene.tag} nums={scene.nums} text={scene.headline} timing={timing} /> : null}
       {Body ? <Body /> : null}
       <Illustrative />
     </AbsoluteFill>

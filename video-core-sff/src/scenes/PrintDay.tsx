@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { C, MONO, SANS } from "../theme";
-import { Headline, Tag, clamp01, fadeIn, useEnter } from "../ui";
+import { CaptionTiming, Headline, NumCircle, Tag, clamp01, fadeIn, useEnter } from "../ui";
 
 const QUESTIONS = ["What did we have for Q3?", "And were we right last quarter?", "Also this GB300 thing on X, real?"];
 
@@ -10,24 +10,8 @@ const Question: React.FC<{ n: number; text: string; delay: number }> = ({ n, tex
   const underline = useEnter(delay + 6, 22);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 18, opacity: clamp01(e * 1.4), transform: `translateX(${(1 - e) * 30}px)` }}>
-      <span
-        style={{
-          width: 36,
-          height: 36,
-          borderRadius: 999,
-          background: C.gold,
-          color: C.black,
-          fontFamily: MONO,
-          fontSize: 19,
-          fontWeight: 700,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: `0 0 18px ${C.goldGlow}`,
-          transform: `scale(${0.6 + 0.4 * e})`,
-        }}
-      >
-        {n}
+      <span style={{ display: "inline-flex", transform: `scale(${0.6 + 0.4 * e})` }}>
+        <NumCircle n={n} />
       </span>
       <span style={{ position: "relative", fontFamily: SANS, fontSize: 42, color: C.white, lineHeight: 1.2 }}>
         {text}
@@ -37,14 +21,14 @@ const Question: React.FC<{ n: number; text: string; delay: number }> = ({ n, tex
   );
 };
 
-/** 7:10 am. Print day. The PM has three questions before the numbers drop. */
-export const PrintDay: React.FC = () => {
+/** 7:10 am. Print day. The PM has three questions; all three stay up for 3s+. */
+export const PrintDay: React.FC<{ timing: CaptionTiming }> = ({ timing }) => {
   const frame = useCurrentFrame();
-  const card = useEnter(10, 15);
-  const line1 = fadeIn(frame, 16, 8);
+  const card = useEnter(6, 15);
+  const line1 = fadeIn(frame, 10, 8);
   const tick = Math.floor(frame / 30) % 60;
   const clock = `7:10:${String(tick).padStart(2, "0")} AM`;
-  const banner = useEnter(14, 18);
+  const banner = useEnter(10, 18);
   const vignette = interpolate(frame, [0, 40], [0, 1], { extrapolateRight: "clamp" });
 
   return (
@@ -70,7 +54,7 @@ export const PrintDay: React.FC = () => {
         <Tag size={15}>Before the numbers drop</Tag>
       </div>
 
-      <Headline text="7:10 am. Print day. The PM has three questions." typed delay={2} size={76} />
+      <Headline text="7:10 am. Print day. The PM has three questions." typed timing={timing} size={76} cps={34} />
 
       {/* chat card, flown in with a perspective tilt */}
       <div
@@ -117,7 +101,7 @@ export const PrintDay: React.FC = () => {
             <div style={{ fontFamily: SANS, fontSize: 40, color: C.white, opacity: line1 }}>NVDA prints tonight.</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 18, marginTop: 6 }}>
               {QUESTIONS.map((q, i) => (
-                <Question key={i} n={i + 1} text={q} delay={26 + i * 12} />
+                <Question key={i} n={i + 1} text={q} delay={16 + i * 9} />
               ))}
             </div>
           </div>

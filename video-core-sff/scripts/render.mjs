@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const music = existsSync(path.join(root, "public", "music.mp3"));
-const out = path.join(root, "out", "core-sff-30s.mp4");
+const out = path.join(root, "out", process.env.OUT || "core-sff-30s.mp4");
 
 // Props go through a file: Windows shells mangle quotes in an inline JSON argument.
 mkdirSync(path.join(root, "out"), { recursive: true });

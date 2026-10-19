@@ -3,23 +3,24 @@ import { AbsoluteFill, Audio, staticFile } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import "./fonts";
 import { C } from "./theme";
-import { SCENES, Scene, sceneFrames, transitionFrames } from "./timeline";
+import { SCENES, Scene, captionWindow, sceneFrames, transitionFrames } from "./timeline";
 import { presentationFor } from "./transitions";
 import { Intro } from "./scenes/Intro";
 import { PrintDay } from "./scenes/PrintDay";
 import { Beat, Footage } from "./scenes/Beats";
 import { Private } from "./scenes/Private";
 
-const SceneView: React.FC<{ scene: Scene }> = ({ scene }) => {
+const SceneView: React.FC<{ scene: Scene; index: number }> = ({ scene, index }) => {
+  const timing = captionWindow(index);
   switch (scene.kind) {
     case "intro":
       return <Intro />;
     case "printday":
-      return <PrintDay />;
+      return <PrintDay timing={timing} />;
     case "private":
-      return <Private />;
+      return <Private timing={timing} />;
     case "beat":
-      return <Beat scene={scene} />;
+      return <Beat scene={scene} timing={timing} />;
     case "footage":
     default:
       return <Footage scene={scene} />;
@@ -42,7 +43,7 @@ export const Main: React.FC<{ music?: boolean }> = ({ music = false }) => (
         }
         nodes.push(
           <TransitionSeries.Sequence key={s.id} durationInFrames={sceneFrames(s)}>
-            <SceneView scene={s} />
+            <SceneView scene={s} index={i} />
           </TransitionSeries.Sequence>
         );
         return nodes;

@@ -2,18 +2,18 @@
   "fps": 30,
   "src": "clips/core-demo-draft7.mp4",
   "scenes": [
-    { "id": "intro",    "kind": "intro",    "dur": 3.8 },
-    { "id": "printday", "kind": "printday", "dur": 3.2, "in": "fade" },
-    { "id": "ask12",    "kind": "beat", "from": 9.4,  "to": 12.2, "in": "goldwipe", "tag": "Questions 1 + 2", "headline": "Ask Core both questions in one request." },
-    { "id": "ans1",     "kind": "beat", "from": 19.0, "to": 21.8, "in": "slide",    "tag": "Answer 1", "headline": "Our Q3 estimate sits 4.6% above NVIDIA's guide." },
-    { "id": "ans2",     "kind": "beat", "from": 23.8, "to": 26.4, "in": "wipe",     "tag": "Answer 2", "headline": "Last quarter we were close. Our previews ran 1.9% low." },
-    { "id": "ask3",     "kind": "beat", "from": 28.3, "to": 30.9, "in": "goldwipe", "tag": "Question 3", "headline": "Paste the post you want to check." },
-    { "id": "ans3",     "kind": "beat", "from": 33.0, "to": 36.0, "in": "slideup",  "tag": "Answer 3", "headline": "Core puts odds on every claim. The cut is real, the panic isn't." },
-    { "id": "notes",    "kind": "beat", "from": 40.0, "to": 42.2, "in": "fade",     "tag": "And", "headline": "It also found our own notes that disagree." },
-    { "id": "reply",    "kind": "beat", "from": 44.4, "to": 46.6, "in": "slide",    "tag": "Reply", "headline": "Send the PM both reports, attached." },
-    { "id": "sixmin",   "kind": "beat", "from": 49.2, "to": 51.8, "in": "goldwipe", "tag": "Done", "headline": "All three questions answered in six minutes." },
-    { "id": "private",  "kind": "private",  "dur": 3.0, "in": "fade" },
-    { "id": "end",      "kind": "footage",  "from": 57.4, "to": 61.4, "in": "fade", "final": true }
+    { "id": "intro",    "kind": "intro",    "dur": 2.0 },
+    { "id": "printday", "kind": "printday", "dur": 4.8, "in": "fade" },
+    { "id": "ask12",    "kind": "beat", "from": 9.4,  "to": 12.0, "in": "goldwipe", "tag": "Questions", "nums": [1, 2], "headline": "Questions 1 and 2, one request." },
+    { "id": "tracker",  "kind": "footage", "from": 15.0, "to": 17.0, "in": "wipe" },
+    { "id": "ans1",     "kind": "beat", "from": 19.0, "to": 21.6, "in": "slide",    "tag": "Answer", "nums": [1], "headline": "Our forecast is 4.6% above NVIDIA's own." },
+    { "id": "ans2",     "kind": "beat", "from": 23.8, "to": 26.8, "in": "wipe",     "tag": "Answer", "nums": [2], "headline": "Last quarter we were close. Our previews ran 1.9% low." },
+    { "id": "ask3",     "kind": "beat", "from": 28.3, "to": 30.7, "in": "goldwipe", "tag": "Question", "nums": [3], "headline": "Paste the post you want to check." },
+    { "id": "ans3",     "kind": "beat", "from": 32.8, "to": 36.3, "in": "slideup",  "tag": "Answer", "nums": [3], "headline": "Core puts odds on every claim. The cut is real, the panic isn't." },
+    { "id": "notes",    "kind": "beat", "from": 39.6, "to": 42.6, "in": "fade",     "tag": "And", "headline": "It also found our own notes that disagree." },
+    { "id": "sixmin",   "kind": "beat", "from": 49.0, "to": 52.0, "in": "goldwipe", "tag": "Done", "headline": "All three questions answered in six minutes." },
+    { "id": "private",  "kind": "private",  "dur": 2.8, "in": "fade" },
+    { "id": "end",      "kind": "footage",  "from": 57.4, "to": 60.9, "in": "fade", "final": true }
   ],
   "transitionFrames": { "fade": 12, "goldwipe": 11, "slide": 10, "slideup": 10, "wipe": 10 }
 }
