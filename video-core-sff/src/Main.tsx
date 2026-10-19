@@ -8,6 +8,7 @@ import { presentationFor } from "./transitions";
 import { Intro } from "./scenes/Intro";
 import { PrintDay } from "./scenes/PrintDay";
 import { Problem } from "./scenes/Problem";
+import { Zoom } from "./scenes/Zoom";
 import { Beat, Footage } from "./scenes/Beats";
 import { Private } from "./scenes/Private";
 
@@ -20,8 +21,10 @@ const SceneView: React.FC<{ scene: Scene; index: number }> = ({ scene, index }) 
       return <PrintDay timing={timing} />;
     case "problem":
       return <Problem timing={timing} tag={scene.tag} headline={scene.headline ?? ""} />;
+    case "zoom":
+      return <Zoom timing={timing} tag={scene.tag} headline={scene.headline ?? ""} />;
     case "private":
-      return <Private timing={timing} headline={scene.headline} />;
+      return <Private timing={timing} tag={scene.tag} headline={scene.headline} />;
     case "beat":
       return <Beat scene={scene} timing={timing} />;
     case "footage":

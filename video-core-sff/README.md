@@ -17,12 +17,12 @@ separate film.)
 | 2 | Print day (native) | Typed headline; the PM's two questions land one by one and hold for 3s+ |
 | 3 | Problem (native) | "Normally, that's the analyst's whole morning." Clock races, filings and old notes pile up |
 | 4 | The ask | Typed prompt: "Build a guidance tracker for NVDA, with what our previews expected." |
-| 5 | Tracker (footage, unblurred) | The real report, 15.0–17.5s of the demo |
+| 5 | Tracker (zoom) | The real report frozen (`public/tracker.png`, demo @ 16.0s); the camera moves over the three kinds of answer with gold boxes and numbered labels: the verdict sentence, the stat tiles, the sources panel |
 | 6 | Answer 1 | Guide vs ours cards, then the verdict strip: 3 of 3 printed above range, so we likely run low |
 | 7 | Answer 2 | Previews vs the print: (1.9%) avg, low 2 of 2, from our own notes |
 | 8 | Sources | 7 sources, 4 public filings + the internal preview note in gold |
 | 9 | Done | 00:00 → 06:00 counter; 2 questions · 1 request · 0 manual steps |
-| 10 | Private (native) | "Because Core reads your own notes, on your own machine." + three tiles |
+| 10 | Private (native) | "Nothing leaves the firm." + three one-line tiles |
 | 11 | End (footage) | "Ask. It's done." lockup, kept as the final shot |
 
 Footage-backed scenes ("beats", `src/scenes/Beats.tsx`) follow the reference ad's pattern: the demo
@@ -34,6 +34,7 @@ overlap: each fades out (0.2s) before the transition and the next fades in (0.3s
 
 ```
 public/clips/core-demo-draft7.mp4   source demo (not committed) — see "Source prep" below
+public/tracker.png                  still of the demo @ 16.0s for the zoom scene (not committed; see below)
 public/music.mp3                    optional, picked up automatically by `npm run render`
 src/Lockup.tsx                      Core by Treasurer lockup as text + SVG (sharp at any size)
 src/fontData.ts                     embedded Pretendard, copied from video-treasurer-pr30
@@ -55,5 +56,11 @@ never misses. This also drops the audio, which the film mutes anyway:
 
 ```bash
 ffmpeg -i ~/Downloads/core-demo-draft7.mp4 -vf "fps=30,format=yuv420p" -an -c:v libx264 -preset fast -crf 16 -g 1 -keyint_min 1 -movflags +faststart public/clips/core-demo-draft7.mp4
+```
+
+The zoom scene uses a frozen frame of the report:
+
+```bash
+ffmpeg -ss 16.0 -i public/clips/core-demo-draft7.mp4 -frames:v 1 public/tracker.png
 ```
 

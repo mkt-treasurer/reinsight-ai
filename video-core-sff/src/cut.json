@@ -4,15 +4,15 @@
   "scenes": [
     { "id": "intro",    "kind": "intro",    "dur": 2.0 },
     { "id": "printday", "kind": "printday", "dur": 4.4, "in": "fade" },
-    { "id": "problem",  "kind": "problem",  "dur": 3.2, "in": "goldwipe", "tag": "The problem", "headline": "Normally, that's the analyst's whole morning." },
+    { "id": "problem",  "kind": "problem",  "dur": 3.0, "in": "goldwipe", "tag": "The problem", "headline": "Normally, that's the analyst's whole morning." },
     { "id": "ask",      "kind": "beat", "from": 9.4,  "to": 12.2, "in": "goldwipe", "tag": "The ask", "headline": "Instead: one request to Core." },
-    { "id": "tracker",  "kind": "footage", "from": 15.0, "to": 17.5, "in": "wipe" },
-    { "id": "ans1",     "kind": "beat", "from": 19.0, "to": 22.2, "in": "slide",   "tag": "Answer", "nums": [1], "headline": "Above the guide. And our history says we still run low." },
+    { "id": "tracker",  "kind": "zoom", "dur": 4.6, "in": "wipe", "tag": "The tracker", "headline": "What comes back: a verdict, the numbers, the sources." },
+    { "id": "ans1",     "kind": "beat", "from": 19.0, "to": 22.0, "in": "slide",   "tag": "Answer", "nums": [1], "headline": "Above the guide. And our history says we still run low." },
     { "id": "ans2",     "kind": "beat", "from": 23.8, "to": 26.8, "in": "wipe",    "tag": "Answer", "nums": [2], "headline": "Last quarter we ran 1.9% low, both times." },
-    { "id": "sources",  "kind": "beat", "from": 16.0, "to": 19.0, "in": "slideup", "tag": "Sources", "headline": "Every number sourced: public filings and our own notes." },
+    { "id": "sources",  "kind": "beat", "from": 16.0, "to": 18.8, "in": "slideup", "tag": "Sources", "headline": "Every number sourced: public filings and our own notes." },
     { "id": "sixmin",   "kind": "beat", "from": 43.6, "to": 46.6, "in": "goldwipe", "tag": "Done", "headline": "Both answers to the PM. Six minutes, not a morning." },
-    { "id": "private",  "kind": "private",  "dur": 2.8, "in": "fade", "headline": "Because Core reads your own notes, on your own machine." },
-    { "id": "end",      "kind": "footage",  "from": 57.4, "to": 60.9, "in": "fade", "final": true }
+    { "id": "private",  "kind": "private",  "dur": 2.6, "in": "fade", "tag": "Private by design", "headline": "Nothing leaves the firm." },
+    { "id": "end",      "kind": "footage",  "from": 57.4, "to": 60.6, "in": "fade", "final": true }
   ],
   "transitionFrames": { "fade": 12, "goldwipe": 11, "slide": 10, "slideup": 10, "wipe": 10 }
 }
