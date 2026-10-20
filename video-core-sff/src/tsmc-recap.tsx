@@ -87,6 +87,12 @@ const Block: React.FC<{ top?: number; width: number; children: React.ReactNode }
   <div style={{ position: "absolute", left: "50%", top, width, marginLeft: -width / 2 }}>{children}</div>
 );
 
+/** One-line fact under a card. */
+const Note: React.FC<{ text: string; delay: number }> = ({ text, delay }) => {
+  const e = useEnter(delay, 16);
+  return <div style={{ marginTop: 16, fontFamily: SANS, fontSize: 24, color: CREAM, opacity: clamp01(e * 1.4), transform: `translateY(${(1 - e) * 8}px)` }}>{text}</div>;
+};
+
 /* ------------------------------------------------------------------ scenes */
 
 type S = { id: string; dur: number; in?: TransitionKind; caption: string; body: React.FC<{ t: CaptionTiming }> };
@@ -123,7 +129,7 @@ const Beat: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   return (
     <Stage>
       <Block width={1240}>
-        <Kicker text="1 · A beat" delay={t.enter + 2} />
+        <Kicker text="The headline" delay={t.enter + 2} />
         <div style={{ display: "flex", gap: 26 }}>
           <Pop delay={t.enter + 6} width={560} style={{ padding: "30px 36px 28px" }}>
             <Label>Forecast · Jul 16</Label>
@@ -144,8 +150,10 @@ const Beat: React.FC<{ t: CaptionTiming }> = ({ t }) => {
             <div style={{ fontFamily: SANS, fontSize: 22, color: GREEN, fontWeight: 600, marginTop: 2, opacity: clamp01(dot * 1.4) }}>above the top of the range</div>
           </Pop>
         </div>
-        <div style={{ marginTop: 18 }}>
-          <Chip n={1} text="TSMC 3Q26 earnings release" delay={t.enter + 50} />
+        <Note delay={t.enter + 48} text="EPS NT$29.43, up 68.7% from a year earlier." />
+        <div style={{ marginTop: 14, display: "flex", gap: 12 }}>
+          <Chip n={9} text="TSMC 3Q26 EarningsRelease.pdf · p.1" delay={t.enter + 60} />
+          <Chip n={14} text="TSMC 3Q26 Transcript.pdf" delay={t.enter + 66} />
         </div>
       </Block>
     </Stage>
@@ -172,15 +180,15 @@ const AI: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   return (
     <Stage>
       <Block width={1240}>
-        <Kicker text="2 · AI did the heavy lifting" delay={t.enter + 2} />
+        <Kicker text="1 · AI drove it" delay={t.enter + 2} />
         <div style={{ display: "flex", gap: 26 }}>
           <Pop delay={t.enter + 6} width={700} style={{ padding: "30px 36px 28px" }}>
-            <Label>AI / HPC share of revenue · 3Q26</Label>
+            <Label>AI / data-center chips (HPC) · share of revenue</Label>
             <div style={{ display: "flex", alignItems: "baseline", gap: 22, marginTop: 8 }}>
               <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 112, color: INK, lineHeight: 1 }}>{share}</div>
               <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 36, color: GREEN }}>{qoq}</div>
             </div>
-            <div style={{ fontFamily: SANS, fontSize: 22, color: INK2, marginTop: 10 }}>of revenue · vs last quarter</div>
+            <div style={{ fontFamily: SANS, fontSize: 22, color: INK2, marginTop: 10 }}>of revenue · grew 22% from last quarter</div>
           </Pop>
           <Pop delay={t.enter + 18} width={514} tiltY={6} style={{ padding: "26px 30px 22px" }}>
             <Label>2nm share of wafer revenue</Label>
@@ -190,8 +198,10 @@ const AI: React.FC<{ t: CaptionTiming }> = ({ t }) => {
             </div>
           </Pop>
         </div>
-        <div style={{ marginTop: 18 }}>
-          <Chip n={2} text="Earnings call · p.2" delay={t.enter + 70} />
+        <Note delay={t.enter + 70} text="2nm capacity should more than double in 2027." />
+        <div style={{ marginTop: 14, display: "flex", gap: 12 }}>
+          <Chip n={14} text="TSMC 3Q26 Transcript.pdf" delay={t.enter + 78} />
+          <Chip n={9} text="TSMC 3Q26 EarningsRelease.pdf" delay={t.enter + 84} />
         </div>
       </Block>
     </Stage>
@@ -207,7 +217,7 @@ const Catch: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   return (
     <Stage>
       <Block width={1240}>
-        <Kicker text="3 · The catch" delay={t.enter + 2} />
+        <Kicker text="2 · The catch: margins" delay={t.enter + 2} />
         <Pop delay={t.enter + 6} width={1240} tiltY={0} style={{ padding: "30px 40px 30px" }}>
           <Label>Gross margin</Label>
           <div style={{ display: "flex", alignItems: "baseline", gap: 28, marginTop: 8 }}>
@@ -218,16 +228,17 @@ const Catch: React.FC<{ t: CaptionTiming }> = ({ t }) => {
             <div style={{ fontFamily: SANS, fontSize: 48, color: RED, opacity: clamp01(arrow * 1.4), transform: `translateX(${(arrow - 1) * 16}px)` }}>→</div>
             <div>
               <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 96, color: INK, lineHeight: 1 }}>{now}</div>
-              <div style={{ fontFamily: MONO, fontSize: 14, letterSpacing: 3, color: GREY, marginTop: 8 }}>3Q26 · as 2nm ramps</div>
+              <div style={{ fontFamily: MONO, fontSize: 14, letterSpacing: 3, color: GREY, marginTop: 8 }}>3Q26 · down 1.3 pts on early 2nm costs</div>
             </div>
           </div>
           <div style={{ height: 1, background: LINE, margin: "22px 0 16px" }} />
           <div style={{ fontFamily: SANS, fontSize: 24, color: INK2, opacity: clamp01(line * 1.4), transform: `translateY(${(1 - line) * 8}px)` }}>
-            Overseas fabs: <b style={{ color: INK }}>~2%</b> margin drag now, <b style={{ color: INK }}>3–4%</b> in coming years.
+            Overseas fabs (like Arizona) cut margins by <b style={{ color: INK }}>~2%</b> now, widening to <b style={{ color: INK }}>3–4%</b> over the next few years.
           </div>
         </Pop>
-        <div style={{ marginTop: 18 }}>
-          <Chip n={3} text="Earnings call · p.3" delay={t.enter + 70} />
+        <div style={{ marginTop: 18, display: "flex", gap: 12 }}>
+          <Chip n={11} text="TSMC 3Q26 Presentation (E).pdf" delay={t.enter + 70} />
+          <Chip n={13} text="TSMC 3Q26 Transcript.pdf" delay={t.enter + 76} />
         </div>
       </Block>
     </Stage>
@@ -242,14 +253,14 @@ const Ahead: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   const capLo = useCount(60, t.enter + 44, (v) => `${Math.round(v)}`);
   const capHi = useCount(64, t.enter + 48, (v) => `${Math.round(v)}`);
   const tiles: [string, React.ReactNode, string, number][] = [
-    ["4Q26 revenue guide", <>${lo}–{hi}B</>, "vs $46.72B in 3Q", 6],
+    ["Q4 forecast", <>${lo}–{hi}B</>, "vs $46.72B in 3Q", 6],
     ["2026 revenue growth", growth, "in US dollars", 18],
-    ["2026 capex", <>${capLo}–{capHi}B</>, "budget reiterated", 30],
+    ["Investment (capex)", <>${capLo}–{capHi}B</>, "2026", 30],
   ];
   return (
     <Stage>
       <Block width={1240}>
-        <Kicker text="4 · More ahead" delay={t.enter + 2} />
+        <Kicker text="3 · Even more ahead" delay={t.enter + 2} />
         <div style={{ display: "flex", gap: 22 }}>
           {tiles.map(([k, v, sub, d], i) => (
             <Pop key={k} delay={t.enter + d} width={399} tiltY={i === 0 ? -6 : i === 2 ? 6 : 0} style={{ padding: "26px 30px 24px" }}>
@@ -259,9 +270,10 @@ const Ahead: React.FC<{ t: CaptionTiming }> = ({ t }) => {
             </Pop>
           ))}
         </div>
-        <div style={{ marginTop: 18, display: "flex", gap: 12 }}>
-          <Chip n={1} text="Earnings release" delay={t.enter + 64} />
-          <Chip n={4} text="Earnings call · p.3–4" delay={t.enter + 70} />
+        <Note delay={t.enter + 62} text="2026–2028 spending will be much higher than the previous three years." />
+        <div style={{ marginTop: 14, display: "flex", gap: 12 }}>
+          <Chip n={15} text="TSMC 3Q26 EarningsRelease.pdf" delay={t.enter + 72} />
+          <Chip n={3} text="TSMC 3Q26 Transcript.pdf · p.4" delay={t.enter + 78} />
         </div>
       </Block>
     </Stage>
@@ -271,28 +283,33 @@ const Ahead: React.FC<{ t: CaptionTiming }> = ({ t }) => {
 /** 6 · THE CEO */
 const CEO: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   const q1 = useEnter(t.enter + 14, 16);
-  const q2 = useEnter(t.enter + 44, 16);
+  const q2 = useEnter(t.enter + 38, 16);
+  const q3 = useEnter(t.enter + 62, 16);
   return (
     <Stage>
       <Block width={1140}>
-        <Kicker text="5 · The CEO" delay={t.enter + 2} />
+        <Kicker text="4 · The CEO's tone" delay={t.enter + 2} />
         <Pop delay={t.enter + 6} width={1140} tiltY={0} style={{ padding: "34px 44px 30px" }}>
           <div style={{ display: "flex", gap: 24 }}>
             <div style={{ width: 4, background: INDIGO, borderRadius: 2, flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: SANS, fontSize: 36, lineHeight: 1.35, color: INK, opacity: clamp01(q1 * 1.4), transform: `translateY(${(1 - q1) * 8}px)` }}>
-                On AI demand: <b>"extremely robust"</b>
+              <div style={{ fontFamily: SANS, fontSize: 32, lineHeight: 1.35, color: INK, opacity: clamp01(q1 * 1.4), transform: `translateY(${(1 - q1) * 8}px)` }}>
+                AI demand is <b>"extremely robust"</b>
               </div>
-              <div style={{ fontFamily: SANS, fontSize: 36, lineHeight: 1.35, color: INK, marginTop: 14, opacity: clamp01(q2 * 1.4), transform: `translateY(${(1 - q2) * 8}px)` }}>
-                On planning for 2027: <b>"prudent"</b>
+              <div style={{ fontFamily: SANS, fontSize: 32, lineHeight: 1.35, color: INK, marginTop: 12, opacity: clamp01(q2 * 1.4), transform: `translateY(${(1 - q2) * 8}px)` }}>
+                The earlier AI growth target <b>"probably will be higher"</b>
+              </div>
+              <div style={{ fontFamily: SANS, fontSize: 32, lineHeight: 1.35, color: INK, marginTop: 12, opacity: clamp01(q3 * 1.4), transform: `translateY(${(1 - q3) * 8}px)` }}>
+                For 2027, <b>"prudent"</b> about consumer markets
               </div>
               <div style={{ height: 1, background: LINE, margin: "22px 0 14px" }} />
               <div style={{ fontFamily: SANS, fontSize: 20, color: GREY }}>C.C. Wei, Chairman &amp; CEO · 3Q26 earnings call</div>
             </div>
           </div>
         </Pop>
-        <div style={{ marginTop: 18 }}>
-          <Chip n={4} text="Earnings call · p.4, p.7" delay={t.enter + 70} />
+        <div style={{ marginTop: 18, display: "flex", gap: 12 }}>
+          <Chip n={18} text="TSMC 3Q26 Transcript.pdf" delay={t.enter + 76} />
+          <Chip n={20} text="TSMC 3Q26 Transcript.pdf" delay={t.enter + 82} />
         </div>
       </Block>
     </Stage>
@@ -308,7 +325,7 @@ const CoreRead: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   return (
     <Stage>
       <div style={{ position: "absolute", left: 215, top: 150, width: 1490, opacity: clamp01(win * 1.4), transform: `translateY(${(1 - win) * 40}px)` }}>
-        <Kicker text="Core's read" delay={t.enter + 2} />
+        <Kicker text="5 · Core's read for the fund" delay={t.enter + 2} />
         <div style={{ height: 760, borderRadius: 14, overflow: "hidden", background: "#1b1d22", boxShadow: "0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06)" }}>
           <div style={{ height: 42, background: "#2a2c33", display: "flex", alignItems: "center", padding: "0 16px", gap: 8 }}>
             {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
@@ -317,27 +334,28 @@ const CoreRead: React.FC<{ t: CaptionTiming }> = ({ t }) => {
             <span style={{ width: 24 }} />
             <span style={{ fontFamily: SANS, fontSize: 13, color: "#c6c9d2", background: "#1b1d22", borderRadius: 7, padding: "5px 14px", width: 420 }}>force.treasurer.net/#/en/ask</span>
           </div>
-          <div style={{ background: "#fff", height: 718, padding: "34px 56px", fontFamily: SANS, color: INK }}>
+          <div style={{ background: "#fff", height: 718, padding: "34px 56px", fontFamily: SANS, color: INK, position: "relative" }}>
+            <div style={{ position: "absolute", right: 28, top: 22, padding: "5px 11px", border: `1.5px solid ${GREY}`, borderRadius: 4, fontFamily: MONO, fontSize: 13, letterSpacing: 4, color: GREY }}>DEMO FUND</div>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <div style={{ background: "#111", color: "#fff", borderRadius: 14, padding: "16px 24px", fontSize: 21, lineHeight: "30px", maxWidth: 1100 }}>
-                TSMC reported 3Q26 results on Oct 15. How did the quarter do against its guidance, what is the 4Q26 guide, and what does it mean for our position?
+                What were the key takeaways from TSMC's 3Q26 results and earnings call? Cover results vs guidance, what drove the quarter (AI/HPC, 2nm), margins, the 4Q26 and full-year outlook, capex, and management's tone on AI demand and 2027. Then what it means for our position.
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 17, color: GREY, marginTop: 28 }}>
               <span style={{ width: 20, height: 20, borderRadius: 999, background: "#16a34a", color: "#fff", fontSize: 12, display: "inline-flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>✓</span>
-              Worked for 45 s · 9 sources
+              Sources 5 · 2 internal
             </div>
-            <div style={{ marginTop: 18, fontSize: 32, fontWeight: 700, lineHeight: "44px" }}>
+            <div style={{ marginTop: 18, fontSize: 28, fontWeight: 700, lineHeight: "40px" }}>
               <span style={{ background: `rgba(79,70,229,${0.16 * hl})`, boxShadow: `0 0 0 ${6 * hl}px rgba(79,70,229,${0.16 * hl})`, borderRadius: 4 }}>
-                TSMC's 3Q26 was a clean beat and a stronger guide, with margins slipping only as 2nm ramps.
+                TSMC's 3Q26 was a clean beat and a stronger guide, driven by AI/HPC and 2nm; margins are drifting down only because of the 2nm ramp and new overseas fabs, which supports holding our long.
               </span>{" "}
-              <span style={{ fontWeight: 400, color: INK2 }}>Revenue came in above the top of the guided range and the 4Q26 guide implies another strong step up in sales.</span>
+              <span style={{ fontWeight: 400, color: INK2 }}>Management is sounding more bullish on AI demand while staying "prudent" about consumer markets in 2027. The near-term earnings path looks intact, and the main risk to watch is margin dilution as more US fabs come online.</span>
             </div>
             <div style={{ marginTop: 30, opacity: clamp01(list * 1.4), transform: `translateY(${(1 - list) * 10}px)` }}>
               <div style={{ fontFamily: MONO, fontSize: 14, letterSpacing: 4, color: GREY, textTransform: "uppercase" }}>What would change the view</div>
               <div style={{ display: "flex", gap: 14, marginTop: 12 }}>
-                {["Bigger margin dilution", "Consumer weakness in 2027", "AI overbuild"].map((x) => (
-                  <span key={x} style={{ padding: "10px 16px", borderRadius: 10, background: "#f3f4f6", fontSize: 22, color: INK2 }}>{x}</span>
+                {["Larger margin dilution than guided as US fabs ramp", "Consumer weakness spreading into 2027 numbers", "Signs that AI capacity is being overbuilt"].map((x) => (
+                  <span key={x} style={{ padding: "10px 16px", borderRadius: 10, background: "#f3f4f6", fontSize: 20, color: INK2 }}>{x}</span>
                 ))}
               </div>
             </div>
@@ -390,12 +408,12 @@ const End: React.FC<{ t: CaptionTiming }> = ({ t }) => {
 
 export const RECAP_SCENES: S[] = [
   { id: "hero", dur: 3.4, caption: "TSMC's Q3 2026 earnings, read by Core.", body: Hero },
-  { id: "beat", dur: 6.0, in: "fade", caption: "Revenue beat its own forecast.", body: Beat },
-  { id: "ai", dur: 6.0, in: "slide", caption: "AI chips are now 68% of sales.", body: AI },
-  { id: "catch", dur: 6.0, in: "fade", caption: "Margins slipped as new 2nm lines ramp up.", body: Catch },
-  { id: "ahead", dur: 6.0, in: "slide", caption: "And it expects even more.", body: Ahead },
-  { id: "ceo", dur: 5.0, in: "fade", caption: "In the CEO's words.", body: CEO },
-  { id: "core", dur: 5.4, in: "wipe", caption: "Core's read, in one sentence.", body: CoreRead },
+  { id: "beat", dur: 6.4, in: "fade", caption: "It beat its own forecast.", body: Beat },
+  { id: "ai", dur: 6.6, in: "slide", caption: "AI drove it.", body: AI },
+  { id: "catch", dur: 6.4, in: "fade", caption: "The catch: margins.", body: Catch },
+  { id: "ahead", dur: 6.6, in: "slide", caption: "Even more ahead.", body: Ahead },
+  { id: "ceo", dur: 6.0, in: "fade", caption: "The CEO's tone.", body: CEO },
+  { id: "core", dur: 6.4, in: "wipe", caption: "Core's read for the fund.", body: CoreRead },
   { id: "closing", dur: 3.4, in: "fade", caption: "", body: Closing },
   { id: "end", dur: 3.4, in: "fade", caption: "", body: End },
 ];
