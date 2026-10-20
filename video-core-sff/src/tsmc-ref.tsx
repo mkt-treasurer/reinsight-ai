@@ -6,7 +6,7 @@
  * TREASURER. → black.
  */
 import React from "react";
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { MONO, SERIF } from "./theme";
 import { TRANSITION_FRAMES, TransitionKind } from "./timeline";
@@ -481,12 +481,9 @@ const End: React.FC<{ t: CaptionTiming }> = ({ t }) => {
         const y = oy + (520 - oy) * g * 0.85;
         return <div key={i} style={{ position: "absolute", left: x, top: y, width: 2, height: 2, borderRadius: 999, background: "#dfe6f5", opacity: dust * (0.3 + 0.7 * rnd(i, 3)) }} />;
       })}
-      <div style={{ position: "absolute", left: "50%", top: 440, transform: `translate(-50%, -50%) scale(${scale})`, opacity: mark * out, filter: `blur(${(1 - mark) * 10}px)` }}>
-        <SphereWordmark />
-      </div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 880, textAlign: "center", fontFamily: SANS, fontWeight: 500, fontSize: 22, letterSpacing: 7, color: "#b9c1d1", opacity: treas * out }}>
-        TREASURER<span style={{ color: "#5b7cff" }}>.</span>
-      </div>
+      {/* the reference film's own end card, full-res frame (public/core-endcard.png) */}
+      <Img src={staticFile("core-endcard.png")} style={{ position: "absolute", inset: 0, width: 1920, height: 1080, opacity: mark * out, transform: `scale(${scale})`, filter: `blur(${(1 - mark) * 8}px)` }} />
+      {treas < 0 ? null : null}
     </AbsoluteFill>
   );
 };
