@@ -22,7 +22,8 @@ const QUESTION = "TSMC reported 3Q26 results on Oct 15. How did the quarter do a
 const BG = "#07090d";
 const CREAM = "#efede6";
 const MUTED = "#8ea0bd";
-const GOLD = "#d4a24a"; // kicker / stamp
+const GREEN = "#22c55e";
+const GOLD = "#d4a24a"; // kept for reference only; no longer used on screen
 const INK = "#15171c";
 const INK2 = "#3b3f49";
 const GREY = "#6b6f7a";
@@ -40,7 +41,7 @@ const Stage: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
 
 /** Core's answer page inside a browser window; `dim` darkens it while a card pops out. */
 const Browser: React.FC<{ pageFrame: number; dim?: number }> = ({ pageFrame, dim = 0 }) => (
-  <div style={{ position: "absolute", left: 215, top: 64, width: 1490, height: 896, borderRadius: 14, overflow: "hidden", background: "#1b1d22", boxShadow: "0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06)" }}>
+  <div style={{ position: "absolute", left: 215, top: 108, width: 1490, height: 880, borderRadius: 14, overflow: "hidden", background: "#1b1d22", boxShadow: "0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06)" }}>
     <div style={{ height: 42, background: "#2a2c33", display: "flex", alignItems: "center", padding: "0 16px", gap: 8 }}>
       {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
         <span key={c} style={{ width: 11, height: 11, borderRadius: 999, background: c }} />
@@ -48,7 +49,7 @@ const Browser: React.FC<{ pageFrame: number; dim?: number }> = ({ pageFrame, dim
       <span style={{ width: 24 }} />
       <span style={{ fontFamily: SANS, fontSize: 13, color: "#c6c9d2", background: "#1b1d22", borderRadius: 7, padding: "5px 14px", width: 420 }}>force.treasurer.net/#/en/ask</span>
     </div>
-    <div style={{ position: "absolute", left: 5, top: 50, width: 1480, height: 846, overflow: "hidden" }}>
+    <div style={{ position: "absolute", left: 5, top: 50, width: 1480, height: 830, overflow: "hidden" }}>
       <div style={{ transform: "scale(0.99)", transformOrigin: "0 0" }}>
         <AnswerPage frame={pageFrame} />
       </div>
@@ -62,7 +63,7 @@ const PopLabel: React.FC<{ text: string; delay: number }> = ({ text, delay }) =>
   const e = useEnter(delay, 16);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, opacity: clamp01(e * 1.4), transform: `translateX(${(1 - e) * -10}px)` }}>
-      <span style={{ width: 3, height: 26, background: GOLD, borderRadius: 2 }} />
+      <span style={{ width: 3, height: 26, background: CREAM, borderRadius: 2 }} />
       <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 26, color: "#fff", textShadow: "0 2px 12px rgba(0,0,0,0.7)" }}>{text}</span>
     </div>
   );
@@ -73,9 +74,8 @@ const Caption: React.FC<{ text: string; tag?: string; timing: CaptionTiming }> =
   const frame = useCurrentFrame();
   const a = fadeIn(frame, timing.enter, timing.inLen ?? 9) * (1 - fadeIn(frame, timing.exitAt, timing.outLen ?? 6));
   return (
-    <div style={{ position: "absolute", left: 160, right: 160, bottom: 26, textAlign: "center", opacity: a }}>
-      {tag ? <div style={{ fontFamily: MONO, fontSize: 12, letterSpacing: 6, color: GOLD, textTransform: "uppercase", marginBottom: 6 }}>{tag}</div> : null}
-      <div style={{ fontFamily: SERIF, fontSize: 32, color: CREAM, lineHeight: 1.2 }}>{text}</div>
+    <div style={{ position: "absolute", left: 160, right: 160, top: 34, textAlign: "center", opacity: a }}>
+      <div style={{ fontFamily: SERIF, fontSize: 34, color: CREAM, lineHeight: 1.2 }}>{text}</div>
     </div>
   );
 };
@@ -122,8 +122,8 @@ const Release: React.FC<{ delay: number; stamp?: number }> = ({ delay, stamp = 0
       </div>
       {stamp > 0 ? (
         <div style={{ position: "absolute", right: 40, top: 150, transform: `rotate(-11deg) scale(${interpolate(stamp, [0, 1], [2.2, 1])})`, opacity: clamp01(stamp * 2), transformOrigin: "50% 50%" }}>
-          <div style={{ padding: "12px 24px", border: `4px solid ${GOLD}`, borderRadius: 8, color: GOLD, fontFamily: MONO, fontWeight: 700, fontSize: 60, letterSpacing: 6, lineHeight: 1, background: "rgba(246,245,241,0.85)" }}>BEAT ✓</div>
-          <div style={{ marginTop: 10, textAlign: "center", fontFamily: MONO, fontSize: 17, letterSpacing: 4, color: GOLD, background: "rgba(246,245,241,0.92)", padding: "4px 10px", borderRadius: 4 }}>READ BY CORE IN 45 S</div>
+          <div style={{ padding: "12px 24px", border: `4px solid ${GREEN}`, borderRadius: 8, color: "#15803d", fontFamily: MONO, fontWeight: 700, fontSize: 60, letterSpacing: 6, lineHeight: 1, background: "rgba(246,245,241,0.85)" }}>BEAT ✓</div>
+          <div style={{ marginTop: 10, textAlign: "center", fontFamily: MONO, fontSize: 17, letterSpacing: 4, color: "#15803d", background: "rgba(246,245,241,0.92)", padding: "4px 10px", borderRadius: 4 }}>READ BY CORE IN 45 S</div>
         </div>
       ) : null}
     </div>
@@ -201,7 +201,7 @@ const Working: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   return (
     <Stage>
       <Browser pageFrame={100} dim={0.62} />
-      <div style={{ position: "absolute", left: 410, top: 300, width: 1100 }}>
+      <div style={{ position: "absolute", left: 410, top: 330, width: 1100 }}>
         <PopLabel text="Core is working" delay={t.enter + 2} />
         <Pop delay={t.enter + 2} width={1100} style={{ padding: "26px 34px 28px" }}>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14 }}>
@@ -235,7 +235,7 @@ const Working: React.FC<{ t: CaptionTiming }> = ({ t }) => {
 const Verdict: React.FC<{ t: CaptionTiming }> = ({ t }) => (
   <Stage>
     <Browser pageFrame={100000} dim={0.62} />
-    <div style={{ position: "absolute", left: 340, top: 330, width: 1240 }}>
+    <div style={{ position: "absolute", left: 340, top: 350, width: 1240 }}>
       <PopLabel text="The verdict" delay={t.enter + 2} />
       <Pop delay={t.enter + 2} width={1240} style={{ padding: "30px 40px 30px" }}>
         <Label>Core · first sentence of the answer</Label>
@@ -255,7 +255,7 @@ const Revenue: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   return (
     <Stage>
       <Browser pageFrame={100000} dim={0.62} />
-      <div style={{ position: "absolute", left: 355, top: 320, width: 1210 }}>
+      <div style={{ position: "absolute", left: 355, top: 340, width: 1210 }}>
         <PopLabel text="Revenue vs forecast" delay={t.enter + 2} />
         <div style={{ display: "flex", gap: 26 }}>
           <Pop delay={t.enter + 2} width={560} style={{ padding: "28px 34px 26px" }}>
@@ -290,7 +290,7 @@ const Guide: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   return (
     <Stage>
       <Browser pageFrame={100000} dim={0.62} />
-      <div style={{ position: "absolute", left: 345, top: 330, width: 1230 }}>
+      <div style={{ position: "absolute", left: 345, top: 350, width: 1230 }}>
         <PopLabel text="Next quarter" delay={t.enter + 2} />
         <div style={{ display: "flex", gap: 26, alignItems: "stretch" }}>
           <Pop delay={t.enter + 2} width={450} style={{ padding: "28px 34px" }}>
@@ -326,7 +326,7 @@ const N2: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   return (
     <Stage>
       <Browser pageFrame={100000} dim={0.62} />
-      <div style={{ position: "absolute", left: 510, top: 300, width: 900 }}>
+      <div style={{ position: "absolute", left: 510, top: 330, width: 900 }}>
         <PopLabel text="The reason" delay={t.enter + 2} />
         <Pop delay={t.enter + 2} width={900} style={{ padding: "26px 40px 24px" }}>
           <Label>2nm share of wafer revenue</Label>
@@ -348,12 +348,12 @@ const Fund: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   return (
     <Stage>
       <Browser pageFrame={100000} dim={0.62} />
-      <div style={{ position: "absolute", left: 370, top: 330, width: 1180 }}>
+      <div style={{ position: "absolute", left: 370, top: 350, width: 1180 }}>
         <PopLabel text="Your position" delay={t.enter + 2} />
         <Pop delay={t.enter + 2} width={1180} style={{ padding: "30px 38px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Label>Your position · TSMC (2330.TW)</Label>
-            <span style={{ padding: "5px 11px", border: `1.5px solid ${GOLD}`, borderRadius: 4, fontFamily: MONO, fontSize: 13, letterSpacing: 4, color: GOLD }}>DEMO FUND</span>
+            <span style={{ padding: "5px 11px", border: `1.5px solid ${GREY}`, borderRadius: 4, fontFamily: MONO, fontSize: 13, letterSpacing: 4, color: GREY }}>DEMO FUND</span>
           </div>
           <div style={{ display: "flex", gap: 70, marginTop: 14 }}>
             {[
@@ -385,7 +385,7 @@ const Proof: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   return (
     <Stage>
       <Browser pageFrame={100000} dim={0.62} />
-      <div style={{ position: "absolute", left: 340, top: 300, width: 1240 }}>
+      <div style={{ position: "absolute", left: 340, top: 330, width: 1240 }}>
         <Pop delay={t.enter + 2} width={1240} tiltY={0} style={{ padding: "28px 40px 24px" }}>
           <Label>Guided vs printed · 3Q26</Label>
           <div style={{ display: "grid", gridTemplateColumns: "280px 1fr 1fr 250px", fontFamily: SANS, fontSize: 23, marginTop: 12, borderTop: `1px solid ${LINE}` }}>
@@ -401,16 +401,16 @@ const Proof: React.FC<{ t: CaptionTiming }> = ({ t }) => {
           </div>
         </Pop>
       </div>
-      <div style={{ position: "absolute", left: 340, top: 560, width: 1240, opacity: clamp01(panel * 1.4), transform: `translateY(${(1 - panel) * 40}px)` }}>
+      <div style={{ position: "absolute", left: 340, top: 590, width: 1240, opacity: clamp01(panel * 1.4), transform: `translateY(${(1 - panel) * 40}px)` }}>
         <div style={{ background: "#fff", borderRadius: 16, padding: "22px 30px 24px", boxShadow: "0 40px 120px rgba(0,0,0,0.7)", display: "flex", gap: 22 }}>
-          <div style={{ width: 4, background: GOLD, borderRadius: 2, flexShrink: 0 }} />
+          <div style={{ width: 4, background: INDIGO, borderRadius: 2, flexShrink: 0 }} />
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: MONO, fontSize: 13, letterSpacing: 3, color: GREY, textTransform: "uppercase" }}>
               <Cite n={3} /> Public · 3Q26 earnings release · investor.tsmc.com · page 1
             </div>
             <div style={{ fontFamily: SANS, fontSize: 26, lineHeight: 1.4, color: INK2, marginTop: 10 }}>
               TSMC today announced consolidated revenue of{" "}
-              <span style={{ background: `rgba(212,162,74,${0.45 * hl})`, borderRadius: 3, padding: "0 3px" }}>US$46.72 billion, up 16.2% from the previous quarter and 41.2% from a year earlier</span>, for the third quarter ended September 30, 2026.
+              <span style={{ background: `rgba(79,70,229,${0.18 * hl})`, borderRadius: 3, padding: "0 3px" }}>US$46.72 billion, up 16.2% from the previous quarter and 41.2% from a year earlier</span>, for the third quarter ended September 30, 2026.
             </div>
           </div>
         </div>
@@ -491,17 +491,17 @@ const End: React.FC<{ t: CaptionTiming }> = ({ t }) => {
 /* ------------------------------------------------------------------ cut (same scenes, same durations as v4) */
 
 export const REF_SCENES: S[] = [
-  { id: "news", dur: 3.2, tag: "The news", caption: "TSMC just reported earnings.", body: News },
+  { id: "news", dur: 3.2, caption: "TSMC just reported earnings.", body: News },
   { id: "pages", dur: 3.2, in: "slide", caption: "Ten pages of numbers. Your PM wants one answer.", body: Pages },
-  { id: "ask", dur: 3.6, in: "goldwipe", tag: "The ask", caption: "Ask Core.", body: Ask },
+  { id: "ask", dur: 3.6, in: "fade", caption: "Ask Core.", body: Ask },
   { id: "working", dur: 3.4, in: "fade", caption: "It reads the release, last quarter's forecast, and your book.", body: Working },
-  { id: "verdict", dur: 3.4, in: "goldwipe", tag: "The answer", caption: "The verdict comes first.", body: Verdict },
+  { id: "verdict", dur: 3.4, in: "fade", caption: "The verdict comes first.", body: Verdict },
   { id: "revenue", dur: 3.4, in: "slide", caption: "Revenue beat the top of its own forecast.", body: Revenue },
   { id: "guide", dur: 3.0, in: "wipe", caption: "And it expects even more next quarter.", body: Guide },
   { id: "n2", dur: 3.0, in: "slide", caption: "The reason: its newest 2nm chips.", body: N2 },
-  { id: "fund", dur: 3.2, in: "slideup", tag: "For your fund", caption: "What it means for your position.", body: Fund },
-  { id: "proof", dur: 4.2, in: "goldwipe", tag: "The proof", caption: "Every number, one click from the source.", body: Proof },
-  { id: "payoff", dur: 3.4, in: "fade", tag: "Core's read", caption: "Core. Earnings, read.", body: Payoff },
+  { id: "fund", dur: 3.2, in: "slideup", caption: "What it means for your position.", body: Fund },
+  { id: "proof", dur: 4.2, in: "fade", caption: "Every number, one click from the source.", body: Proof },
+  { id: "payoff", dur: 3.4, in: "fade", caption: "Core. Earnings, read.", body: Payoff },
   { id: "end", dur: 4.6, in: "fade", body: End },
 ];
 
