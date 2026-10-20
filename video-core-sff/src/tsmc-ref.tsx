@@ -580,6 +580,141 @@ const CEO: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   );
 };
 
+/** Core's own table, as exported (columns from the CSV; the computed "vs guided" columns are left out). */
+const CoreTable: React.FC<{ delay: number; showButtons?: boolean; hiliteExcel?: number }> = ({ delay, showButtons = true, hiliteExcel = 0 }) => {
+  const head = ["Quarter", <span key="g">Guided <Cite n={5} /></span>, <span key="p">Printed <Cite n={3} /></span>, "GM guided", "GM printed", "OPM guided", "OPM printed"];
+  const rows: React.ReactNode[][] = [
+    ["3Q26", "US$44.6–45.8B", <b key="a">$46.72B</b>, "65–67%", <b key="b">66.4%</b>, "56–58%", <b key="c">58.7%</b>],
+    [<span key="q">4Q26 <span style={{ color: GREY }}>(guide)</span></span>, "US$52.3–54.3B", "—", "65–67%", "—", "56.5–58.5%", "—"],
+  ];
+  return (
+    <Pop delay={delay} width={1240} tiltY={0} style={{ padding: "24px 32px 22px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 22, color: INK }}>TSMC: guided vs printed, 3Q26 and the 4Q26 guide</div>
+          <div style={{ fontFamily: MONO, fontSize: 12, letterSpacing: 3, color: GREY, marginTop: 4 }}>US$B / %</div>
+        </div>
+        {showButtons ? (
+          <div style={{ display: "flex", gap: 8 }}>
+            {["Copy", "CSV", "Excel"].map((b) => (
+              <span key={b} style={{ padding: "7px 14px", borderRadius: 8, border: `1px solid ${b === "Excel" && hiliteExcel > 0 ? INDIGO : LINE}`, background: b === "Excel" && hiliteExcel > 0 ? `rgba(79,70,229,${0.12 * hiliteExcel})` : "#fff", fontFamily: SANS, fontSize: 16, color: INK2 }}>{b}</span>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "150px 220px 150px 1fr 1fr 1fr 1fr", fontFamily: SANS, fontSize: 19, marginTop: 14, borderTop: `1px solid ${LINE}` }}>
+        {[head, ...rows].map((row, r) => (
+          <React.Fragment key={r}>
+            {row.map((cell, c) => (
+              <div key={c} style={{ padding: "0 12px", height: 44, display: "flex", alignItems: "center", borderBottom: `1px solid ${LINE}`, color: r === 0 ? GREY : INK, fontWeight: r === 0 ? 500 : c === 0 ? 700 : 400, background: r === 0 ? "#fafafa" : "transparent", whiteSpace: "nowrap" }}>
+                {cell}
+              </div>
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
+    </Pop>
+  );
+};
+
+/** Export: cursor clicks Excel, the sheet opens with the same numbers and a one-line reading of each. */
+const Export: React.FC<{ t: CaptionTiming }> = ({ t }) => {
+  const frame = useCurrentFrame();
+  const ease = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
+  const cx = interpolate(frame, [t.enter + 14, t.enter + 36], [1400, 1512], ease);
+  const cy = interpolate(frame, [t.enter + 14, t.enter + 36], [760, 318], ease);
+  const click = interpolate(frame, [t.enter + 40, t.enter + 54], [0, 1], ease);
+  const hil = fadeIn(frame, t.enter + 38, 6);
+  const sheet = useEnter(t.enter + 50, 15);
+  const read = useEnter(t.enter + 72, 16);
+  const cols = ["A", "B", "C", "D", "E", "F", "G"];
+  const grid: string[][] = [
+    ["Quarter", "Guided", "Printed", "GM guided", "GM printed", "OPM guided", "OPM printed"],
+    ["3Q26", "US$44.6–45.8B", "$46.72B", "65–67%", "66.4%", "56–58%", "58.7%"],
+    ["4Q26 (guide)", "US$52.3–54.3B", "—", "65–67%", "—", "56.5–58.5%", "—"],
+  ];
+  const verdict = ["", "", "above", "", "inside", "", "above"];
+  return (
+    <Stage>
+      <Browser pageFrame={100000} dim={0.62} />
+      <div style={{ position: "absolute", left: 340, top: 250, width: 1240 }}>
+        <PopLabel text="Core's table" delay={t.enter + 2} />
+        <CoreTable delay={t.enter + 2} hiliteExcel={hil} />
+      </div>
+      <div style={{ position: "absolute", left: 340, top: 590, width: 1240, opacity: clamp01(sheet * 1.4), transform: `translateY(${(1 - sheet) * 40}px)` }}>
+        <div style={{ background: "#fff", borderRadius: 12, boxShadow: "0 40px 120px rgba(0,0,0,0.7)", overflow: "hidden", fontFamily: SANS }}>
+          <div style={{ height: 36, background: "#1f7244", color: "#fff", display: "flex", alignItems: "center", padding: "0 14px", fontSize: 15, gap: 10 }}>
+            <span style={{ width: 18, height: 18, borderRadius: 3, background: "#fff", color: "#1f7244", fontWeight: 800, fontSize: 12, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>X</span>
+            TSMC guidance vs results 3Q26 and the open 4Q26 guide.xlsx
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "40px 150px 200px 130px 150px 150px 170px 1fr", fontSize: 16, color: INK }}>
+            <div style={{ background: "#f3f4f6", borderRight: `1px solid ${LINE}`, borderBottom: `1px solid ${LINE}`, height: 30 }} />
+            {cols.map((c) => (
+              <div key={c} style={{ background: "#f3f4f6", borderRight: `1px solid ${LINE}`, borderBottom: `1px solid ${LINE}`, height: 30, display: "flex", alignItems: "center", justifyContent: "center", color: GREY }}>{c}</div>
+            ))}
+            {grid.map((row, r) => (
+              <React.Fragment key={r}>
+                <div style={{ background: "#f3f4f6", borderRight: `1px solid ${LINE}`, borderBottom: `1px solid ${LINE}`, height: 34, display: "flex", alignItems: "center", justifyContent: "center", color: GREY }}>{r + 1}</div>
+                {row.map((cell, c) => {
+                  const hot = r === 1 && verdict[c];
+                  return (
+                    <div key={c} style={{ position: "relative", padding: "0 10px", height: 34, display: "flex", alignItems: "center", borderRight: `1px solid ${LINE}`, borderBottom: `1px solid ${LINE}`, fontWeight: r === 0 ? 600 : 400, background: hot ? `rgba(21,128,61,${0.12 * read})` : "transparent", whiteSpace: "nowrap" }}>
+                      {cell}
+                      {hot ? <span style={{ position: "absolute", right: 8, fontFamily: MONO, fontSize: 11, letterSpacing: 2, color: "#15803d", opacity: clamp01(read * 1.4), textTransform: "uppercase" }}>{verdict[c]}</span> : null}
+                    </div>
+                  );
+                })}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
+      {frame >= t.enter + 12 && frame < t.enter + 60 ? <Cursor x={cx} y={cy} click={click} /> : null}
+    </Stage>
+  );
+};
+
+/** Proof: the two documents behind the table, July's forecast and October's result, side by side. */
+const Proof2: React.FC<{ t: CaptionTiming }> = ({ t }) => {
+  const frame = useCurrentFrame();
+  const ease = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
+  const cx = interpolate(frame, [t.enter + 16, t.enter + 40], [1420, 1024], ease);
+  const cy = interpolate(frame, [t.enter + 16, t.enter + 40], [820, 330], ease);
+  const click = interpolate(frame, [t.enter + 44, t.enter + 58], [0, 1], ease);
+  const a = useEnter(t.enter + 52, 15);
+  const b = useEnter(t.enter + 66, 15);
+  const hl = fadeIn(frame, t.enter + 80, 10);
+  const Doc: React.FC<{ n: number; kind: string; title: string; date: string; children: React.ReactNode; e: number }> = ({ n, kind, title, date, children, e }) => (
+    <div style={{ flex: 1, background: "#fff", borderRadius: 14, padding: "18px 24px 20px", boxShadow: "0 40px 120px rgba(0,0,0,0.7)", opacity: clamp01(e * 1.4), transform: `translateY(${(1 - e) * 36}px)`, display: "flex", gap: 18 }}>
+      <div style={{ width: 4, background: INDIGO, borderRadius: 2, flexShrink: 0 }} />
+      <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: MONO, fontSize: 12, letterSpacing: 3, color: GREY, textTransform: "uppercase" }}>
+          <Cite n={n} /> {kind} · {date}
+        </div>
+        <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 19, color: INK, marginTop: 8 }}>{title}</div>
+        <div style={{ fontFamily: SANS, fontSize: 21, lineHeight: 1.4, color: INK2, marginTop: 8 }}>{children}</div>
+      </div>
+    </div>
+  );
+  return (
+    <Stage>
+      <Browser pageFrame={100000} dim={0.62} />
+      <div style={{ position: "absolute", left: 340, top: 240, width: 1240 }}>
+        <CoreTable delay={t.enter + 2} showButtons={false} />
+      </div>
+      <div style={{ position: "absolute", left: 340, top: 560, width: 1240, display: "flex", gap: 20 }}>
+        <Doc n={5} kind="Public" title="TSMC Reports Second Quarter 2026 EPS" date="Jul 16, 2026" e={a}>
+          <span style={{ color: GREY }}>Third quarter 2026 outlook:</span> Revenue is expected to be between <b style={{ color: INK }}>US$44.6 billion and US$45.8 billion</b>.
+        </Doc>
+        <Doc n={3} kind="Public" title="TSMC 3Q26 EarningsRelease.pdf · page 1" date="Oct 15, 2026" e={b}>
+          In US dollars, third quarter revenue was <span style={{ background: `rgba(79,70,229,${0.18 * hl})`, borderRadius: 3, padding: "0 3px", fontWeight: 700, color: INK }}>$46.72 billion</span>, which increased 41.2% year-over-year and increased 16.2% from the previous quarter.
+        </Doc>
+      </div>
+      {frame >= t.enter + 12 && frame < t.enter + 64 ? <Cursor x={cx} y={cy} click={click} /> : null}
+    </Stage>
+  );
+};
+
 /* ------------------------------------------------------------------ 12 · outro, as in the reference */
 
 const rnd = (i: number, k: number) => {
@@ -639,18 +774,17 @@ const End: React.FC<{ t: CaptionTiming }> = ({ t }) => {
 /* ------------------------------------------------------------------ cut (same scenes, same durations as v4) */
 
 export const REF_SCENES: S[] = [
-  { id: "news", dur: 3.0, caption: "TSMC just reported earnings.", body: News },
-  { id: "pages", dur: 2.8, in: "slide", caption: "Pages of numbers. You need one answer: did they beat?", body: Pages },
-  { id: "ask", dur: 3.6, in: "fade", caption: "Ask Core.", body: Ask },
-  { id: "working", dur: 3.2, in: "fade", caption: "It reads the release, the call, the deck, and your portfolio.", body: Working },
-  { id: "verdict", dur: 3.6, in: "fade", caption: "The verdict comes first.", body: Verdict },
+  { id: "news", dur: 3.0, caption: "TSMC just reported its Q3 earnings.", body: News },
+  { id: "ask", dur: 3.8, in: "fade", caption: "Did they beat? Let's check with Core.", body: Ask },
+  { id: "verdict", dur: 3.8, in: "fade", caption: "Core's answer, first sentence.", body: Verdict },
   { id: "revenue", dur: 3.4, in: "slide", caption: "It beat its own forecast.", body: Revenue },
   { id: "ai", dur: 3.6, in: "wipe", caption: "AI drove it: HPC is now 68% of revenue.", body: AIDrove },
   { id: "catch", dur: 3.6, in: "slide", caption: "The catch: margins slipped as 2nm ramps.", body: Catch },
   { id: "ahead", dur: 3.6, in: "wipe", caption: "Even more ahead: Q4, 2026, capex.", body: Ahead },
   { id: "ceo", dur: 3.4, in: "slide", caption: "The CEO's tone.", body: CEO },
   { id: "fund", dur: 3.6, in: "slideup", caption: "What it means for your position.", body: Fund },
-  { id: "proof", dur: 3.8, in: "fade", caption: "Every number, one click from the source.", body: Proof },
+  { id: "export", dur: 4.2, in: "fade", caption: "Core's table, exported to Excel: above, inside, above.", body: Export },
+  { id: "proof", dur: 4.6, in: "fade", caption: "Forecast from July's release. Result from October's.", body: Proof2 },
   { id: "payoff", dur: 3.0, in: "fade", caption: "Core. Earnings, read.", body: Payoff },
   { id: "end", dur: 4.2, in: "fade", body: End },
 ];
