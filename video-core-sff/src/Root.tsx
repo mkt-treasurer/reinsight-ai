@@ -6,6 +6,7 @@ import { CLIPS } from "./clips";
 import { Tsmc, TSMC_FRAMES } from "./tsmc";
 import { TsmcGold, GOLD_FRAMES } from "./tsmc-gold";
 import { TsmcRef, REF_FRAMES } from "./tsmc-ref";
+import { TsmcRecap, RECAP_FRAMES } from "./tsmc-recap";
 import { FPS, H, W } from "./theme";
 import { totalFrames } from "./timeline";
 
@@ -20,6 +21,7 @@ export const RemotionRoot: React.FC = () => (
       height={H}
       defaultProps={{ music: false }}
     />
+    <Composition id="TsmcRecap" component={TsmcRecap} durationInFrames={RECAP_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="Tsmc" component={TsmcRef} durationInFrames={REF_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="TsmcGold" component={TsmcGold} durationInFrames={GOLD_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="TsmcLight" component={Tsmc} durationInFrames={TSMC_FRAMES} fps={FPS} width={W} height={H} />
