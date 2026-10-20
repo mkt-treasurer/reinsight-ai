@@ -213,9 +213,9 @@ export const AnswerPage: React.FC<{ frame: number }> = ({ frame }) => {
         <div style={{ fontSize: 14, letterSpacing: 2, color: MUTED, textTransform: "uppercase", height: 26 }}>Guided vs printed · 3Q26</div>
         <div style={{ display: "grid", gridTemplateColumns: "300px 1fr 1fr 260px", fontSize: 20, borderTop: `1px solid ${LINE}` }}>
           {[
-            ["Metric", <span key="h2">Guidance · Jul 17 report <Cite n={5} /></span>, <span key="h3">Actual · Oct 15 release <Cite n={3} /></span>, "Result"],
+            ["Metric", <span key="h2">Guidance · Jul 16 report <Cite n={5} /></span>, <span key="h3">Actual · Oct 15 release <Cite n={3} /></span>, "Result"],
             ["Revenue", "US$44.6–45.8B", "US$46.72B", <b key="r1" style={{ color: "#15803d" }}>Above the range</b>],
-            ["Gross margin", "guided range", "66.4%", <span key="r2">Inside the range</span>],
+            ["Gross margin", "65–67%", "66.4%", <span key="r2">Inside the range</span>],
             ["Operating margin", "guided range", "printed", <b key="r3" style={{ color: "#15803d" }}>Above the range</b>],
           ].map((row, r) => (
             <React.Fragment key={r}>
@@ -267,11 +267,9 @@ export const AnswerPage: React.FC<{ frame: number }> = ({ frame }) => {
             </div>
             <div style={{ fontSize: 18, fontWeight: 700, marginTop: 10 }}>TSMC Reports Third Quarter EPS of NT$29.43</div>
             <div style={{ fontSize: 17, lineHeight: "27px", color: INK2, marginTop: 10 }}>
-              Hsinchu, Taiwan, R.O.C., Oct. 15, 2026 – TSMC today announced consolidated revenue of{" "}
-              <span style={{ background: `rgba(79,70,229,${0.18 * hl})`, boxShadow: `0 0 0 ${3 * hl}px rgba(79,70,229,${0.18 * hl})`, borderRadius: 3 }}>
-                US$46.72 billion, up 16.2% from the previous quarter and 41.2% from a year earlier
-              </span>
-              , for the third quarter ended September 30, 2026. Gross margin for the quarter was 66.4%.
+              In US dollars, third quarter revenue was{" "}
+              <span style={{ background: `rgba(79,70,229,${0.18 * hl})`, boxShadow: `0 0 0 ${3 * hl}px rgba(79,70,229,${0.18 * hl})`, borderRadius: 3, fontWeight: 700 }}>$46.72 billion</span>
+              , which increased 41.2% year-over-year and increased 16.2% from the previous quarter.
             </div>
             <div style={{ marginTop: 12, fontSize: 14, color: MUTED }}>Page 1 · opened from citation 3</div>
           </div>

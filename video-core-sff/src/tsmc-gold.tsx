@@ -185,8 +185,8 @@ const Ask: React.FC<{ t: CaptionTiming }> = ({ t }) => {
 /** 4 · Core at work */
 const STEPS: [string, string][] = [
   ["The release", "TSMC 3Q26 results · Oct 15"],
-  ["Last quarter's forecast", "3Q26 guidance · Jul 17"],
-  ["Your book", "TSMC position · demo fund"],
+  ["Last quarter's forecast", "3Q26 guidance · Jul 16"],
+  ["Your portfolio", "TSMC position · demo fund"],
 ];
 const Working: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   const frame = useCurrentFrame();
@@ -255,7 +255,7 @@ const Revenue: React.FC<{ t: CaptionTiming }> = ({ t }) => {
       <CornerMark />
       <div style={{ position: "absolute", left: 0, right: 0, top: 380, display: "flex", justifyContent: "center", gap: 26 }}>
         <Card3D delay={t.enter + 2} width={560} style={{ padding: "30px 36px 28px" }}>
-          <Label>Forecast · Jul 17</Label>
+          <Label>Forecast · Jul 16</Label>
           <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 60, color: "#4a4e58", marginTop: 8, lineHeight: 1.05 }}>$44.6–45.8B</div>
           <div style={{ position: "relative", height: 40, marginTop: 22 }}>
             <div style={{ position: "absolute", left: 0, right: 0, top: 14, height: 8, background: "#eceef3", borderRadius: 99 }} />
@@ -388,7 +388,7 @@ const Proof: React.FC<{ t: CaptionTiming }> = ({ t }) => {
         <Card3D delay={t.enter + 2} width={1240} tiltY={0} style={{ padding: "28px 40px 24px" }}>
           <Label>Guided vs printed · 3Q26</Label>
           <div style={{ display: "grid", gridTemplateColumns: "280px 1fr 1fr 250px", fontFamily: SANS, fontSize: 23, marginTop: 12, borderTop: "1px solid #e5e7eb" }}>
-            {[["Metric", <span key="a">Guidance <Cite n={5} /></span>, <span key="b">Actual <Cite n={3} /></span>, "Result"], ["Revenue", "US$44.6–45.8B", "US$46.72B", "Above the range"], ["Gross margin", "guided range", "66.4%", "Inside the range"]].map((row, r) => (
+            {[["Metric", <span key="a">Guidance <Cite n={5} /></span>, <span key="b">Actual <Cite n={3} /></span>, "Result"], ["Revenue", "US$44.6–45.8B", "US$46.72B", "Above the range"], ["Gross margin", "65–67%", "66.4%", "Inside the range"]].map((row, r) => (
               <React.Fragment key={r}>
                 {row.map((cell, c) => (
                   <div key={c} style={{ padding: "0 14px", height: 50, display: "flex", alignItems: "center", borderBottom: "1px solid #e5e7eb", color: r === 0 ? "#6b6f7a" : c === 3 && String(cell).startsWith("Above") ? "#15803d" : "#111318", fontWeight: r === 0 ? 500 : c === 0 || (c === 3 && String(cell).startsWith("Above")) ? 700 : 400, background: r === 0 ? "#fafafa" : "transparent" }}>

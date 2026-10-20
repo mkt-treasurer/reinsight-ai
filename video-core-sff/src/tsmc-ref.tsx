@@ -117,7 +117,7 @@ const Release: React.FC<{ delay: number; stamp?: number }> = ({ delay, stamp = 0
         <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 48, marginTop: 18, lineHeight: 1.15 }}>TSMC Reports Third Quarter EPS of NT$29.43</div>
         <div style={{ height: 1, background: "#d8dae0", margin: "26px 0 18px" }} />
         <div style={{ fontFamily: SANS, fontSize: 21, color: "#4a4e58", lineHeight: 1.5 }}>
-          Hsinchu, Taiwan, R.O.C. – TSMC today announced consolidated revenue of US$46.72 billion, up 16.2% from the previous quarter and 41.2% from a year earlier, for the third quarter ended September 30, 2026 …
+          In US dollars, third quarter revenue was <b style={{ color: INK }}>$46.72 billion</b>, which increased 41.2% year-over-year and increased 16.2% from the previous quarter.
         </div>
       </div>
       {stamp > 0 ? (
@@ -147,7 +147,6 @@ const News: React.FC<{ t: CaptionTiming }> = ({ t }) => (
 const Pages: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   const frame = useCurrentFrame();
   const n = 10;
-  const count = Math.min(n, Math.max(0, Math.floor((frame - t.enter - 6) / 4) + 1));
   return (
     <Stage>
       {Array.from({ length: n }).map((_, i) => {
@@ -169,10 +168,6 @@ const Pages: React.FC<{ t: CaptionTiming }> = ({ t }) => {
           </div>
         );
       })}
-      <div style={{ position: "absolute", right: 150, top: 340, textAlign: "right" }}>
-        <div style={{ fontFamily: SERIF, fontSize: 180, lineHeight: 1, color: CREAM }}>{count}</div>
-        <div style={{ fontFamily: MONO, fontSize: 18, letterSpacing: 6, color: MUTED }}>PAGES</div>
-      </div>
     </Stage>
   );
 };
@@ -190,8 +185,8 @@ const Ask: React.FC<{ t: CaptionTiming }> = () => {
 /** 4 · Core at work */
 const STEPS: [string, string][] = [
   ["The release", "TSMC 3Q26 results · Oct 15"],
-  ["Last quarter's forecast", "3Q26 guidance · Jul 17"],
-  ["Your book", "TSMC position · demo fund"],
+  ["Last quarter's forecast", "3Q26 guidance · Jul 16"],
+  ["Your portfolio", "TSMC position · demo fund"],
 ];
 const Working: React.FC<{ t: CaptionTiming }> = ({ t }) => {
   const frame = useCurrentFrame();
@@ -259,7 +254,7 @@ const Revenue: React.FC<{ t: CaptionTiming }> = ({ t }) => {
         <PopLabel text="Revenue vs forecast" delay={t.enter + 2} />
         <div style={{ display: "flex", gap: 26 }}>
           <Pop delay={t.enter + 2} width={560} style={{ padding: "28px 34px 26px" }}>
-            <Label>Forecast · Jul 17</Label>
+            <Label>Forecast · Jul 16</Label>
             <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 58, color: INK2, marginTop: 8, lineHeight: 1.05 }}>$44.6–45.8B</div>
             <div style={{ position: "relative", height: 40, marginTop: 20 }}>
               <div style={{ position: "absolute", left: 0, right: 0, top: 14, height: 8, background: "#eceef3", borderRadius: 99 }} />
@@ -389,7 +384,7 @@ const Proof: React.FC<{ t: CaptionTiming }> = ({ t }) => {
         <Pop delay={t.enter + 2} width={1240} tiltY={0} style={{ padding: "28px 40px 24px" }}>
           <Label>Guided vs printed · 3Q26</Label>
           <div style={{ display: "grid", gridTemplateColumns: "280px 1fr 1fr 250px", fontFamily: SANS, fontSize: 23, marginTop: 12, borderTop: `1px solid ${LINE}` }}>
-            {[["Metric", <span key="a">Guidance <Cite n={5} /></span>, <span key="b">Actual <Cite n={3} /></span>, "Result"], ["Revenue", "US$44.6–45.8B", "US$46.72B", "Above the range"], ["Gross margin", "guided range", "66.4%", "Inside the range"]].map((row, r) => (
+            {[["Metric", <span key="a">Guidance <Cite n={5} /></span>, <span key="b">Actual <Cite n={3} /></span>, "Result"], ["Revenue", "US$44.6–45.8B", "US$46.72B", "Above the range"], ["Gross margin", "65–67%", "66.4%", "Inside the range"]].map((row, r) => (
               <React.Fragment key={r}>
                 {row.map((cell, c) => (
                   <div key={c} style={{ padding: "0 14px", height: 50, display: "flex", alignItems: "center", borderBottom: `1px solid ${LINE}`, color: r === 0 ? GREY : c === 3 && String(cell).startsWith("Above") ? "#15803d" : INK, fontWeight: r === 0 ? 500 : c === 0 || (c === 3 && String(cell).startsWith("Above")) ? 700 : 400, background: r === 0 ? "#fafafa" : "transparent" }}>
@@ -409,8 +404,8 @@ const Proof: React.FC<{ t: CaptionTiming }> = ({ t }) => {
               <Cite n={3} /> Public · 3Q26 earnings release · investor.tsmc.com · page 1
             </div>
             <div style={{ fontFamily: SANS, fontSize: 26, lineHeight: 1.4, color: INK2, marginTop: 10 }}>
-              TSMC today announced consolidated revenue of{" "}
-              <span style={{ background: `rgba(79,70,229,${0.18 * hl})`, borderRadius: 3, padding: "0 3px" }}>US$46.72 billion, up 16.2% from the previous quarter and 41.2% from a year earlier</span>, for the third quarter ended September 30, 2026.
+              In US dollars, third quarter revenue was{" "}
+              <span style={{ background: `rgba(79,70,229,${0.18 * hl})`, borderRadius: 3, padding: "0 3px", fontWeight: 700 }}>$46.72 billion</span>, which increased 41.2% year-over-year and increased 16.2% from the previous quarter.
             </div>
           </div>
         </div>
@@ -492,9 +487,9 @@ const End: React.FC<{ t: CaptionTiming }> = ({ t }) => {
 
 export const REF_SCENES: S[] = [
   { id: "news", dur: 3.2, caption: "TSMC just reported earnings.", body: News },
-  { id: "pages", dur: 3.2, in: "slide", caption: "Ten pages of numbers. Your PM wants one answer.", body: Pages },
+  { id: "pages", dur: 3.2, in: "slide", caption: "Pages of numbers. You need one answer: did they beat?", body: Pages },
   { id: "ask", dur: 3.6, in: "fade", caption: "Ask Core.", body: Ask },
-  { id: "working", dur: 3.4, in: "fade", caption: "It reads the release, last quarter's forecast, and your book.", body: Working },
+  { id: "working", dur: 3.4, in: "fade", caption: "It reads the release, last quarter's forecast, and your portfolio.", body: Working },
   { id: "verdict", dur: 3.4, in: "fade", caption: "The verdict comes first.", body: Verdict },
   { id: "revenue", dur: 3.4, in: "slide", caption: "Revenue beat the top of its own forecast.", body: Revenue },
   { id: "guide", dur: 3.0, in: "wipe", caption: "And it expects even more next quarter.", body: Guide },
