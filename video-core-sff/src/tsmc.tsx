@@ -124,10 +124,10 @@ const Cursor: React.FC<{ x: number; y: number; click?: number }> = ({ x, y, clic
 
 /* ------------------------------------------------------------------ the answer page */
 
-const QUESTION = "TSMC reported 3Q26 results on Oct 15. How did the quarter do against its guidance, what is the 4Q26 guide, and what does it mean for our position?";
+const QUESTION = "What were the key takeaways from TSMC's 3Q26 results and earnings call? Cover results vs guidance, what drove the quarter (AI/HPC, 2nm), margins, the 4Q26 and full-year outlook, capex, and management's tone on AI demand and 2027. Then what it means for our position.";
 
 export const AnswerPage: React.FC<{ frame: number }> = ({ frame }) => {
-  const tChars = Math.max(0, Math.floor(((frame - 8) / 30) * 64));
+  const tChars = Math.max(0, Math.floor(((frame - 8) / 30) * 110));
   const typed = { shown: QUESTION.slice(0, tChars), done: tChars >= QUESTION.length, cursor: Math.floor(frame / 8) % 2 === 0 };
   // the answer renders in, top to bottom, from frame 105
   const A = (at: number) => fadeIn(frame, 105 + at, 10);
@@ -155,32 +155,30 @@ export const AnswerPage: React.FC<{ frame: number }> = ({ frame }) => {
       <Abs x={70} y={160} o={A(0)} style={{ transform: `translateY(${rise(0)}px)` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 18, color: MUTED, height: 34 }}>
           <span style={{ width: 20, height: 20, borderRadius: 999, background: "#16a34a", color: "#fff", fontSize: 12, display: "inline-flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>✓</span>
-          Worked for 45 s · 9 sources
+          Sources 5 · 2 internal
         </div>
       </Abs>
 
       {/* headline */}
       <Abs x={70} y={210} w={1340} o={A(10)} style={{ transform: `translateY(${rise(10)}px)` }}>
         <div style={{ fontSize: 30, fontWeight: 700, lineHeight: "40px" }}>
-          TSMC beat its 3Q26 guidance and guided 4Q26 sharply higher with margins holding, which supports keeping the long.
+          TSMC's 3Q26 was a clean beat and a stronger guide, driven by AI/HPC and 2nm; margins are drifting down only because of the 2nm ramp and new overseas fabs, which supports holding our long.
         </div>
       </Abs>
 
       {/* paragraph */}
       <Abs x={70} y={305} w={1340} o={A(20)} style={{ transform: `translateY(${rise(20)}px)` }}>
         <div style={{ fontSize: 24, lineHeight: "36px", color: INK2 }}>
-          3Q26 revenue came in above the top of the guided range. Gross margin landed inside its range and operating margin beat its range. The 4Q26 guide implies another strong step up in sales, with the gross margin range unchanged and the operating margin range a little higher
+          Management is sounding more bullish on AI demand while staying "prudent" about consumer markets in 2027. The near-term earnings path looks intact, and the main risk to watch is margin dilution as more US fabs come online
           <Cite n={3} />
-          <Cite n={4} />
-          <Cite n={5} />. We hold 117,000 shares at NT$2,400.00, worth $8.64M or +3.8% of NAV, with about $1.88M of unrealized gain. It lost $115.5K on the day it was last priced
-          <Cite n={2} />.
+          <Cite n={13} />.
         </div>
       </Abs>
 
       {/* tracker line */}
       <Abs x={70} y={500} o={A(32)} style={{ transform: `translateY(${rise(32)}px)` }}>
         <div style={{ fontSize: 19, color: MUTED, height: 34, display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ color: INK, fontWeight: 600 }}>2330.TW</span> guidance tracker · 1 reported, 1 open <span style={{ color: LINE }}>|</span> we're long <b style={{ color: INK }}>$8.6M</b> · 3.8% of NAV · a 10% move ≈ $864.3K
+          <span style={{ color: INK, fontWeight: 600 }}>2330.TW</span> guidance tracker · 1 reported, 1 open <span style={{ color: LINE }}>|</span> we're long <b style={{ color: INK }}>$8.7M</b> · 3.9% of NAV · a 10% move ≈ $874.2K
         </div>
       </Abs>
       {/* demo stamp near the position line */}
@@ -197,7 +195,7 @@ export const AnswerPage: React.FC<{ frame: number }> = ({ frame }) => {
               <span style={{ fontSize: 44, fontWeight: 700 }}>1</span>
               <span style={{ fontSize: 20, color: MUTED }}>of 1</span>
             </div>
-            <div style={{ fontSize: 16, color: MUTED, marginTop: 4 }}>$46.72B vs a $44.6–45.8B range</div>
+            <div style={{ fontSize: 16, color: MUTED, marginTop: 4 }}>$46.72B vs a $44.6–45.8B range · EPS NT$29.43, +68.7% YoY</div>
           </div>
           <div style={{ width: 660, height: 150, border: `1px solid ${LINE}`, borderRadius: 12, padding: "20px 24px" }}>
             <div style={{ fontSize: 14, letterSpacing: 2, color: MUTED, textTransform: "uppercase" }}>4Q26 guide · open</div>
