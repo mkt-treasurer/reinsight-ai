@@ -273,7 +273,8 @@ const CapitalTest: React.FC = () => {
     <Stage>
       <Row y={170} label="MAS's minimum capital" sub="5% of your average income" w={minW} color="#8d8d8d" at={6} val="S$0.28m" off={70} />
       <Row y={420} label="Your capital" sub="paid-up capital and retained profit" w={youW} color={BLUE} at={22} val="S$3.2m" />
-      <div style={{ position: "absolute", left: 160 + 216, top: 222, height: 380, width: 4, background: RED, opacity: line }} />
+      <div style={{ position: "absolute", left: 160 + 216, top: 218, height: 94, width: 4, background: RED, opacity: line }} />
+      <div style={{ position: "absolute", left: 160 + 216, top: 468, height: 94, width: 4, background: RED, opacity: line }} />
       <div style={{ position: "absolute", left: 160 + 232, top: 612, fontFamily: SERIF, fontSize: 26, color: RED, opacity: line, whiteSpace: "nowrap" }}>below 120% of the minimum you must tell MAS immediately</div>
       <div style={{ position: "absolute", left: 160, top: 690, fontFamily: SERIF, fontSize: 34, color: INK, opacity: pIn(frame, 66, 12) * useTextWindow() }}>
         Your capital ÷ MAS's minimum = <span style={{ color: BLUE }}>1,143%</span> <span style={{ color: GREY, fontSize: 26, fontStyle: "italic" }}>· 3.2m ÷ 0.28m · comfortably above 120%</span>
