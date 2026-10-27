@@ -253,8 +253,7 @@ const CapitalTest: React.FC = () => {
   const Row: React.FC<{ y: number; label: string; sub: string; w: number; color: string; at: number; val: string; off?: number }> = ({ y, label, sub, w, color, at, val, off = 22 }) => (
     <div style={{ position: "absolute", left: 160, top: y, width: 1600, opacity: pIn(frame, at, 12) }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
-        <span style={{ fontFamily: SERIF, fontSize: 34, color: INK }}>{label}</span>
-        <span style={{ fontFamily: SERIF, fontSize: 22, color: GREY, fontStyle: "italic" }}>{sub}</span>
+        <span style={{ fontFamily: SERIF, fontSize: 40, color: INK }}>{label}</span>
       </div>
       <div style={{ position: "relative", height: 86, marginTop: 14 }}>
         <div style={{ position: "absolute", left: 0, top: 0, width: w, height: 86, borderRadius: 14, background: color }} />
@@ -264,13 +263,12 @@ const CapitalTest: React.FC = () => {
   );
   return (
     <Stage>
-      <Row y={170} label="MAS's minimum capital" sub="5% of your average income" w={minW} color="#8d8d8d" at={6} val="S$0.28m" off={70} />
-      <Row y={420} label="Your capital" sub="paid-up capital and retained profit" w={youW} color={BLUE} at={22} val="S$3.2m" />
-      <div style={{ position: "absolute", left: 160 + 216, top: 218, height: 94, width: 4, background: RED, opacity: line }} />
-      <div style={{ position: "absolute", left: 160 + 216, top: 468, height: 94, width: 4, background: RED, opacity: line }} />
-      <div style={{ position: "absolute", left: 160 + 232, top: 612, fontFamily: SERIF, fontSize: 26, color: RED, opacity: line, whiteSpace: "nowrap" }}>below 120% of the minimum you must tell MAS immediately</div>
-      <div style={{ position: "absolute", left: 160, top: 690, fontFamily: SERIF, fontSize: 34, color: INK, opacity: pIn(frame, 66, 12) * useTextWindow() }}>
-        Your capital ÷ MAS's minimum = <span style={{ color: BLUE }}>1,143%</span> <span style={{ color: GREY, fontSize: 26, fontStyle: "italic" }}>· 3.2m ÷ 0.28m · comfortably above 120%</span>
+      <Row y={150} label="MAS's minimum capital" sub="" w={minW} color="#8d8d8d" at={6} val="S$0.28m" off={70} />
+      <Row y={400} label="Your capital" sub="" w={youW} color={BLUE} at={22} val="S$3.2m" />
+      <div style={{ position: "absolute", left: 160 + 216, top: 210, height: 94, width: 4, background: RED, opacity: line }} />
+      <div style={{ position: "absolute", left: 160 + 216, top: 460, height: 94, width: 4, background: RED, opacity: line }} />
+      <div style={{ position: "absolute", left: 160, top: 640, fontFamily: SERIF, fontSize: 40, color: INK, opacity: pIn(frame, 80, 14) * useTextWindow() }}>
+        Your capital ÷ MAS's minimum = <span style={{ color: BLUE }}>1,143%</span>
       </div>
       <SerifCap size={52}>The capital test — every quarter MAS checks your capital against its minimum</SerifCap>
     </Stage>
@@ -295,10 +293,7 @@ const WrongButFine: React.FC = () => {
       {/* the green tick on the wrong number */}
       <div style={{ position: "absolute", left: 1640, top: 110 + 80 + 28 + (rows.length - 1) * 44 + 4, width: 40, height: 40, borderRadius: 999, background: fixed ? RED : GREEN, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 900, opacity: pIn(frame, 20, 10) }}>{fixed ? "✗" : "✓"}</div>
       {/* MAS's rule stamp */}
-      <div style={{ position: "absolute", left: 1180, top: 40, padding: "12px 20px", border: `4px solid ${RED}`, borderRadius: 10, color: RED, fontFamily: SERIF, fontSize: 24, transform: `rotate(-6deg) scale(${1.4 - rule * 0.4})`, opacity: rule, whiteSpace: "nowrap" }}>MAS's rule · Form 2 (II)(2): deduct these</div>
-      <div style={{ position: "absolute", left: 300, top: 640, fontFamily: SERIF, fontSize: 30, color: fixed ? RED : INK2, opacity: pIn(frame, 24, 10) * useTextWindow() }}>
-        {fixed ? "What you filed: 1,290%. What MAS's rule gives: 1,143%. No error message, nothing to undo." : "Looks fine — green tick, no error."}
-      </div>
+      <div style={{ position: "absolute", left: 1180, top: 40, padding: "12px 20px", border: `4px solid ${RED}`, borderRadius: 10, color: RED, fontFamily: SERIF, fontSize: 30, transform: `rotate(-6deg) scale(${1.4 - rule * 0.4})`, opacity: rule, whiteSpace: "nowrap" }}>MAS's rule: deduct these</div>
       <SerifCap size={48}>Excel doesn't know MAS's rules — a wrong number looks right until MAS checks</SerifCap>
     </Stage>
   );
@@ -561,14 +556,14 @@ export const MASFINAL_SCENES: S[] = [
   { id: "opening", dur: 4.0, body: Opening },
   { id: "escalation", dur: 3.4, body: Escalation },
   { id: "by-hand", dur: 3.6, body: ByHand },
-  { id: "capital-test", dur: 3.4, body: CapitalTest },
-  { id: "wrong-but-fine", dur: 4.2, body: WrongButFine },
+  { id: "capital-test", dur: 4.6, body: CapitalTest },
+  { id: "wrong-but-fine", dur: 4.6, body: WrongButFine },
   { id: "core", dur: 1.0, body: MeetCore },
   { id: "screen-1", dur: 4.0, body: Screen1 },
   { id: "screen-2", dur: 4.0, body: Screen2 },
   { id: "screen-3", dur: 3.8, body: Screen3 },
-  { id: "screen-4", dur: 3.6, body: Screen4 },
-  { id: "compare", dur: 2.8, body: Compare },
+  { id: "screen-4", dur: 3.4, body: Screen4 },
+  { id: "compare", dur: 2.6, body: Compare },
   { id: "sign", dur: 3.6, body: Sign },
   { id: "close", dur: 1.8, body: Close },
   { id: "end", dur: 3.2, body: End },
