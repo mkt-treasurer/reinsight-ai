@@ -221,7 +221,7 @@ const CapitalTest: React.FC = () => {
   const minW = ease(frame, 14, 44, 0, 180);
   const youW = ease(frame, 30, 70, 0, 1180);
   const line = pIn(frame, 48, 12);
-  const Row: React.FC<{ y: number; label: string; sub: string; w: number; color: string; at: number; val: string }> = ({ y, label, sub, w, color, at, val }) => (
+  const Row: React.FC<{ y: number; label: string; sub: string; w: number; color: string; at: number; val: string; off?: number }> = ({ y, label, sub, w, color, at, val, off = 22 }) => (
     <div style={{ position: "absolute", left: 160, top: y, width: 1600, opacity: pIn(frame, at, 12) }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
         <span style={{ fontFamily: SERIF, fontSize: 34, color: INK }}>{label}</span>
@@ -229,16 +229,16 @@ const CapitalTest: React.FC = () => {
       </div>
       <div style={{ position: "relative", height: 86, marginTop: 14 }}>
         <div style={{ position: "absolute", left: 0, top: 0, width: w, height: 86, borderRadius: 14, background: color }} />
-        <div style={{ position: "absolute", left: w + 22, top: 0, height: 86, display: "flex", alignItems: "center", fontFamily: SERIF, fontSize: 40, color, whiteSpace: "nowrap", opacity: pIn(frame, at + 36, 10) }}>{val}</div>
+        <div style={{ position: "absolute", left: w + off, top: 0, height: 86, display: "flex", alignItems: "center", fontFamily: SERIF, fontSize: 40, color, whiteSpace: "nowrap", opacity: pIn(frame, at + 36, 10) }}>{val}</div>
       </div>
     </div>
   );
   return (
     <Stage>
-      <Row y={170} label="MAS's minimum capital" sub="5% of your average income" w={minW} color="#8d8d8d" at={6} val="S$0.28m" />
+      <Row y={170} label="MAS's minimum capital" sub="5% of your average income" w={minW} color="#8d8d8d" at={6} val="S$0.28m" off={70} />
       <Row y={420} label="Your capital" sub="paid-up capital and retained profit" w={youW} color={BLUE} at={22} val="S$3.2m" />
-      <div style={{ position: "absolute", left: 160 + 216, top: 150, height: 420, width: 4, background: RED, opacity: line }} />
-      <div style={{ position: "absolute", left: 160 + 232, top: 150, fontFamily: SERIF, fontSize: 24, color: RED, opacity: line, whiteSpace: "nowrap" }}>120% of the minimum — your capital must stay above this line</div>
+      <div style={{ position: "absolute", left: 160 + 216, top: 222, height: 380, width: 4, background: RED, opacity: line }} />
+      <div style={{ position: "absolute", left: 160 + 232, top: 612, fontFamily: SERIF, fontSize: 26, color: RED, opacity: line, whiteSpace: "nowrap" }}>120% of the minimum — your capital must stay above this line</div>
       <SerifCap size={52}>The capital test — every quarter MAS checks your capital stays above its minimum</SerifCap>
     </Stage>
   );
@@ -535,9 +535,9 @@ type S = { id: string; dur: number; body: React.FC };
 
 export const MASFINAL_SCENES: S[] = [
   { id: "opening", dur: 4.0, body: Opening },
-  { id: "escalation", dur: 3.2, body: Escalation },
+  { id: "escalation", dur: 3.0, body: Escalation },
   { id: "by-hand", dur: 3.4, body: ByHand },
-  { id: "capital-test", dur: 3.4, body: CapitalTest },
+  { id: "capital-test", dur: 3.2, body: CapitalTest },
   { id: "breaks", dur: 3.4, body: Breaks },
   { id: "core", dur: 1.8, body: MeetCore },
   { id: "screen-1", dur: 4.0, body: Screen1 },
