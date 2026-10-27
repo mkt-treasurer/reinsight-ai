@@ -185,3 +185,37 @@ used in Core's deck. Names, screens and figures are illustrative; the TSMC figur
 ```bash
 COMP=MasAi OUT=treasurer-mas-ai.mp4 npm run render
 ```
+
+### MasReturns — the back-office story, done right (39.8s) ← current
+
+Composition `MasReturns` (`src/mas-returns.tsx`). Treasurer brand (the regulatory-reporting engine behind the
+FSS film), not Core. White look shared with `mas-core.tsx`, but its own spine: a 14-day bar across the top from
+"Q3 ended · 30 Sep" to "Due · MAS-Tx · 14 Oct". Without Treasurer the marker crawls to Day 12; with Treasurer
+every step happens on Day 1.
+
+| t | Scene | On screen | Line |
+|---|---|---|---|
+| 0:00 | quarter-end | MAS-Tx "Regular Data Returns": Form 1, Form 2, due 14 Oct, not submitted | Two forms. Fourteen days. |
+| 0:03 | what-mas-asks | Form 1 and Form 2 as documents with the real line labels: (5) Trade debtors for fund management, (9)(b) Deposits with banks and cash balances — own, (13) Other current assets; base capital, deductions from FR, ORR = 5% of AAGI min S$100,000, FR/TRR ≥ 120% | MAS's line items. MAS's formulas. |
+| 0:07 | files | Trial balance, NAV pack, three years of audited P&L (for AAGI), bank statements, last quarter as lodged, the personal TRR workbook; "Which revenue goes into AAGI?" | Six files. Three years. One spreadsheet. |
+| 0:11 | day12 | TRR and FR/TRR cells show #REF!; Priya deleted the FY23 tab; the partner asks about the 120% test | Day 12. FR/TRR: #REF! |
+| 0:14 | reset | Bar resets to Day 1 | The same quarter, in Treasurer. |
+| 0:16 | reads | ① each MAS line → what it needs → the rule (Form 1 notes, SFA 04-N13 4.1.2–4.1.4, 3.1.1) | Reads what every MAS line needs. |
+| 0:19 | maps | ② chart of accounts → MAS line (1010/1012/1015 → (9)(b); 1200/1210 → (5); 1900/1950 → Form 2 deductions) | Maps every account to a MAS line. Once. |
+| 0:23 | computes | ③ AAGI = avg of 3 FYs = 5,599,000 → ORR = max(5%, 100,000) = 279,950 → TRR → FR 3,200,118 → FR/TRR 1,143%, above 120% | Form 2 by SFA 04-N13. Not by a macro. |
+| 0:26 | checks | ④ ties to GL, balances, base capital = Form 1 items, trust money excluded; one +38% jump explained with its NAV-pack row | Ties to the ledger. Explains every jump. |
+| 0:30 | filled | ⑤ Form 1 and Form 2 filled, cells highlighted; Export for MAS-Tx · working file with sources | MAS's form, filled. Day 1. |
+| 0:33 | spare | Reviewed · signed · lodged on MAS-Tx, 1 Oct; chips: annual Forms 1–6, VCFM Form 25A, FSS 업무보고서 already live | Review. Lodge. Thirteen days to spare. |
+| 0:36 | end | ◆ TREASURER · MAS returns, collected to lodged. · treasurer.net | |
+
+MAS facts (checked 27 Oct 2026): Form 1 / Form 2 quarterly within 14 days, annually within 5 months, submitted
+online via **MAS-Tx** (the mas.gov.sg form pages; the Aug 2024 LFMC compliance toolkit still lists MASNET).
+Line labels are from the post-2018 Form 1 and Form 2 PDFs. Operational risk requirement: SFA 04-N13 paras
+4.1.2–4.1.4 (5% of average annual gross income over the 3 preceding FYs, 2% above S$10m, floor S$100,000 or
+S$50,000 for A/I-only). FR must not fall below TRR; notify MAS immediately below 120% (para 3.1.1). All names
+and figures are illustrative. The engine claim ("same engine as our FSS module, new template") is the roadmap
+position agreed on 27 Oct 2026, not a shipped feature.
+
+```bash
+COMP=MasReturns OUT=treasurer-mas-returns.mp4 npm run render
+```
