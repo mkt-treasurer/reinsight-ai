@@ -265,7 +265,7 @@ Treasurer's own and holds only for the local-model configurations.
 COMP=MasFinal OUT=treasurer-mas-final.mp4 npm run render
 ```
 
-### MasVc — the VC version (29.7s) ← current for the VC 심사역 target
+### MasVc — the VC version (30.5s) ← current for the VC 심사역 target
 
 Composition `MasVc` (`src/mas-vc.tsx`). Same look as `MasFinal`, built for what a VCFM-regime VC manager actually
 files: **Form 25A**, once a year, within one month of financial year end, on MAS-Tx. VCFMs are exempt from

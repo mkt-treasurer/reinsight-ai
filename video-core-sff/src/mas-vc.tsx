@@ -50,7 +50,7 @@ const Statement: React.FC<{ a: string; b?: string; at?: number; size?: number; t
   );
 };
 
-const SerifCap: React.FC<{ at?: number; size?: number; children: React.ReactNode }> = ({ at = 16, size = 54, children }) => {
+const SerifCap: React.FC<{ at?: number; size?: number; children: React.ReactNode }> = ({ at = 10, size = 54, children }) => {
   const frame = useCurrentFrame();
   const p = pIn(frame, at, 16) * useTextWindow();
   return <div style={{ position: "absolute", left: 0, right: 0, top: 850, textAlign: "center", fontFamily: SERIF, fontSize: size, color: INK, letterSpacing: -0.5, opacity: p, transform: `translateY(${(1 - p) * 10}px)`, whiteSpace: "nowrap" }}>{children}</div>;
@@ -88,7 +88,7 @@ const AppWindow: React.FC<{ active: string; title: string; children: React.React
   </div>
 );
 
-const ScreenCap: React.FC<{ n: string; k: string; children: React.ReactNode; at?: number; size?: number }> = ({ n, k, children, at = 16, size = 46 }) => {
+const ScreenCap: React.FC<{ n: string; k: string; children: React.ReactNode; at?: number; size?: number }> = ({ n, k, children, at = 10, size = 46 }) => {
   const frame = useCurrentFrame();
   const p = pIn(frame, at, 14) * useTextWindow();
   return (
@@ -183,10 +183,10 @@ const Opening: React.FC = () => {
   const p = pIn(frame, 10, 16);
   return (
     <Stage>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 140, display: "flex", justifyContent: "center", opacity: p, transform: `translateY(${(1 - p) * 20}px)` }}>
-        <Paper label="Form 25A" w={190} sub="annual declaration to MAS" accent={BLUE} />
+      <div style={{ position: "absolute", left: 0, right: 0, top: 70, display: "flex", justifyContent: "center", opacity: p, transform: `translateY(${(1 - p) * 20}px)` }}>
+        <Paper label="Form 25A" w={280} sub="annual declaration to MAS" accent={BLUE} />
       </div>
-      <Statement a="One MAS declaration a year, covering every fund you run" b="still compiling it by hand?" top={450} size={68} />
+      <Statement a="One MAS declaration a year, covering every fund you run" b="still compiling it by hand?" top={500} size={68} />
     </Stage>
   );
 };
@@ -199,24 +199,24 @@ const Deadline: React.FC = () => {
   const tasks: [string, string, number][] = [["Audit", "#8d8d8d", 20], ["Nil misconduct return · 14 Jan", "#8d8d8d", 40], ["Form 25A · 31 Jan", RED, 60]];
   return (
     <Stage>
-      <div style={{ position: "absolute", left: 300, top: 150, width: 420, height: 420, borderRadius: 999, background: "#fff", boxShadow: "0 30px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)", opacity: pIn(frame, 2, 12) }}>
-        <svg width={420} height={420} style={{ position: "absolute", left: 0, top: 0 }}>
+      <div style={{ position: "absolute", left: 220, top: 110, width: 540, height: 540, borderRadius: 999, background: "#fff", boxShadow: "0 30px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)", opacity: pIn(frame, 2, 12) }}>
+        <svg width={540} height={540} style={{ position: "absolute", left: 0, top: 0 }}>
           {Array.from({ length: 12 }).map((_, i) => (
-            <line key={i} x1={210 + Math.cos((i / 12) * Math.PI * 2) * 170} y1={210 + Math.sin((i / 12) * Math.PI * 2) * 170} x2={210 + Math.cos((i / 12) * Math.PI * 2) * 185} y2={210 + Math.sin((i / 12) * Math.PI * 2) * 185} stroke="#cfcfcf" strokeWidth={5} strokeLinecap="round" />
+            <line key={i} x1={270 + Math.cos((i / 12) * Math.PI * 2) * 222} y1={270 + Math.sin((i / 12) * Math.PI * 2) * 222} x2={270 + Math.cos((i / 12) * Math.PI * 2) * 240} y2={270 + Math.sin((i / 12) * Math.PI * 2) * 240} stroke="#cfcfcf" strokeWidth={5} strokeLinecap="round" />
           ))}
-          <line x1={210} y1={210} x2={210 + Math.cos(((hand - 90) * Math.PI) / 180) * 150} y2={210 + Math.sin(((hand - 90) * Math.PI) / 180) * 150} stroke={day > 24 ? RED : INK} strokeWidth={10} strokeLinecap="round" />
-          <circle cx={210} cy={210} r={14} fill={day > 24 ? RED : INK} />
+          <line x1={270} y1={270} x2={270 + Math.cos(((hand - 90) * Math.PI) / 180) * 195} y2={270 + Math.sin(((hand - 90) * Math.PI) / 180) * 195} stroke={day > 24 ? RED : INK} strokeWidth={10} strokeLinecap="round" />
+          <circle cx={270} cy={270} r={14} fill={day > 24 ? RED : INK} />
         </svg>
-        <div style={{ position: "absolute", left: 0, right: 0, top: 300, textAlign: "center", fontFamily: SERIF, fontSize: 28, color: day > 24 ? RED : GREY }}>{day} Jan <span style={{ color: GREY, fontSize: 20 }}>· due 31 Jan</span></div>
+        <div style={{ position: "absolute", left: 0, right: 0, top: 390, textAlign: "center", fontFamily: SERIF, fontSize: 30, color: day > 24 ? RED : GREY }}>{day} Jan <span style={{ color: GREY, fontSize: 20 }}>· due 31 Jan</span></div>
       </div>
       {tasks.map(([k, c, at], i) => {
         const pp = pIn(frame, at, 12);
         return (
-          <div key={k} style={{ position: "absolute", left: 860, top: 180 + i * 150, display: "flex", alignItems: "center", gap: 26, opacity: pp, transform: `translateX(${(1 - pp) * 40}px)` }}>
-            <div style={{ width: 110, height: 110, borderRadius: 24, background: c, boxShadow: `0 18px 44px ${c}66`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Paper label="" w={48} accent="#fff" />
+          <div key={k} style={{ position: "absolute", left: 880, top: 150 + i * 180, display: "flex", alignItems: "center", gap: 26, opacity: pp, transform: `translateX(${(1 - pp) * 40}px)` }}>
+            <div style={{ width: 136, height: 136, borderRadius: 28, background: c, boxShadow: `0 18px 44px ${c}66`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Paper label="" w={58} accent="#fff" />
             </div>
-            <div style={{ fontFamily: SERIF, fontSize: 40, color: INK }}>{k}</div>
+            <div style={{ fontFamily: SERIF, fontSize: 46, color: INK }}>{k}</div>
           </div>
         );
       })}
@@ -233,15 +233,10 @@ const ByHand: React.FC = () => {
   return (
     <Stage>
       {srcs.map((f, i) => (
-        <div key={f} style={{ position: "absolute", left: 160, top: 170 + i * 165, opacity: pIn(frame, 2 + i * 6, 12) }}><Paper label={f} w={190} accent={INK2} /></div>
+        <div key={f} style={{ position: "absolute", left: 110, top: 130 + i * 200, opacity: pIn(frame, 6 + i * 6, 12) }}><Paper label={f} w={230} accent={INK2} /></div>
       ))}
-      <Person x={720} y={420} at={6} label="Priya, your associate" />
-      <Sheet x={960} y={150} w={780} name="Form25A_FY2025_working.xlsx" cell="C5" formula="=SUM(C1:C4)" rows={[["Acme Robotics · inc. 2019 · first cheque 2021", "4,200,000", "qualifying?"], ["Nimbus Health · inc. 2012 · first cheque 2023", "2,750,000", "qualifying?"], ["Series B secondary · bought from an LP", "6,000,000", "qualifying?"], ["Orbit Pay · inc. 2020 · follow-on 2025", "3,100,000", "qualifying?"], ["Fund I AUM at NAV", "48,200,000", "from admin"], ["Fund I committed capital", "60,000,000", "from LPA"]]} tabs={["Form 25A", "Fund I", "Fund II", "NAV Dec", "Deals"]} cellAt={(i) => 16 + i * 9} style={{ opacity: pIn(frame, 4, 12) }} />
-      {Array.from({ length: 6 }).map((_, i) => {
-        const t = ease(frame, 10 + i * 10, 34 + i * 10, 0, 1);
-        const y0 = 230 + (i % 3) * 165, y1 = 270 + i * 44;
-        return <div key={i} style={{ position: "absolute", left: 360 + t * 900, top: y0 + (y1 - y0) * t - Math.sin(t * Math.PI) * 90, fontFamily: MONO, fontSize: 24, fontWeight: 700, color: BLUE, opacity: t > 0 && t < 0.96 ? 1 : 0 }}>{vals[i]}</div>;
-      })}
+      <Person x={640} y={420} at={10} label="Priya, your associate" size={150} />
+      <Sheet x={860} y={120} w={920} name="Form25A_FY2025_working.xlsx" cell="C5" formula="=SUM(C1:C4)" rows={[["Acme Robotics · inc. 2019 · first cheque 2021", "4,200,000", "qualifying?"], ["Nimbus Health · inc. 2012 · first cheque 2023", "2,750,000", "qualifying?"], ["Series B secondary · bought from an LP", "6,000,000", "qualifying?"], ["Orbit Pay · inc. 2020 · follow-on 2025", "3,100,000", "qualifying?"], ["Fund I AUM at NAV", "48,200,000", "from admin"], ["Fund I committed capital", "60,000,000", "from LPA"]]} tabs={["Form 25A", "Fund I", "Fund II", "NAV Dec", "Deals"]} cellAt={(i) => 24 + i * 9} style={{ opacity: pIn(frame, 8, 12) }} />
       <SerifCap size={50}>Someone pulls every deal and every NAV into one sheet, by hand</SerifCap>
     </Stage>
   );
@@ -332,19 +327,19 @@ const Screen1: React.FC = () => {
           const x0 = 0, y0 = 40 + i * 150, x1 = 540, y1 = 170;
           return (
             <div key={f} style={{ position: "absolute", left: x0 + (x1 - x0) * t, top: y0 + (y1 - y0) * t, transform: `scale(${1 - t * 0.6})`, transformOrigin: "50% 50%", opacity: t < 0.95 ? 1 : 0 }}>
-              <Paper label={f} w={150} accent={INK2} />
+              <Paper label={f} w={180} accent={INK2} />
             </div>
           );
         })}
         <svg width={1240} height={700} style={{ position: "absolute", left: 0, top: 0 }}>
           {[0, 1, 2].map((i) => <path key={i} d={`M 160 ${110 + i * 150} C 350 ${110 + i * 150}, 400 260, 540 260`} stroke="#d5d5d5" strokeWidth={2} fill="none" strokeDasharray="8 8" />)}
-          <path d="M 700 260 C 760 260, 760 300, 800 300" stroke={BLUE} strokeWidth={2.5} fill="none" strokeDasharray={400} strokeDashoffset={400 * (1 - pIn(frame, 50, 16))} />
+          <path d="M 700 260 C 740 260, 740 300, 760 300" stroke={BLUE} strokeWidth={2.5} fill="none" strokeDasharray={400} strokeDashoffset={400 * (1 - pIn(frame, 50, 16))} />
         </svg>
         <div style={{ position: "absolute", left: 540, top: 180, width: 160, height: 160, borderRadius: 999, background: INK, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 0 ${pIn(frame, 40, 20) * 18}px rgba(47,107,255,0.12)` }}>
           <span style={{ display: "inline-flex", alignItems: "center", color: "#fff", fontWeight: 500, fontSize: 30, letterSpacing: 9, paddingLeft: 9 }}>C<span style={{ display: "inline-block", margin: "0 9px 0 -2px", marginTop: 2 }}><OMark size={23} color="#fff" /></span>RE</span>
         </div>
-        <div style={{ position: "absolute", left: 800, top: 40, width: 440, opacity: pIn(frame, 60, 14) }}>
-          <Sheet x={0} y={0} w={440} name="Form 25A.xlsx" cell="C4" formula="=C2+C3" rows={[["Committed", "60,000,000"], ["Qualifying", "41,900,000"], ["Non-qualifying", "6,300,000"], ["AUM at NAV", "48,200,000"]]} tabs={["Form 25A", "Notes"]} cellAt={(i) => 70 + i * 8} style={{ position: "relative" }} />
+        <div style={{ position: "absolute", left: 760, top: 40, width: 480, opacity: pIn(frame, 60, 14) }}>
+          <Sheet x={0} y={0} w={480} name="Form 25A.xlsx" cell="C4" formula="=C2+C3" rows={[["Committed", "60,000,000"], ["Qualifying", "41,900,000"], ["Non-qualifying", "6,300,000"], ["AUM at NAV", "48,200,000"]]} tabs={["Form 25A", "Notes"]} cellAt={(i) => 70 + i * 8} style={{ position: "relative" }} />
           <div style={{ marginTop: 14, display: "flex", gap: 10, opacity: pIn(frame, 104, 10) }}>
             <span style={{ padding: "10px 18px", borderRadius: 999, background: INK, color: "#fff", fontSize: 16, fontWeight: 700 }}>Ready for MAS-Tx</span>
           </div>
@@ -369,7 +364,7 @@ const Screen2: React.FC = () => {
       <AppWindow active="Qualifying test" title="Qualifying test · Fund I · 31 Dec 2025">
         <Card x={0} y={0} w={1240} at={4} style={{ background: "#111318", color: "#fff" }}>
           <div style={{ fontFamily: MONO, fontSize: 12, letterSpacing: 2, color: "#8b90a0" }}>MAS'S DEFINITION · GUIDELINES FOR FUND MANAGEMENT COMPANIES</div>
-          <div style={{ fontFamily: SERIF, fontSize: 28, marginTop: 12, lineHeight: 1.35 }}>
+          <div style={{ fontFamily: SERIF, fontSize: 31, marginTop: 12, lineHeight: 1.35 }}>
             Qualifying: unlisted, backed directly, under 10 years old at your first cheque. Follow-ons stay qualifying. Secondaries and older companies don't — and they may be at most 20% of committed capital.
           </div>
         </Card>
@@ -377,8 +372,8 @@ const Screen2: React.FC = () => {
           {rows.map(([k, s, v, ok, at]) => (
             <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${LINE}`, opacity: pIn(frame, at, 12) }}>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: INK }}>{k}</div>
-                <div style={{ fontSize: 13, color: GREY, marginTop: 2 }}>{s}</div>
+                <div style={{ fontSize: 21, fontWeight: 700, color: INK }}>{k}</div>
+                <div style={{ fontSize: 14, color: GREY, marginTop: 2 }}>{s}</div>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 15, fontWeight: 700, color: ok ? GREEN : RED }}>{v}<Check at={at + 6} size={20} bad={!ok} /></div>
             </div>
@@ -495,7 +490,7 @@ const Sign: React.FC = () => {
   const stamp = pIn(frame, 62, 10);
   return (
     <Stage>
-      <div style={{ position: "absolute", left: 560, top: 110, width: 800, height: 620, borderRadius: 14, background: "#fff", boxShadow: "0 24px 60px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06)", padding: "40px 48px", opacity: pIn(frame, 2, 14) }}>
+      <div style={{ position: "absolute", left: 500, top: 90, width: 920, height: 650, borderRadius: 14, background: "#fff", boxShadow: "0 24px 60px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06)", padding: "40px 48px", opacity: pIn(frame, 2, 14) }}>
         <div style={{ fontFamily: SERIF, fontSize: 30, color: INK }}>Form 25A · FY2025</div>
         <div style={{ fontSize: 16, color: GREY, marginTop: 4 }}>prepared by Core · every figure traced to a cap table or NAV</div>
         {[0.85, 0.6, 0.75, 0.5, 0.7].map((x, i) => (
@@ -545,13 +540,13 @@ type S = { id: string; dur: number; body: React.FC };
 
 export const MASVC_SCENES: S[] = [
   { id: "opening", dur: 3.6, body: Opening },
-  { id: "deadline", dur: 3.0, body: Deadline },
-  { id: "by-hand", dur: 3.2, body: ByHand },
-  { id: "core", dur: 1.6, body: MeetCore },
+  { id: "deadline", dur: 3.4, body: Deadline },
+  { id: "by-hand", dur: 3.4, body: ByHand },
+  { id: "core", dur: 1.0, body: MeetCore },
   { id: "screen-1", dur: 3.8, body: Screen1 },
-  { id: "screen-2", dur: 4.0, body: Screen2 },
-  { id: "screen-3", dur: 4.0, body: Screen3 },
-  { id: "screen-4", dur: 3.2, body: Screen4 },
+  { id: "screen-2", dur: 4.4, body: Screen2 },
+  { id: "screen-3", dur: 4.2, body: Screen3 },
+  { id: "screen-4", dur: 3.4, body: Screen4 },
   { id: "sign", dur: 3.0, body: Sign },
   { id: "close", dur: 1.8, body: Close },
   { id: "end", dur: 3.2, body: End },

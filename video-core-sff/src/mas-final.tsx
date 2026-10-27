@@ -169,9 +169,8 @@ const Escalation: React.FC = () => {
       </div>
       {steps.map(([k, c, at], i) => {
         const pp = pIn(frame, at, 12);
-        const pulse = frame >= at ? 1 + Math.abs(Math.sin((frame - at) / 6)) * 0.05 : 1;
         return (
-          <div key={k} style={{ position: "absolute", left: 860, top: 180 + i * 150, display: "flex", alignItems: "center", gap: 26, opacity: pp, transform: `translateX(${(1 - pp) * 40}px) scale(${pulse})`, transformOrigin: "0 50%" }}>
+          <div key={k} style={{ position: "absolute", left: 860, top: 180 + i * 150, display: "flex", alignItems: "center", gap: 26, opacity: pp, transform: `translateX(${(1 - pp) * 40}px)` }}>
             <div style={{ width: 110, height: 110, borderRadius: 24, background: c, boxShadow: `0 18px 44px ${c}66`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               {i === 0 ? (
                 <svg width={58} height={58} viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" /></svg>
@@ -201,12 +200,6 @@ const ByHand: React.FC = () => {
       ))}
       <Person x={720} y={420} at={6} label="Priya, your finance person" />
       <Sheet x={960} y={150} w={780} name="Q3_MAS_forms_working.xlsx" cell="C5" formula="=SUM(C1:C4)" rows={[["Cash at bank — DBS SGD", "2,904,117", "from TB"], ["Cash at bank — USD", "1,224,683", "from TB"], ["Fees receivable", "912,415", "from admin"], ["Other assets", "88,470", "from TB"], ["Total assets", "5,129,685", "typed"], ["Capital", "3,200,118", "typed"]]} tabs={["Form 1", "Form 2", "TB Sep", "Bank", "Admin"]} cellAt={(i) => 16 + i * 9} style={{ opacity: pIn(frame, 4, 12) }} />
-      {Array.from({ length: 6 }).map((_, i) => {
-        const t = ease(frame, 10 + i * 10, 34 + i * 10, 0, 1);
-        const y0 = 230 + (i % 3) * 165, y1 = 270 + i * 44;
-        const vals = ["2,904,117", "1,224,683", "912,415", "88,470", "5,129,685", "3,200,118"];
-        return <div key={i} style={{ position: "absolute", left: 360 + t * 900, top: y0 + (y1 - y0) * t - Math.sin(t * Math.PI) * 90, fontFamily: MONO, fontSize: 24, fontWeight: 700, color: BLUE, opacity: t > 0 && t < 0.96 ? 1 : 0 }}>{vals[i]}</div>;
-      })}
       <SerifCap>One person in finance retypes every number, every quarter</SerifCap>
     </Stage>
   );
@@ -570,7 +563,7 @@ export const MASFINAL_SCENES: S[] = [
   { id: "by-hand", dur: 3.4, body: ByHand },
   { id: "capital-test", dur: 3.2, body: CapitalTest },
   { id: "wrong-but-fine", dur: 4.0, body: WrongButFine },
-  { id: "core", dur: 1.8, body: MeetCore },
+  { id: "core", dur: 1.0, body: MeetCore },
   { id: "screen-1", dur: 4.0, body: Screen1 },
   { id: "screen-2", dur: 3.8, body: Screen2 },
   { id: "screen-3", dur: 3.6, body: Screen3 },
