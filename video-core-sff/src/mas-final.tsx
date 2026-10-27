@@ -29,7 +29,7 @@ const Statement: React.FC<{ a: string; b?: string; at?: number; size?: number; t
   return (
     <div style={{ position: "absolute", left: 0, right: 0, top: top ?? (b ? 400 : 470), textAlign: "center", fontFamily: SERIF }}>
       <div style={{ fontSize: size, color: INK, letterSpacing: -1, opacity: p1, transform: `translateY(${(1 - p1) * 10}px)` }}>{a}</div>
-      {b ? <div style={{ fontSize: size * 0.86, color: "#8d8d8d", fontStyle: "italic", marginTop: 28, opacity: p2, transform: `translateY(${(1 - p2) * 10}px)` }}>{b}</div> : null}
+      {b ? <div style={{ fontSize: size * 0.86, color: INK, fontStyle: "italic", marginTop: 28, opacity: p2, transform: `translateY(${(1 - p2) * 10}px)` }}>{b}</div> : null}
     </div>
   );
 };
@@ -78,7 +78,7 @@ const ScreenCap: React.FC<{ n: string; k: string; children: React.ReactNode; at?
   return (
     <div style={{ position: "absolute", left: 0, right: 0, top: 900, textAlign: "center", opacity: p }}>
       <div style={{ fontFamily: MONO, fontSize: 18, letterSpacing: 5, color: BLUE, fontWeight: 700 }}>{n} · {k}</div>
-      <div style={{ fontSize: size, fontWeight: 800, color: INK, letterSpacing: -1.2, marginTop: 10, whiteSpace: "nowrap" }}>{children}</div>
+      <div style={{ fontFamily: SERIF, fontSize: size, color: INK, letterSpacing: -0.5, marginTop: 10, whiteSpace: "nowrap" }}>{children}</div>
     </div>
   );
 };
@@ -144,8 +144,8 @@ const Opening: React.FC = () => {
 /** 2 · Miss the deadline and it escalates. */
 const Escalation: React.FC = () => {
   const frame = useCurrentFrame();
-  const day = Math.floor(lin(frame, 6, 80, 14, 45));
-  const hand = lin(frame, 6, 80, 0, 360 * 2.2);
+  const day = Math.floor(lin(frame, 6, 100, 14, 60));
+  const hand = frame * 7.5;
   const steps: [string, string, number][] = [["a reminder", "#f5b400", 22], ["then scrutiny", "#f26b1d", 46], ["then a fine", RED, 70]];
   return (
     <Stage>
@@ -161,8 +161,9 @@ const Escalation: React.FC = () => {
       </div>
       {steps.map(([k, c, at], i) => {
         const pp = pIn(frame, at, 12);
+        const pulse = frame >= at ? 1 + Math.abs(Math.sin((frame - at) / 6)) * 0.05 : 1;
         return (
-          <div key={k} style={{ position: "absolute", left: 860, top: 180 + i * 150, display: "flex", alignItems: "center", gap: 26, opacity: pp, transform: `translateX(${(1 - pp) * 40}px)` }}>
+          <div key={k} style={{ position: "absolute", left: 860, top: 180 + i * 150, display: "flex", alignItems: "center", gap: 26, opacity: pp, transform: `translateX(${(1 - pp) * 40}px) scale(${pulse})`, transformOrigin: "0 50%" }}>
             <div style={{ width: 110, height: 110, borderRadius: 24, background: c, boxShadow: `0 18px 44px ${c}66`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               {i === 0 ? (
                 <svg width={58} height={58} viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" /></svg>
@@ -214,21 +215,55 @@ const ByHand: React.FC = () => {
   );
 };
 
-/** 4 · The capital-test formula lives in her spreadsheet — when she's away it breaks (literally). */
+/** 4 · What the capital test is: MAS's minimum vs your capital, with the 120% line. */
+const CapitalTest: React.FC = () => {
+  const frame = useCurrentFrame();
+  const minW = ease(frame, 14, 44, 0, 180);
+  const youW = ease(frame, 30, 70, 0, 1180);
+  const line = pIn(frame, 48, 12);
+  const Row: React.FC<{ y: number; label: string; sub: string; w: number; color: string; at: number; val: string }> = ({ y, label, sub, w, color, at, val }) => (
+    <div style={{ position: "absolute", left: 160, top: y, width: 1600, opacity: pIn(frame, at, 12) }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+        <span style={{ fontFamily: SERIF, fontSize: 34, color: INK }}>{label}</span>
+        <span style={{ fontFamily: SERIF, fontSize: 22, color: GREY, fontStyle: "italic" }}>{sub}</span>
+      </div>
+      <div style={{ position: "relative", height: 86, marginTop: 14 }}>
+        <div style={{ position: "absolute", left: 0, top: 0, width: w, height: 86, borderRadius: 14, background: color }} />
+        <div style={{ position: "absolute", left: w + 22, top: 0, height: 86, display: "flex", alignItems: "center", fontFamily: SERIF, fontSize: 40, color, whiteSpace: "nowrap", opacity: pIn(frame, at + 36, 10) }}>{val}</div>
+      </div>
+    </div>
+  );
+  return (
+    <Stage>
+      <Row y={170} label="MAS's minimum capital" sub="5% of your average income" w={minW} color="#8d8d8d" at={6} val="S$0.28m" />
+      <Row y={420} label="Your capital" sub="paid-up capital and retained profit" w={youW} color={BLUE} at={22} val="S$3.2m" />
+      <div style={{ position: "absolute", left: 160 + 216, top: 150, height: 420, width: 4, background: RED, opacity: line }} />
+      <div style={{ position: "absolute", left: 160 + 232, top: 150, fontFamily: SERIF, fontSize: 24, color: RED, opacity: line, whiteSpace: "nowrap" }}>120% of the minimum — your capital must stay above this line</div>
+      <SerifCap size={52}>The capital test — every quarter MAS checks your capital stays above its minimum</SerifCap>
+    </Stage>
+  );
+};
+
+/** 5 · Done by hand in Excel, one wrong cell breaks it (literally). */
 const Breaks: React.FC = () => {
   const frame = useCurrentFrame();
-  const leave = pIn(frame, 30, 14);
-  const crackAt = 52;
-  const c = pIn(frame, crackAt, 10); // crack grows
-  const fall = ease(frame, crackAt + 8, crackAt + 40, 0, 1); // halves fall apart
+  const del = pIn(frame, 26, 10); // the FY23 tab gets deleted
+  const crackAt = 40;
+  const c = pIn(frame, crackAt, 10);
+  const fall = ease(frame, crackAt + 8, crackAt + 40, 0, 1);
   const shake = frame >= crackAt && frame < crackAt + 8 ? Math.sin(frame * 4) * 8 : 0;
   const Half: React.FC<{ side: "l" | "r" }> = ({ side }) => (
-    <div style={{ position: "absolute", left: 300, top: 180, width: 1320, height: 380, clipPath: side === "l" ? "polygon(0 0, 52% 0, 46% 100%, 0 100%)" : "polygon(52% 0, 100% 0, 100% 100%, 46% 100%)", transform: side === "l" ? `translate(${-fall * 60 + shake}px, ${fall * 40}px) rotate(${-fall * 6}deg)` : `translate(${fall * 80 + shake}px, ${fall * 120}px) rotate(${fall * 9}deg)`, transformOrigin: side === "l" ? "0% 100%" : "100% 100%", opacity: 1 - fall * 0.3 }}>
-      <div style={{ width: 1320, height: 380, borderRadius: 18, background: "#f7f7f7", border: "1px solid #dcdcdc", overflow: "hidden" }}>
-        <div style={{ height: 54, background: "#e8f5e9", borderBottom: `1px solid ${LINE}`, display: "flex", alignItems: "center", padding: "0 24px", fontFamily: MONO, fontSize: 18, color: INK2 }}>Priya_capital_test.xlsx &nbsp;·&nbsp; fx =MAX(0.05*AVERAGE('FY23'!R9,'FY24'!R9,'FY25'!R9),100000)/…</div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 48px", height: 326 }}>
-          <div style={{ fontFamily: SERIF, fontSize: 40, color: INK2 }}>Capital test <span style={{ color: GREY, fontSize: 26 }}>· MAS asks for this every quarter</span></div>
+    <div style={{ position: "absolute", left: 300, top: 150, width: 1320, height: 420, clipPath: side === "l" ? "polygon(0 0, 52% 0, 46% 100%, 0 100%)" : "polygon(52% 0, 100% 0, 100% 100%, 46% 100%)", transform: side === "l" ? `translate(${-fall * 60 + shake}px, ${fall * 40}px) rotate(${-fall * 6}deg)` : `translate(${fall * 80 + shake}px, ${fall * 120}px) rotate(${fall * 9}deg)`, transformOrigin: side === "l" ? "0% 100%" : "100% 100%", opacity: 1 - fall * 0.3 }}>
+      <div style={{ width: 1320, height: 420, borderRadius: 18, background: "#f7f7f7", border: "1px solid #dcdcdc", overflow: "hidden" }}>
+        <div style={{ height: 54, background: "#e8f5e9", borderBottom: `1px solid ${LINE}`, display: "flex", alignItems: "center", padding: "0 24px", fontFamily: MONO, fontSize: 18, color: INK2 }}>capital_test.xlsx &nbsp;·&nbsp; fx =MAX(0.05*AVERAGE(<span style={{ color: RED, textDecoration: del > 0.5 ? "line-through" : "none" }}>'FY23'!R9</span>,'FY24'!R9,'FY25'!R9),100000)/…</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 48px", height: 300 }}>
+          <div style={{ fontFamily: SERIF, fontSize: 40, color: INK2 }}>Capital test <span style={{ color: GREY, fontSize: 26 }}>· built by hand, 14 linked tabs</span></div>
           <div style={{ fontFamily: MONO, fontSize: 90, fontWeight: 900, color: c > 0 ? RED : INK }}>{c > 0 ? "#REF!" : "1,143%"}</div>
+        </div>
+        <div style={{ display: "flex", gap: 6, padding: "0 24px", borderTop: `1px solid ${LINE}`, height: 66, alignItems: "center" }}>
+          {["Summary", "FY23", "FY24", "FY25", "Deductions", "TB Sep", "Bank"].map((t) => (
+            <span key={t} style={{ fontFamily: MONO, fontSize: 14, padding: "6px 12px", borderRadius: 6, background: t === "FY23" ? `rgba(216,35,42,${0.1 + del * 0.3})` : "#eaeaea", color: t === "FY23" ? RED : INK2, textDecoration: t === "FY23" && del > 0.5 ? "line-through" : "none" }}>{t}</span>
+          ))}
         </div>
       </div>
     </div>
@@ -238,12 +273,10 @@ const Breaks: React.FC = () => {
       <Half side="l" />
       <Half side="r" />
       <svg width={1920} height={1080} style={{ position: "absolute", left: 0, top: 0, pointerEvents: "none" }}>
-        <path d="M 986 180 L 972 250 L 1000 300 L 970 370 L 992 430 L 964 500 L 980 560" stroke={RED} strokeWidth={6} fill="none" strokeLinecap="round" strokeDasharray={600} strokeDashoffset={600 * (1 - c)} opacity={1 - fall} />
+        <path d="M 986 150 L 972 230 L 1000 290 L 970 370 L 992 440 L 964 510 L 980 570" stroke={RED} strokeWidth={6} fill="none" strokeLinecap="round" strokeDasharray={600} strokeDashoffset={600 * (1 - c)} opacity={1 - fall} />
       </svg>
-      <div style={{ position: "absolute", left: 1500, top: 110, transform: `translateX(${leave * 300}px)`, opacity: 1 - leave * 0.8 }}>
-        <Person x={0} y={0} at={6} label="Priya, on leave" />
-      </div>
-      <SerifCap size={50}>That spreadsheet lives with her — when she's away, the test breaks</SerifCap>
+      <div style={{ position: "absolute", left: 300, top: 600, fontFamily: SERIF, fontSize: 28, color: RED, opacity: del }}>one tab deleted → the number MAS sees is wrong</div>
+      <SerifCap size={50}>Built by hand in Excel, one wrong cell and the number MAS sees is wrong</SerifCap>
     </Stage>
   );
 };
@@ -491,7 +524,7 @@ const End: React.FC = () => {
       <div style={{ position: "absolute", left: 0, right: 0, top: 650, display: "flex", justifyContent: "center", opacity: b }}>
         <span style={{ padding: "20px 40px", borderRadius: 999, background: "#111318", color: "#fff", fontSize: 26, fontWeight: 700 }}>Book a demo →</span>
       </div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 760, textAlign: "center", fontSize: 24, color: "#5c6478", opacity: b }}>Runs in your VPC or on-prem. Your data never leaves.</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 760, textAlign: "center", fontFamily: SERIF, fontSize: 26, color: "#5c6478", opacity: b }}>Runs in your VPC or on-prem. Your data never leaves.</div>
     </Stage>
   );
 };
@@ -502,17 +535,18 @@ type S = { id: string; dur: number; body: React.FC };
 
 export const MASFINAL_SCENES: S[] = [
   { id: "opening", dur: 4.0, body: Opening },
-  { id: "escalation", dur: 3.6, body: Escalation },
-  { id: "by-hand", dur: 3.8, body: ByHand },
-  { id: "breaks", dur: 3.8, body: Breaks },
+  { id: "escalation", dur: 3.2, body: Escalation },
+  { id: "by-hand", dur: 3.4, body: ByHand },
+  { id: "capital-test", dur: 3.4, body: CapitalTest },
+  { id: "breaks", dur: 3.4, body: Breaks },
   { id: "core", dur: 1.8, body: MeetCore },
-  { id: "screen-1", dur: 4.2, body: Screen1 },
+  { id: "screen-1", dur: 4.0, body: Screen1 },
   { id: "screen-2", dur: 4.0, body: Screen2 },
-  { id: "screen-3", dur: 3.8, body: Screen3 },
+  { id: "screen-3", dur: 3.6, body: Screen3 },
   { id: "screen-4", dur: 3.4, body: Screen4 },
   { id: "compare", dur: 3.4, body: Compare },
   { id: "sign", dur: 3.6, body: Sign },
-  { id: "close", dur: 2.4, body: Close },
+  { id: "close", dur: 2.0, body: Close },
   { id: "end", dur: 3.4, body: End },
 ];
 
