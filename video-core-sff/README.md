@@ -220,32 +220,33 @@ position agreed on 27 Oct 2026, not a shipped feature.
 COMP=MasReturns OUT=treasurer-mas-returns.mp4 npm run render
 ```
 
-### MasFinal — the cut we ship (37.6s) ← current
+### MasFinal — the cut we ship (39.6s) ← current
 
 Composition `MasFinal` (`src/mas-final.tsx`), in the look of the HK demo-ver draft: Georgia serif statements on
-white with drifting file chips, then Core's own app window that stays put while its content crossfades, a stat
-card, two serif closing lines, the Core end card. 0.47s crossfades on every cut. Our content, not theirs.
+plain white, Core's app window that stays put while its content crossfades, a before/after bar, a sign-and-file
+scene, the Core end card. Captions are flowing phrases. 0.47s crossfades.
 
 | t | Scene | Line | Picture |
 |---|---|---|---|
-| 0:00 | opening | Quarter end. Two MAS forms. Fourteen days. / *Still doing it by hand?* | 20 MAS filing files drift (Form1_Q2_lodged.pdf, Trial balance Sep.xlsx, NAV pack Q3.pdf…) |
-| 0:04 | escalation | Late? Reminders. Scrutiny. Fines. | Clock runs Day 14 → 45; Reminder (mail) → Scrutiny (eye) → Fine (S$) step in |
-| 0:07 | by-hand | One person. By hand. Every quarter. | Ledger · Bank · Admin papers; Priya; numbers hop into an Excel grid; Day 3 → 9 |
-| 0:11 | formula | She's out. The formula breaks. | The capital-ratio formula cell: 1,143% → Priya walks off → #REF! |
-| 0:14 | core | CORE by TREASURER. | Black card |
-| 0:16 | screen-1 | 01 · Quarterly returns — Your files in. MAS forms out. | App: Sources ✓✓✓, Form 1 / Form 2 fill to 100%, Export for MAS-Tx, Checks ✓✓✓✓ |
-| 0:20 | screen-2 | 02 · Capital ratio — By MAS's rule. Not by a macro. | Average income → ORR (5%, floor S$100k) → FR → 1,143% ✓; last four quarters |
-| 0:24 | screen-3 | 03 · Monitoring — Watched monthly. Warned early. | Monthly ratio line toward the 120% line; alert 3 months early; next check |
-| 0:27 | screen-4 | 04 · Every filing — Every form. Same engine. | Form 1·2 / Forms 1–6 / Form 25A; filing calendar for a Dec FYE |
-| 0:30 | stat | Day 1 | Reviewed, signed, filed on MAS-Tx. Thirteen days early. vs Day 12 · illustrative |
-| 0:32 | close | Less re-typing. More running the fund. → Review. Sign. Filed. | Serif |
-| 0:34 | end | CORE by TREASURER · Book a demo → · Runs in your VPC or on-prem. Your data never leaves. | |
+| 0:00 | opening | Two MAS forms to fill every quarter end / *still doing it by hand?* | Form 1 (balance sheet) and Form 2 (capital test) |
+| 0:04 | escalation | Miss the deadline and it escalates | Clock Day 14 → 45; a reminder → then scrutiny → then a fine |
+| 0:07 | by-hand | One person in finance retypes every number, every quarter | Ledger · Bank · Admin → Priya → numbers hop into Excel |
+| 0:11 | breaks | That spreadsheet lives with her — when she's away, the test breaks | Priya walks off; the capital-test sheet cracks, splits and falls; 1,143% → #REF! |
+| 0:14 | core | CORE by TREASURER | Black card |
+| 0:16 | screen-1 | 01 · Your ledger, bank and admin files go in — the two MAS forms come out | Files shrink into the Core disc; Form 1, Form 2 emerge with ✓; Export for MAS-Tx |
+| 0:20 | screen-2 | 02 · The capital test, computed exactly the way MAS writes it | The rule written out (SFA 04-N13 3.1.1 / 4.1.2): capital ÷ (5% × 3-yr avg income) ≥ 120%; the numbers; 1,143% ✓ |
+| 0:24 | screen-3 | 03 · Tracked monthly, so you're warned months before you hit MAS's limit | "Your capital ratio, month by month" vs the MAS limit line; Warning · June; why it's falling |
+| 0:27 | screen-4 | 04 · Two forms each quarter, the audited set once a year — all from one mapping | Q1–Q4 cards (2 forms, by the 14th) + Year end (audited set, by 31 May) |
+| 0:31 | compare | From twelve days to one | Last quarter, by hand: 12-day red bar · With Core: 1-day blue bar |
+| 0:34 | sign | You review and sign — Core files it with MAS | Signature draws on the forms; FILED · MAS-Tx stamp |
+| 0:37 | close | Less retyping, more running the fund | Serif |
+| 0:39 | end | CORE by TREASURER · Book a demo → · Runs in your VPC or on-prem. Your data never leaves. | |
 
-Facts: Form 1/2 quarterly within 14 days via MAS-Tx (Reg 27 FMR); annual Forms 1–6 within 5 months; VCFM
-Form 25A within 1 month of FYE; ORR = 5% of 3-year average annual gross income, floor S$100,000 (SFA 04-N13
-4.1.2–4.1.4); notify MAS if FR < 120% of TRR (3.1.1); late lodgement draws reminders, supervisory attention
-and can be fined. Monthly monitoring, the calendar and the Core branding of a returns product are
-positioning, not shipped features (team call, 27 Oct 2026). Names and numbers are illustrative.
+Facts: Form 1/2 quarterly within 14 days via MAS-Tx and the audited set within 5 months of FYE (Reg 27 FMR);
+ORR = 5% of 3-year average annual gross income, floor S$100,000 (SFA 04-N13 4.1.2–4.1.4); FR must not fall
+below TRR and MAS must be told immediately below 120% (3.1.1). Monthly tracking, the calendar, "Core files
+it" and the Core branding of a returns product are positioning, not shipped features (team call, 27 Oct 2026).
+Names and numbers are illustrative; Form 25A (VCFM) was dropped from the film to keep "two forms" simple.
 
 ```bash
 COMP=MasFinal OUT=treasurer-mas-final.mp4 npm run render
