@@ -173,7 +173,7 @@ const QuarterEnd: React.FC = () => {
           <div style={{ marginTop: 22, fontSize: 15, color: GREY, opacity: pIn(frame, 44, 10) }}>Regulation 27 · within 14 days from the end of each quarter · annual audited Forms 1–6 within 5 months</div>
         </div>
       </Win>
-      <Cap at={8}>Two forms. Fourteen days.</Cap>
+      <Cap at={8} size={70}>Every quarter: <span style={{ color: RED }}>2 forms</span> to MAS, in <span style={{ color: RED }}>14 days</span>.</Cap>
       <Day n={0} at={10} />
     </Stage>
   );
@@ -186,7 +186,7 @@ const WhatMasAsks: React.FC = () => (
     <DayBar from={0} to={1} len={40} />
     <FormDoc x={150} y={130} w={790} h={590} title="Form 1 · Statement of Assets and Liabilities" sub="as at 30 Sep 2026 · S$" rows={FORM1_ROWS} at={4} />
     <FormDoc x={980} y={130} w={790} h={590} title="Form 2 · Financial Resources, TRR, Aggregate Indebtedness" sub="as at 30 Sep 2026 · S$" rows={FORM2_ROWS} at={14} />
-    <Cap at={14}>MAS's line items. MAS's formulas.</Cap>
+    <Cap at={14} size={60}>Form 1: your balance sheet. Form 2: your capital test.</Cap>
     <Src text="Form 1 / Form 2 (post-2018) · SFA 04-N13 paras 3.1.1, 4.1.2" at={40} />
     <Day n={1} />
   </Stage>
@@ -235,7 +235,7 @@ const Files: React.FC = () => {
         </div>
       </Win>
       <Bubble at={62} who="Mei Lin" role="Compliance" when="Day 5 · 18:20" text="Which revenue goes into AAGI — before or after the rebate?" />
-      <Cap at={10}>Six files. Three years. One spreadsheet.</Cap>
+      <Cap at={10} size={66}>The numbers sit in 6 files and 1 spreadsheet.</Cap>
       <Day n={5} />
     </Stage>
   );
@@ -259,9 +259,7 @@ const Day12: React.FC = () => {
       </Win>
       <Bubble at={20} who="Priya Shah" role="Finance" when="Day 12 · 01:40" text="Deleted the FY23 tab by mistake. Rebuilding the TRR tonight." />
       <Bubble at={40} i={1} who="David Tan" role="Managing Partner" when="Day 12 · 08:05" text="I sign this on the 14th. Is the 120% test done?" dark />
-      <Cap at={8}>
-        Day 12. <span style={{ color: RED }}>FR/TRR: #REF!</span>
-      </Cap>
+      <Cap at={8} size={68}>Day 12. <span style={{ color: RED }}>The capital-test formula is broken.</span></Cap>
       <Day n={12} />
     </Stage>
   );
@@ -304,7 +302,7 @@ const ReadsForm: React.FC = () => {
     <Stage>
       <Mark />
       <DayBar from={1} to={1} good label="DAY 1" />
-      <StepTag n={1} text="Reads the form" />
+      <StepTag n={1} text="Treasurer reads the MAS form" />
       <div style={{ position: "absolute", left: 60, top: 190, width: 1800 }}>
         {needs.map((n, i) => {
           const p = pIn(frame, 10 + i * 10, 12);
@@ -320,7 +318,7 @@ const ReadsForm: React.FC = () => {
           );
         })}
       </div>
-      <Cap at={8}>Reads what every MAS line needs.</Cap>
+      <Cap at={8} size={72}><span style={{ color: BRAND }}>1</span> · Reads what MAS wants on each line.</Cap>
       <Day n={1} good />
     </Stage>
   );
@@ -339,7 +337,7 @@ const MapsAccounts: React.FC = () => {
     <Stage>
       <Mark />
       <DayBar from={1} to={1} good label="DAY 1" />
-      <StepTag n={2} text="Maps your accounts" />
+      <StepTag n={2} text="Treasurer matches your accounts" />
       <div style={{ position: "absolute", left: LX, top: 190, fontFamily: MONO, fontSize: 13, letterSpacing: 3, color: GREY }}>YOUR CHART OF ACCOUNTS</div>
       <div style={{ position: "absolute", left: RX, top: 190, fontFamily: MONO, fontSize: 13, letterSpacing: 3, color: BRAND }}>MAS LINE</div>
       {G.map((g, gi) => {
@@ -371,7 +369,7 @@ const MapsAccounts: React.FC = () => {
           </React.Fragment>
         );
       })}
-      <Cap at={8}>Maps every account to a MAS line. Once.</Cap>
+      <Cap at={8} size={70}><span style={{ color: BRAND }}>2</span> · Matches your accounts to MAS's lines.</Cap>
       <Src text="Mapping is kept; next quarter it is reused and only new accounts are asked about" at={60} />
       <Day n={1} good />
     </Stage>
@@ -392,7 +390,7 @@ const Computes: React.FC = () => {
     <Stage>
       <Mark />
       <DayBar from={1} to={1} good label="DAY 1" />
-      <StepTag n={3} text="Computes by the rule" />
+      <StepTag n={3} text="Treasurer computes the capital test" />
       <div style={{ position: "absolute", left: 60, top: 190, width: 1220 }}>
         {steps.map((s, i) => {
           const p = pIn(frame, 8 + i * 12, 12);
@@ -417,7 +415,7 @@ const Computes: React.FC = () => {
         </div>
         <div style={{ fontFamily: MONO, fontSize: 12, letterSpacing: 1.5, color: "#9a9a9a", marginTop: 14 }}>SFA 04-N13 para 3.1.1 · Regulations 6 and 7</div>
       </div>
-      <Cap at={8}>Form 2 by SFA 04-N13. Not by a macro.</Cap>
+      <Cap at={8} size={66}><span style={{ color: BRAND }}>3</span> · Computes the capital test by MAS's rule.</Cap>
       <Day n={1} good />
     </Stage>
   );
@@ -437,7 +435,7 @@ const Checks: React.FC = () => {
     <Stage>
       <Mark />
       <DayBar from={1} to={1} good label="DAY 1" />
-      <StepTag n={4} text="Checks before you do" />
+      <StepTag n={4} text="Treasurer checks the numbers" />
       <div style={{ position: "absolute", left: 60, top: 190, width: 1800 }}>
         {rows.map(([k, v, ok], i) => {
           const p = pIn(frame, 8 + i * 9, 12);
@@ -453,7 +451,7 @@ const Checks: React.FC = () => {
       <div style={{ position: "absolute", left: 60, right: 60, top: 690, fontSize: 22, color: INK2, opacity: pIn(frame, 60, 12) }}>
         Four checks pass. One jump explained with its source row. <b style={{ color: INK }}>You decide whether it stays.</b>
       </div>
-      <Cap at={8}>Ties to the ledger. Explains every jump.</Cap>
+      <Cap at={8} size={66}><span style={{ color: BRAND }}>4</span> · Checks the totals. Explains the changes.</Cap>
       <Day n={1} good />
     </Stage>
   );
@@ -483,14 +481,14 @@ const Filled: React.FC = () => {
     <Stage>
       <Mark />
       <DayBar from={1} to={1} good label="DAY 1" />
-      <StepTag n={5} text="Fills MAS's form" />
+      <StepTag n={5} text="Treasurer fills MAS's forms" />
       <FormDoc x={150} y={180} w={790} h={360} title="Form 1 · Statement of Assets and Liabilities" sub="quarter ended 30 Sep 2026 · S$ · every cell carries its source row" rows={f1} at={4} hiAt={30} />
       <FormDoc x={980} y={180} w={790} h={360} title="Form 2 · Financial Resources, TRR, Aggregate Indebtedness" sub="quarter ended 30 Sep 2026 · S$" rows={f2} at={12} hiAt={38} />
       <div style={{ position: "absolute", left: 0, right: 0, top: 600, display: "flex", justifyContent: "center", gap: 14, opacity: btn }}>
         <span style={{ padding: "12px 24px", borderRadius: 999, background: BRAND, color: "#fff", fontSize: 19, fontWeight: 700 }}>Export for MAS-Tx</span>
         <span style={{ padding: "12px 24px", borderRadius: 999, background: "#f1f1f1", color: INK2, fontSize: 19, fontWeight: 600 }}>Working file with sources · .xlsx</span>
       </div>
-      <Cap at={8}>MAS's form, filled. Day 1.</Cap>
+      <Cap at={8} size={72}><span style={{ color: BRAND }}>5</span> · Fills MAS's forms. Ready to submit.</Cap>
       <Day n={1} good />
     </Stage>
   );
@@ -514,9 +512,7 @@ const Spare: React.FC = () => {
           ))}
         </div>
       </div>
-      <Cap at={10}>
-        Review. Lodge. <span style={{ color: BRAND }}>Thirteen days to spare.</span>
-      </Cap>
+      <Cap at={10} size={76}>You review and submit. <span style={{ color: BRAND }}>Day 1 of 14.</span></Cap>
       <Day n={1} good />
     </Stage>
   );
