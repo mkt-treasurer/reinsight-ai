@@ -220,6 +220,15 @@ position agreed on 27 Oct 2026, not a shipped feature.
 COMP=MasReturns OUT=treasurer-mas-returns.mp4 npm run render
 ```
 
+### MasFinal — concept cut (35.3s) ← current
+
+Since 27 Oct 2026 (v20) `MasFinal` is published as a **concept**: none of the Core screens exist yet. The app
+header carries a CONCEPT PREVIEW badge, the monthly-tracking and "12 days → 1 day" scenes are out, the CTA is
+"Join the Singapore pilot →" and the end line reads "Built on our Korean FSS reporting engine. MAS templates
+coming." Scenes: two forms → miss the deadline → the capital test → Excel gets it wrong → Core → 01 files in,
+forms out → 02 capital test by the rule → 03 the whole year → sign, ready for MAS-Tx → close → end.
+Restore the removed scenes by adding `screen-3` and `compare` back to `MASFINAL_SCENES` once they are real.
+
 ### MasFinal — the cut we ship (40.3s) ← current
 
 Composition `MasFinal` (`src/mas-final.tsx`). Georgia serif throughout, plain white, Core's app window that

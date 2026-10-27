@@ -72,7 +72,7 @@ const AppWindow: React.FC<{ active: string; title: string; children: React.React
     <div style={{ flex: 1, position: "relative" }}>
       <div style={{ height: 48, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 28px", borderBottom: `1px solid ${LINE}`, fontSize: 14, color: GREY }}>
         <span>MAS filings / {active}</span>
-        <span style={{ fontFamily: MONO, fontSize: 11, letterSpacing: 1.5 }}>Q3 2026 · DUE 14 OCT · MAS-TX</span>
+        <span style={{ fontFamily: MONO, fontSize: 13, letterSpacing: 3, fontWeight: 700, color: "#9a3412", background: "#ffedd5", border: "1px solid #fdba74", borderRadius: 6, padding: "6px 12px" }}>CONCEPT PREVIEW</span>
       </div>
       <div style={{ padding: "26px 32px 0", fontSize: 30, fontWeight: 800, color: INK, letterSpacing: -0.6 }}>{title}</div>
       <div style={{ position: "absolute", left: 32, right: 32, top: 110, bottom: 30 }}>{children}</div>
@@ -462,7 +462,7 @@ const Screen4: React.FC = () => {
         </div>
         <div style={{ position: "absolute", left: 0, top: 340, display: "flex", alignItems: "center", gap: 12, fontSize: 20, color: INK2, opacity: pIn(frame, 62, 12) }}><Check at={66} /> All of it from the same account mapping — set up once, reused all year</div>
       </AppWindow>
-      <ScreenCap n="04" k="THE WHOLE YEAR" size={44}>Two forms each quarter, the audited set once a year — all from one mapping</ScreenCap>
+      <ScreenCap n="03" k="THE WHOLE YEAR" size={44}>Two forms each quarter, the audited set once a year — all from one mapping</ScreenCap>
     </Stage>
   );
 };
@@ -541,9 +541,9 @@ const End: React.FC = () => {
         <Lockup size={110} color={INK} subColor="#5c6478" dot="#4f7cff" />
       </div>
       <div style={{ position: "absolute", left: 0, right: 0, top: 650, display: "flex", justifyContent: "center", opacity: b }}>
-        <span style={{ padding: "20px 40px", borderRadius: 999, background: "#111318", color: "#fff", fontSize: 26, fontWeight: 700 }}>Book a demo →</span>
+        <span style={{ padding: "20px 40px", borderRadius: 999, background: "#111318", color: "#fff", fontSize: 26, fontWeight: 700 }}>Join the Singapore pilot →</span>
       </div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 760, textAlign: "center", fontFamily: SERIF, fontSize: 26, color: "#5c6478", opacity: b }}>Runs in your VPC or on-prem. Your data never leaves.</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 760, textAlign: "center", fontFamily: SERIF, fontSize: 26, color: "#5c6478", opacity: b }}>Built on our Korean FSS reporting engine. MAS templates coming.</div>
     </Stage>
   );
 };
@@ -560,9 +560,7 @@ export const MASFINAL_SCENES: S[] = [
   { id: "core", dur: 1.0, body: MeetCore },
   { id: "screen-1", dur: 4.4, body: Screen1 },
   { id: "screen-2", dur: 4.6, body: Screen2 },
-  { id: "screen-3", dur: 4.2, body: Screen3 },
   { id: "screen-4", dur: 4.0, body: Screen4 },
-  { id: "compare", dur: 3.4, body: Compare },
   { id: "sign", dur: 3.8, body: Sign },
   { id: "close", dur: 2.0, body: Close },
   { id: "end", dur: 3.2, body: End },
