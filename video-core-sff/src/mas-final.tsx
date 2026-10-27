@@ -42,7 +42,7 @@ const Statement: React.FC<{ a: string; b?: string; at?: number; size?: number; t
   );
 };
 
-const SerifCap: React.FC<{ at?: number; size?: number; children: React.ReactNode }> = ({ at = 16, size = 54, children }) => {
+const SerifCap: React.FC<{ at?: number; size?: number; children: React.ReactNode }> = ({ at = 10, size = 54, children }) => {
   const frame = useCurrentFrame();
   const p = pIn(frame, at, 16) * useTextWindow();
   return <div style={{ position: "absolute", left: 0, right: 0, top: 850, textAlign: "center", fontFamily: SERIF, fontSize: size, color: INK, letterSpacing: -0.5, opacity: p, transform: `translateY(${(1 - p) * 10}px)`, whiteSpace: "nowrap" }}>{children}</div>;
@@ -80,7 +80,7 @@ const AppWindow: React.FC<{ active: string; title: string; children: React.React
   </div>
 );
 
-const ScreenCap: React.FC<{ n: string; k: string; children: React.ReactNode; at?: number; size?: number }> = ({ n, k, children, at = 16, size = 46 }) => {
+const ScreenCap: React.FC<{ n: string; k: string; children: React.ReactNode; at?: number; size?: number }> = ({ n, k, children, at = 10, size = 46 }) => {
   const frame = useCurrentFrame();
   const p = pIn(frame, at, 14) * useTextWindow();
   return (
@@ -138,13 +138,13 @@ const Opening: React.FC = () => {
   const frame = useCurrentFrame();
   return (
     <Stage>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 150, display: "flex", justifyContent: "center", gap: 40 }}>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 80, display: "flex", justifyContent: "center", gap: 60 }}>
         {["Form 1", "Form 2"].map((f, i) => {
           const p = pIn(frame, 10 + i * 8, 16);
-          return <div key={f} style={{ opacity: p, transform: `translateY(${(1 - p) * 20}px) rotate(${i ? 3 : -3}deg)` }}><Paper label={f} w={170} sub={i ? "capital test" : "balance sheet"} accent={i ? BLUE : INK} /></div>;
+          return <div key={f} style={{ opacity: p, transform: `translateY(${(1 - p) * 20}px) rotate(${i ? 3 : -3}deg)` }}><Paper label={f} w={250} sub={i ? "capital test" : "balance sheet"} accent={i ? BLUE : INK} /></div>;
         })}
       </div>
-      <Statement a="Two MAS forms to fill every quarter end" b="still doing it by hand?" top={450} />
+      <Statement a="Two MAS forms to fill every quarter end" b="still doing it by hand?" top={500} />
     </Stage>
   );
 };
@@ -157,27 +157,27 @@ const Escalation: React.FC = () => {
   const steps: [string, string, number][] = [["a reminder", "#f5b400", 22], ["then scrutiny", "#f26b1d", 46], ["then a fine", RED, 70]];
   return (
     <Stage>
-      <div style={{ position: "absolute", left: 300, top: 150, width: 420, height: 420, borderRadius: 999, background: "#fff", boxShadow: "0 30px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)", opacity: pIn(frame, 2, 12) }}>
-        <svg width={420} height={420} style={{ position: "absolute", left: 0, top: 0 }}>
+      <div style={{ position: "absolute", left: 220, top: 110, width: 540, height: 540, borderRadius: 999, background: "#fff", boxShadow: "0 30px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)", opacity: pIn(frame, 2, 12) }}>
+        <svg width={540} height={540} style={{ position: "absolute", left: 0, top: 0 }}>
           {Array.from({ length: 12 }).map((_, i) => (
-            <line key={i} x1={210 + Math.cos((i / 12) * Math.PI * 2) * 170} y1={210 + Math.sin((i / 12) * Math.PI * 2) * 170} x2={210 + Math.cos((i / 12) * Math.PI * 2) * 185} y2={210 + Math.sin((i / 12) * Math.PI * 2) * 185} stroke="#cfcfcf" strokeWidth={5} strokeLinecap="round" />
+            <line key={i} x1={270 + Math.cos((i / 12) * Math.PI * 2) * 222} y1={270 + Math.sin((i / 12) * Math.PI * 2) * 222} x2={270 + Math.cos((i / 12) * Math.PI * 2) * 240} y2={270 + Math.sin((i / 12) * Math.PI * 2) * 240} stroke="#cfcfcf" strokeWidth={5} strokeLinecap="round" />
           ))}
-          <line x1={210} y1={210} x2={210 + Math.cos(((hand - 90) * Math.PI) / 180) * 150} y2={210 + Math.sin(((hand - 90) * Math.PI) / 180) * 150} stroke={day > 30 ? RED : INK} strokeWidth={10} strokeLinecap="round" />
-          <circle cx={210} cy={210} r={14} fill={day > 30 ? RED : INK} />
+          <line x1={270} y1={270} x2={270 + Math.cos(((hand - 90) * Math.PI) / 180) * 195} y2={270 + Math.sin(((hand - 90) * Math.PI) / 180) * 195} stroke={day > 30 ? RED : INK} strokeWidth={10} strokeLinecap="round" />
+          <circle cx={270} cy={270} r={14} fill={day > 30 ? RED : INK} />
         </svg>
-        <div style={{ position: "absolute", left: 0, right: 0, top: 300, textAlign: "center", fontFamily: SERIF, fontSize: 28, color: day > 14 ? RED : GREY }}>Day {day} <span style={{ color: GREY, fontSize: 20 }}>of 14</span></div>
+        <div style={{ position: "absolute", left: 0, right: 0, top: 390, textAlign: "center", fontFamily: SERIF, fontSize: 30, color: day > 14 ? RED : GREY }}>Day {day} <span style={{ color: GREY, fontSize: 20 }}>of 14</span></div>
       </div>
       {steps.map(([k, c, at], i) => {
         const pp = pIn(frame, at, 12);
         return (
-          <div key={k} style={{ position: "absolute", left: 860, top: 180 + i * 150, display: "flex", alignItems: "center", gap: 26, opacity: pp, transform: `translateX(${(1 - pp) * 40}px)` }}>
-            <div style={{ width: 110, height: 110, borderRadius: 24, background: c, boxShadow: `0 18px 44px ${c}66`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div key={k} style={{ position: "absolute", left: 880, top: 150 + i * 180, display: "flex", alignItems: "center", gap: 26, opacity: pp, transform: `translateX(${(1 - pp) * 40}px)` }}>
+            <div style={{ width: 136, height: 136, borderRadius: 28, background: c, boxShadow: `0 18px 44px ${c}66`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               {i === 0 ? (
-                <svg width={58} height={58} viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" /></svg>
+                <svg width={70} height={70} viewBox="0 0 24 24" fill="#fff"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" /></svg>
               ) : i === 1 ? (
-                <svg width={58} height={58} viewBox="0 0 24 24" fill="#fff"><path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5c-1.7-4.4-6-7.5-11-7.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" /></svg>
+                <svg width={70} height={70} viewBox="0 0 24 24" fill="#fff"><path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5c-1.7-4.4-6-7.5-11-7.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" /></svg>
               ) : (
-                <span style={{ color: "#fff", fontSize: 46, fontWeight: 900 }}>S$</span>
+                <span style={{ color: "#fff", fontSize: 56, fontWeight: 900 }}>S$</span>
               )}
             </div>
             <div style={{ fontFamily: SERIF, fontSize: 46, color: INK }}>{k}</div>
@@ -196,10 +196,10 @@ const ByHand: React.FC = () => {
   return (
     <Stage>
       {srcs.map((f, i) => (
-        <div key={f} style={{ position: "absolute", left: 160, top: 170 + i * 165, opacity: pIn(frame, 2 + i * 6, 12) }}><Paper label={f} w={190} accent={INK2} /></div>
+        <div key={f} style={{ position: "absolute", left: 110, top: 130 + i * 200, opacity: pIn(frame, 6 + i * 6, 12) }}><Paper label={f} w={230} accent={INK2} /></div>
       ))}
-      <Person x={720} y={420} at={6} label="Priya, your finance person" />
-      <Sheet x={960} y={150} w={780} name="Q3_MAS_forms_working.xlsx" cell="C5" formula="=SUM(C1:C4)" rows={[["Cash at bank — DBS SGD", "2,904,117", "from TB"], ["Cash at bank — USD", "1,224,683", "from TB"], ["Fees receivable", "912,415", "from admin"], ["Other assets", "88,470", "from TB"], ["Total assets", "5,129,685", "typed"], ["Capital", "3,200,118", "typed"]]} tabs={["Form 1", "Form 2", "TB Sep", "Bank", "Admin"]} cellAt={(i) => 16 + i * 9} style={{ opacity: pIn(frame, 4, 12) }} />
+      <Person x={640} y={420} at={10} label="Priya, your finance person" size={150} />
+      <Sheet x={860} y={120} w={920} name="Q3_MAS_forms_working.xlsx" cell="C5" formula="=SUM(C1:C4)" rows={[["Cash at bank — DBS SGD", "2,904,117", "from TB"], ["Cash at bank — USD", "1,224,683", "from TB"], ["Fees receivable", "912,415", "from admin"], ["Other assets", "88,470", "from TB"], ["Total assets", "5,129,685", "typed"], ["Capital", "3,200,118", "typed"]]} tabs={["Form 1", "Form 2", "TB Sep", "Bank", "Admin"]} cellAt={(i) => 24 + i * 9} style={{ opacity: pIn(frame, 8, 12) }} />
       <SerifCap>One person in finance retypes every number, every quarter</SerifCap>
     </Stage>
   );
@@ -332,7 +332,7 @@ const Screen1: React.FC = () => {
           const x0 = 0, y0 = 40 + i * 150, x1 = 540, y1 = 170;
           return (
             <div key={f} style={{ position: "absolute", left: x0 + (x1 - x0) * t, top: y0 + (y1 - y0) * t, transform: `scale(${1 - t * 0.6})`, transformOrigin: "50% 50%", opacity: t < 0.95 ? 1 : 0 }}>
-              <Paper label={f} w={150} accent={INK2} />
+              <Paper label={f} w={180} accent={INK2} />
             </div>
           );
         })}
@@ -347,7 +347,7 @@ const Screen1: React.FC = () => {
           const t = ease(frame, 56 + i * 10, 86 + i * 10, 0, 1);
           return (
             <div key={f} style={{ position: "absolute", left: 700 + (980 - 700) * t, top: 200 + (80 + i * 240 - 200) * t, transform: `scale(${0.4 + t * 0.6})`, opacity: t }}>
-              <Paper label={f} w={170} sub={s} accent={i ? BLUE : INK} />
+              <Paper label={f} w={200} sub={s} accent={i ? BLUE : INK} />
               <div style={{ position: "absolute", right: -12, top: -12 }}><Check at={90 + i * 10} size={40} /></div>
             </div>
           );
@@ -374,7 +374,7 @@ const Screen2: React.FC = () => {
       <AppWindow active="Capital test" title="Capital test · as at 30 Sep 2026">
         <Card x={0} y={0} w={1240} at={4} style={{ background: "#111318", color: "#fff" }}>
           <div style={{ fontFamily: MONO, fontSize: 12, letterSpacing: 2, color: "#8b90a0" }}>THE RULE · MAS NOTICE SFA 04-N13, PARAS 3.1.1 AND 4.1.2</div>
-          <div style={{ fontFamily: SERIF, fontSize: 30, marginTop: 12, lineHeight: 1.35 }}>
+          <div style={{ fontFamily: SERIF, fontSize: 31, marginTop: 12, lineHeight: 1.35 }}>
             Your capital must not fall below 5% × your 3-year average income — and if it dips under <span style={{ color: "#7da2ff" }}>120%</span> of that, you must tell MAS immediately
           </div>
         </Card>
@@ -382,8 +382,8 @@ const Screen2: React.FC = () => {
           {rows.map(([k, s, v, at]) => (
             <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: `1px solid ${LINE}`, opacity: pIn(frame, at, 12) }}>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: INK }}>{k}</div>
-                <div style={{ fontSize: 13, color: GREY, marginTop: 2 }}>{s}</div>
+                <div style={{ fontSize: 21, fontWeight: 700, color: INK }}>{k}</div>
+                <div style={{ fontSize: 14, color: GREY, marginTop: 2 }}>{s}</div>
               </div>
               <div style={{ fontFamily: MONO, fontSize: 24, fontWeight: 700, color: INK }}>{v}</div>
             </div>
@@ -509,7 +509,7 @@ const Sign: React.FC = () => {
   const stamp = pIn(frame, 62, 10);
   return (
     <Stage>
-      <div style={{ position: "absolute", left: 560, top: 110, width: 800, height: 620, borderRadius: 14, background: "#fff", boxShadow: "0 24px 60px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06)", padding: "40px 48px", opacity: pIn(frame, 2, 14) }}>
+      <div style={{ position: "absolute", left: 500, top: 90, width: 920, height: 650, borderRadius: 14, background: "#fff", boxShadow: "0 24px 60px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06)", padding: "40px 48px", opacity: pIn(frame, 2, 14) }}>
         <div style={{ fontFamily: SERIF, fontSize: 30, color: INK }}>Form 1 · Form 2</div>
         <div style={{ fontSize: 16, color: GREY, marginTop: 4 }}>quarter ended 30 Sep 2026 · prepared by Core · every number traced</div>
         {[0.85, 0.6, 0.75, 0.5, 0.7].map((x, i) => (
@@ -559,19 +559,19 @@ type S = { id: string; dur: number; body: React.FC };
 
 export const MASFINAL_SCENES: S[] = [
   { id: "opening", dur: 4.0, body: Opening },
-  { id: "escalation", dur: 3.0, body: Escalation },
-  { id: "by-hand", dur: 3.4, body: ByHand },
-  { id: "capital-test", dur: 3.2, body: CapitalTest },
-  { id: "wrong-but-fine", dur: 4.0, body: WrongButFine },
+  { id: "escalation", dur: 3.4, body: Escalation },
+  { id: "by-hand", dur: 3.6, body: ByHand },
+  { id: "capital-test", dur: 3.4, body: CapitalTest },
+  { id: "wrong-but-fine", dur: 4.2, body: WrongButFine },
   { id: "core", dur: 1.0, body: MeetCore },
   { id: "screen-1", dur: 4.0, body: Screen1 },
-  { id: "screen-2", dur: 3.8, body: Screen2 },
-  { id: "screen-3", dur: 3.6, body: Screen3 },
-  { id: "screen-4", dur: 3.4, body: Screen4 },
-  { id: "compare", dur: 3.2, body: Compare },
+  { id: "screen-2", dur: 4.0, body: Screen2 },
+  { id: "screen-3", dur: 3.8, body: Screen3 },
+  { id: "screen-4", dur: 3.6, body: Screen4 },
+  { id: "compare", dur: 2.8, body: Compare },
   { id: "sign", dur: 3.6, body: Sign },
-  { id: "close", dur: 2.0, body: Close },
-  { id: "end", dur: 3.4, body: End },
+  { id: "close", dur: 1.8, body: Close },
+  { id: "end", dur: 3.2, body: End },
 ];
 
 const frames = (s: S) => Math.round(s.dur * FPS);
