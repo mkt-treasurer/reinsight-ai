@@ -124,3 +124,33 @@ environment or `../video-wooricard-fss/.env`):
 npm run sg-broll
 COMP=Mas OUT=treasurer-mas-30s.mp4 npm run render
 ```
+
+### MasCore — the same story in the HK draft's look (40s)
+
+Composition `MasCore` (`src/mas-core.tsx`) replaces the navy "slide" look above with the look of the HK
+front-office draft (`HK_Front(심사역)_vid_초안.mp4`): white stage, one bold line at the bottom, UI mockups
+doing the explaining, chat bubbles top-right, a running counter bottom-right, hard cuts. ~40.0s.
+
+| t | Scene | On screen | Line |
+|---|---|---|---|
+| 0:00 | quarter-end | Calendar flips to 30 Sep; inbox with the MAS reminder highlighted | Quarter end. → **14 days** to lodge. |
+| 0:03 | sources | Five windows pile up: trial balance, NAV pack, bank statements, `…_v7_FINAL_final2.xlsx`, last quarter's Form 1 | Ledger. Admin. Bank. Excel. |
+| 0:06 | retype | Form 1 template; a cursor types the numbers cell by cell from the ledger window | Retyped. Cell by cell. |
+| 0:09 | formulas | `Form2_TRR_Priya_v12.xlsx — personal`; the C14 formula types out; "I'm the only one who knows how C14 works" | Form 2. One person's formulas. |
+| 0:12 | tie | 6,466,087 vs 6,464,883, DIFFERENCE −1,204 "somewhere in 5 files" | Doesn't tie. **Again.** |
+| 0:15 | day12 | DAY 12 of 14 · 02:07 AM; Managing Partner: "I'm the one signing this. Lodged on MASNET yet?" | Day 12. **Still not lodged.** |
+| 0:17 | stakes (black) | July 2025. A CMS licence revoked. Among the reasons: quarterly returns not submitted. → What if it took **2 minutes**? | |
+| 0:21 | meet | CORE lockup | Meet CORE |
+| 0:23 | reads | The six sources roll, then orbit a black CORE disc; LINES READ / ELAPSED start | Reads every source. → All at once. |
+| 0:27 | maps | Ledger and admin names → Form 1 line items with ✓; TRR computed from the rules | Maps every account to the MAS line. |
+| 0:30 | gap | Check list, one red row; traced to `Q3_NAV_pack_FINAL.pdf · p.31 · row 212` with two buttons | Flags the one gap. Shows where. |
+| 0:33 | ready | Form 1 and Form 2 cards, READY · MASNET, 0 open items; chip: VCFM? Form 25A, once a year — same pipeline | Form 1. Form 2. **2 minutes.** |
+| 0:36 | you | "Lodged on MASNET · Day 1 · 10:14" | You review. You lodge. |
+| 0:38 | end | CORE by TREASURER. · MAS returns in 2 minutes. · Book a demo → | |
+
+Problem-half ELAPSED runs 00:00:00 → 290 h (12 days); solution-half ELAPSED runs to 00:02:00. All names,
+messages and figures are invented; the MAS facts are the ones listed above.
+
+```bash
+COMP=MasCore OUT=treasurer-mas-core.mp4 npm run render
+```
