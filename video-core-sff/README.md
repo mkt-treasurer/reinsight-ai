@@ -154,3 +154,34 @@ messages and figures are invented; the MAS facts are the ones listed above.
 ```bash
 COMP=MasCore OUT=treasurer-mas-core.mp4 npm run render
 ```
+
+### MasAi — the MAS-specific story: the AI Risk Management Guidelines (38.6s)
+
+Composition `MasAi` (`src/mas-ai.tsx`). The returns story above (Form 1/2 → MASNET) belongs to Treasurer's
+regulatory-reporting module, not to Core. Core's own MAS story, per the Oct 2026 deck and treasurer.net/core,
+is the **MAS Guidelines on AI Risk Management**, issued 7 Oct 2026: Sections 3–4 (oversight, identification,
+inventory, risk materiality) apply from 7 Oct 2027, Sections 5–6 by 7 Oct 2028; fund management is named a
+higher-risk use (Response para 3.10). Structure: the four things MAS asks for, ticked one by one by Core.
+
+| t | Scene | On screen | Line |
+|---|---|---|---|
+| 0:00 | issued | The Guidelines document, stamped ISSUED 7 OCT 2026; counter "7 Oct 2027 · 345 days left" | 7 Oct 2026. MAS set the rules for AI. |
+| 0:03 | higher-risk | Quote card, Response para 3.10, "fund management services" highlighted | Fund management: higher risk. |
+| 0:06 | shadow | Three personal ChatGPT/Gemini/Claude tabs with the fund's positions and LP list pasted in; LEFT THE FIRM; compliance asks for the list | Your analysts already use AI. |
+| 0:10 | four | ① inventory (4.5, 4.7) ② risk rating: impact · complexity · reliance (4.12) ③ human oversight, logged (5.9) ④ the board can see it (3.4) | By 7 Oct 2027: four things. |
+| 0:13 | built-for (black) | CORE was built for exactly this. | |
+| 0:16 | inventory | Core's AI use-case inventory table (use case · owner · model · data · risk · status), updated from the log | ① Every use, inventoried. From the log. |
+| 0:19 | rating | "Earnings recap" rated: Impact High, Complexity Medium, Reliance Low → Higher risk, controls now | ② Rated on MAS's three dimensions. |
+| 0:23 | reviewer | Core answer page: $46.72B cites its page, a computed figure flagged "no source", Reviewed by Mei Lin · logged #12,288 | ③ A reviewer's name on every answer. |
+| 0:27 | pack | Inspection pack → model-card.pdf · controls.pdf · ai-inventory.xlsx · answer-log.csv; partner: "attach it to the board pack" | ④ One download for the board. Or MAS. |
+| 0:30 | office | The Core box in your office; documents, book, notes, answers, log stay; public AI crossed out | Runs in your office. |
+| 0:34 | done | The four cards, all ticked | Done. 345 days early. |
+| 0:36 | end | CORE by TREASURER · Built for the MAS rules · Request a demo → · treasurer.net/core | |
+
+Each step scene carries a source chip with the paragraph it answers. Guideline text is quoted from the MAS
+PDFs (7 Oct 2026); the 78% "bring their own tools" figure is the Microsoft/LinkedIn Work Trend Index figure
+used in Core's deck. Names, screens and figures are illustrative; the TSMC figures are the ones in the TSMC film.
+
+```bash
+COMP=MasAi OUT=treasurer-mas-ai.mp4 npm run render
+```

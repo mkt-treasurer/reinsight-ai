@@ -15,34 +15,34 @@ import { fade } from "@remotion/transitions/fade";
 import { Lockup, OMark } from "./Lockup";
 
 const FPS = 30;
-const SANS = "Pretendard, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif";
-const MONO = "'JetBrains Mono', Consolas, 'Courier New', monospace";
+export const SANS = "Pretendard, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif";
+export const MONO = "'JetBrains Mono', Consolas, 'Courier New', monospace";
 
-const INK = "#111111";
-const INK2 = "#3a3a3a";
-const GREY = "#8a8a8a";
-const GREY2 = "#c4c4c4";
-const LINE = "#e6e6e6";
-const RED = "#d8232a";
-const GREEN = "#16a34a";
-const BLUE = "#2f6bff";
+export const INK = "#111111";
+export const INK2 = "#3a3a3a";
+export const GREY = "#8a8a8a";
+export const GREY2 = "#c4c4c4";
+export const LINE = "#e6e6e6";
+export const RED = "#d8232a";
+export const GREEN = "#16a34a";
+export const BLUE = "#2f6bff";
 
-const EASE = Easing.bezier(0.22, 1, 0.32, 1);
-const pIn = (frame: number, delay = 0, len = 14) =>
+export const EASE = Easing.bezier(0.22, 1, 0.32, 1);
+export const pIn = (frame: number, delay = 0, len = 14) =>
   interpolate(frame - delay, [0, len], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: EASE });
-const lin = (frame: number, a: number, b: number, from: number, to: number) =>
+export const lin = (frame: number, a: number, b: number, from: number, to: number) =>
   interpolate(frame, [a, b], [from, to], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
 const CUT = 6; // frames of fade on every cut
 
 /* ------------------------------------------------------------------ chrome */
 
-const Stage: React.FC<{ children?: React.ReactNode; dark?: boolean }> = ({ children, dark }) => (
+export const Stage: React.FC<{ children?: React.ReactNode; dark?: boolean }> = ({ children, dark }) => (
   <AbsoluteFill style={{ background: dark ? "#0a0a0a" : "#ffffff", fontFamily: SANS, overflow: "hidden" }}>{children}</AbsoluteFill>
 );
 
 /** The one line at the bottom. `hold` keeps it on for the whole scene; otherwise it enters at `at`. */
-const Cap: React.FC<{ at?: number; out?: number; size?: number; children: React.ReactNode }> = ({ at = 4, out, size = 86, children }) => {
+export const Cap: React.FC<{ at?: number; out?: number; size?: number; children: React.ReactNode }> = ({ at = 4, out, size = 86, children }) => {
   const frame = useCurrentFrame();
   const a = pIn(frame, at, 10) * (out === undefined ? 1 : 1 - pIn(frame, out, 8));
   return (
@@ -80,7 +80,7 @@ const Counter: React.FC<{ from: number; to: number; red?: boolean; lines?: [numb
 };
 
 /** Chat bubble, top-right, slides in. */
-const Bubble: React.FC<{ at: number; i?: number; who: string; role: string; when: string; text: string; dark?: boolean }> = ({ at, i = 0, who, role, when, text, dark }) => {
+export const Bubble: React.FC<{ at: number; i?: number; who: string; role: string; when: string; text: string; dark?: boolean }> = ({ at, i = 0, who, role, when, text, dark }) => {
   const frame = useCurrentFrame();
   const p = pIn(frame, at, 14);
   const initials = who.split(" ").map((w) => w[0]).join("");
@@ -101,7 +101,7 @@ const Bubble: React.FC<{ at: number; i?: number; who: string; role: string; when
 };
 
 /** Mac-style window with a title. */
-const Win: React.FC<{ x: number; y: number; w: number; h: number; title: string; at: number; tint?: string; children?: React.ReactNode; scale?: number; rot?: number }> = ({ x, y, w, h, title, at, tint = "#f4f4f4", children, scale = 1, rot = 0 }) => {
+export const Win: React.FC<{ x: number; y: number; w: number; h: number; title: string; at: number; tint?: string; children?: React.ReactNode; scale?: number; rot?: number }> = ({ x, y, w, h, title, at, tint = "#f4f4f4", children, scale = 1, rot = 0 }) => {
   const frame = useCurrentFrame();
   const p = pIn(frame, at, 16);
   return (
@@ -118,7 +118,7 @@ const Win: React.FC<{ x: number; y: number; w: number; h: number; title: string;
 };
 
 /** Grey placeholder text lines. */
-const Lines: React.FC<{ n: number; w?: number[]; at?: number; gap?: number; x?: number; y?: number; width?: number }> = ({ n, w = [0.9, 0.6, 0.8, 0.5, 0.7], at = 0, gap = 14, x = 16, y = 16, width = 300 }) => {
+export const Lines: React.FC<{ n: number; w?: number[]; at?: number; gap?: number; x?: number; y?: number; width?: number }> = ({ n, w = [0.9, 0.6, 0.8, 0.5, 0.7], at = 0, gap = 14, x = 16, y = 16, width = 300 }) => {
   const frame = useCurrentFrame();
   return (
     <div style={{ position: "absolute", left: x, top: y, width }}>
@@ -130,7 +130,7 @@ const Lines: React.FC<{ n: number; w?: number[]; at?: number; gap?: number; x?: 
 };
 
 /** Flip calendar card. */
-const Calendar: React.FC<{ x: number; y: number; head: string; big: string; sub?: string; at: number; red?: boolean }> = ({ x, y, head, big, sub, at, red = true }) => {
+export const Calendar: React.FC<{ x: number; y: number; head: string; big: string; sub?: string; at: number; red?: boolean }> = ({ x, y, head, big, sub, at, red = true }) => {
   const frame = useCurrentFrame();
   const p = pIn(frame, at, 16);
   const flip = interpolate(frame - at, [0, 14], [-90, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: EASE });
