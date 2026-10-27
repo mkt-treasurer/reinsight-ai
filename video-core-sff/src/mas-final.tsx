@@ -48,7 +48,7 @@ const SerifCap: React.FC<{ at?: number; size?: number; children: React.ReactNode
   return <div style={{ position: "absolute", left: 0, right: 0, top: 850, textAlign: "center", fontFamily: SERIF, fontSize: size, color: INK, letterSpacing: -0.5, opacity: p, transform: `translateY(${(1 - p) * 10}px)`, whiteSpace: "nowrap" }}>{children}</div>;
 };
 
-const NAV: [string, string[]][] = [["RESEARCH", ["Ask", "Library", "Sources"]], ["MAS FILINGS", ["Quarterly forms", "Capital test", "Monthly tracking", "Filing calendar"]]];
+const NAV: [string, string[]][] = [["RESEARCH", ["Ask", "Library", "Sources"]], ["MAS FILINGS", ["Quarterly forms", "Capital test", "Filing calendar"]]];
 const AppWindow: React.FC<{ active: string; title: string; children: React.ReactNode }> = ({ active, title, children }) => (
   <div style={{ position: "absolute", left: 192, top: 30, width: 1536, height: 835, borderRadius: 16, background: "#fafafa", boxShadow: "0 30px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.08)", overflow: "hidden", display: "flex" }}>
     <div style={{ width: 250, background: "#111318", color: "#c9ccd3", padding: "22px 18px", fontSize: 15, display: "flex", flexDirection: "column" }}>
