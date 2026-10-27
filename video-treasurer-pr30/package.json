@@ -1,0 +1,26 @@
+{
+  "name": "video-treasurer-pr30",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Treasurer — 30s PR film for fintech festival booth display (English, silent-safe)",
+  "scripts": {
+    "timeline": "node scripts/build-timeline-static.mjs",
+    "media": "node scripts/fetch-media.mjs",
+    "fit": "node scripts/fit-media.mjs",
+    "score": "node scripts/make-score.mjs",
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts Main out/video-silent.mp4 --concurrency=1",
+    "mux": "node scripts/mux.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.523",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "remotion": "^4.0.523"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.0",
+    "typescript": "5.7.3"
+  }
+}
