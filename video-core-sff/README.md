@@ -219,3 +219,35 @@ position agreed on 27 Oct 2026, not a shipped feature.
 ```bash
 COMP=MasReturns OUT=treasurer-mas-returns.mp4 npm run render
 ```
+
+### MasFinal — simplified cut (38.8s) ← current
+
+Composition `MasFinal` (`src/mas-final.tsx`). Same facts as MasReturns, Core branding, one big line and one
+picture per scene, no footnote chips, 8-frame fades. Order: what MAS is → who files → what they file → the
+stakes → two problems → Core → four fixes → Day 1 → CTA.
+
+| t | Line | Picture |
+|---|---|---|
+| 0:00 | MAS regulates every fund manager in Singapore. | "Monetary Authority of Singapore"; chips Banks · Insurers · **Fund managers** |
+| 0:03 | If you manage money here, you file. | VC fund / Private equity / Hedge fund → MAS-Tx "Quarterly returns · since Aug 2024, every licensed manager" |
+| 0:06 | Two forms. 14 days after quarter end. | 14-day bar; Form 1 "your firm's balance sheet", Form 2 "your capital test" |
+| 0:09 | July 2025. A licence revoked. | Black card: among the reasons, quarterly returns not filed |
+| 0:12 | You pay a consultant. You still answer the questions. | Invoice S$4,500/quarter (illustrative) + 5 questions in a mail thread |
+| 0:15 | The capital test lives in one spreadsheet. | #REF! in the ratio cell; "she is on leave until the 15th" |
+| 0:18 | CORE · by Treasurer · does the returns for you | Black card |
+| 0:20 | Reads your files. Fills MAS's forms. | Ledger · bank · NAV pack → Core → Form 1 and Form 2 fill in |
+| 0:23 | Runs the capital test by MAS's rule. | 3-year average income → × 5% (floor S$100,000) → ratio 1,143% ✓ |
+| 0:27 | Watches it every month. Warns before 120%. | Monthly ratio chart sliding toward the 120% line; alert 3 months early |
+| 0:30 | Annual pack and Form 25A, the same way. | Quarterly Form 1·2 / annual Forms 1–6 audited / VCFM Form 25A |
+| 0:33 | Submitted on Day 1. You review, you sign. | Bar at Day 1; Reviewed · Signed · Submitted on MAS-Tx · 1 Oct |
+| 0:35 | Send us last quarter's Form 1, Form 2 and your trial balance. We send them back filled, in a day. | CORE by TREASURER · Request a demo → · treasurer.net/core |
+
+Facts: Form 1/2 quarterly within 14 days via MAS-Tx (Reg 27 FMR); RFMC regime repealed 1 Aug 2024 (all became
+LFMCs filing quarterly); CMS licence revoked 3 Jul 2025 citing, among other breaches, quarterly returns not
+submitted; ORR = 5% of 3-year average annual gross income, floor S$100,000 (SFA 04-N13 4.1.2–4.1.4); notify MAS
+if FR < 120% of TRR (3.1.1). The monthly monitoring, the "filled in a day" offer and the Core branding of a
+returns product are positioning, not shipped features — the team's call on 27 Oct 2026.
+
+```bash
+COMP=MasFinal OUT=treasurer-mas-final.mp4 npm run render
+```
