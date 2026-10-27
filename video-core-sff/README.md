@@ -265,39 +265,41 @@ Treasurer's own and holds only for the local-model configurations.
 COMP=MasFinal OUT=treasurer-mas-final.mp4 npm run render
 ```
 
-### MasVc — the VC version (40.3s) ← current for the VC 심사역 target
+### MasVc — the VC version (29.7s) ← current for the VC 심사역 target
 
-Composition `MasVc` (`src/mas-vc.tsx`). Same look and spine as `MasFinal`, but built for what a VCFM-regime VC
-manager actually files: **Form 25A**, once a year, within one month of financial year end, on MAS-Tx. VCFMs are
-exempt from Part III of the SF(FMR) Regulations, so there is no capital test and no quarterly Form 1/2 for them
-(MAS Guidelines SFA 04-G05, Appendix 7). `MasFinal` stays as the LFMC version.
+Composition `MasVc` (`src/mas-vc.tsx`). Same look as `MasFinal`, built for what a VCFM-regime VC manager actually
+files: **Form 25A**, once a year, within one month of financial year end, on MAS-Tx. VCFMs are exempt from
+Part III of the SF(FMR) Regulations, so no capital test and no quarterly Form 1/2. One story only: the fund is
+at 10.5% non-qualifying at year end, Form 25A says 10.5%, and the deal check warns that a proposed S$6m
+secondary would take it to 20.5% — before anyone signs.
 
 | t | Scene | Line | Picture |
 |---|---|---|---|
-| 0:00 | opening | One MAS declaration a year, for every fund you run / *still compiling it by hand?* | Form 25A paper |
-| 0:04 | deadline | Due a month after year end — alongside the audit and the LP letters | Clock 1 → 31 Jan; audit, LP letters, Form 25A stack up |
-| 0:07 | by-hand | Someone pulls every deal and every NAV into one sheet, by hand | Cap tables · Admin NAV · Deal CRM → Priya, your associate → Excel |
-| 0:10 | rule | The VCFM rule — at least 80% of each fund in qualifying start-ups | Qualifying ≥ 80% bar, everything else ≤ 20% bar with the cap line; Fund I at 10.5% |
-| 0:13 | wrong-but-fine | One secondary counted wrong, and the fund is outside the rule | Sheet: 10.5% ✓ → MAS's definition adds the S$6m secondary → 20.5% ✗ |
-| 0:17 | core | CORE by TREASURER | Black card |
-| 0:19 | screen-1 | 01 · Your cap tables, NAVs and deal log go in — Form 25A comes out | Files into the Core disc; Form 25A.xlsx fills (committed, qualifying, non-qualifying, AUM at NAV); Ready for MAS-Tx |
-| 0:23 | screen-2 | 02 · Every company classified the way MAS defines it | The definition; four companies classified; 20.5% over the cap, fix before you declare |
-| 0:26 | screen-3 | 03 · Checked before every term sheet, so no deal breaks the 20% cap | Proposed secondary takes Fund I 10.5% → 20.5%; alternatives; all funds' shares |
-| 0:30 | screen-4 | 04 · One declaration a month after year end — kept current all year | 31 Dec · 31 Jan Form 25A · Form 23A within 14 days · deal checks all year |
-| 0:33 | compare | From fifteen days to one | An associate's January: 15 days vs 1 day, illustrative |
-| 0:36 | sign | You review and sign — it's ready to submit on MAS-Tx | Signature; READY · MAS-Tx |
-| 0:39 | close / end | Less compiling, more investing → CORE by TREASURER · Book a demo → | |
+| 0:00 | opening | One MAS declaration a year, covering every fund you run / *still compiling it by hand?* | Form 25A paper |
+| 0:03 | deadline | Due a month after year end — in the same January as the audit | Clock 1 → 31 Jan; Audit · Nil misconduct return 14 Jan · Form 25A 31 Jan |
+| 0:06 | by-hand | Someone pulls every deal and every NAV into one sheet, by hand | Cap tables · Admin NAV · Deal CRM → Priya, your associate → Excel |
+| 0:09 | core | CORE by TREASURER | Black card |
+| 0:11 | screen-1 | 01 · Cap tables, NAVs and the deal log in — Form 25A out | Files into the Core disc; Form 25A.xlsx fills (committed 60m, qualifying 41.9m, non-qualifying 6.3m, AUM at NAV 48.2m) |
+| 0:14 | screen-2 | 02 · Every company classified the way MAS defines it | The definition once (incl. the 20% cap); four holdings classified; 10.5% inside the cap |
+| 0:18 | screen-3 | 03 · Checked before you sign | Proposed secondary: 10.5% → 20.5%, over the cap; primary tranche (qualifying) stays 10.5%, or use Fund II |
+| 0:22 | screen-4 | 04 · One declaration a year, kept current all year | 31 Dec · 14 Jan nil misconduct return · 31 Jan Form 25A · Form 23A within 14 days of a change in directors, shareholders or office; "No capital test, no quarterly forms under the VCFM regime" |
+| 0:24 | sign | You review and sign — it's ready to submit on MAS-Tx | Signature; READY · MAS-Tx |
+| 0:27 | close / end | Less compiling, more investing → CORE by TREASURER · Book a demo → · You choose what leaves the firm, down to nothing at all. | |
 
-Facts (checked 27 Oct 2026): Form 25A — annual declaration by a VCFM, within one month of FYE, online via
-MAS-Tx, an .xlsx asking per fund for committed capital, AUM at NAV (undrawn commitments excluded), AUM in
-qualifying and in non-qualifying investments (MAS form page revised 25 Feb 2025 + the form's explanatory
-notes). Qualifying = specified products directly issued by an unlisted business venture incorporated no more
-than ten years before the initial investment; follow-ons stay qualifying; older companies and secondary
-purchases are non-qualifying; funds must keep ≥ 80% of committed capital (ex fees/expenses) in qualifying and
-≤ 20% in non-qualifying investments (Appendix 7, para 7.1). Form 23A within 14 days of a change (Table A7-1).
-What happens when Form 25A is late is not stated in those sources, so the film shows the workload clash, not a
-penalty. Names, funds, companies and numbers are illustrative. Everything after the Core card is positioning,
-not a shipped feature (team call, 27 Oct 2026).
+Review fixes (27 Oct 2026): single prevention story (no contradicting 20.5% at year end); "covering every fund";
+nil-misconduct return on 14 Jan instead of LP letters; the rule stated once as "at most 20% of committed
+capital"; appendix number dropped from the citation (it differs between editions of SFA 04-G05); primary
+tranche is qualifying so it stays 10.5%; Form 23A triggers limited to directors, shareholders, office; the
+"15 days → 1 day" claim removed; end line is the website's own wording; a CONCEPT chip sits in the app header.
+
+Facts: Form 25A — annual declaration by a VCFM, within one month of FYE, via MAS-Tx, an .xlsx asking per fund
+for committed capital, AUM at NAV, AUM in qualifying and in non-qualifying investments (MAS form page revised
+25 Feb 2025 + explanatory notes). Qualifying = specified products directly issued by an unlisted business
+venture incorporated no more than ten years before the initial investment; follow-ons stay qualifying; older
+companies and secondaries are non-qualifying; at most 20% of committed capital (ex fees/expenses) may be
+non-qualifying (Guidelines SFA 04-G05, VCFM appendix, para 7.1 in the Apr 2023 edition). Nil return of
+misconduct within 14 days after calendar year end (Notice SFA 04-N11). Form 23A within 14 days of a change.
+Names, funds and numbers are illustrative. Everything after the Core card is a concept, not a shipped feature.
 
 ```bash
 COMP=MasVc OUT=treasurer-mas-vc.mp4 npm run render

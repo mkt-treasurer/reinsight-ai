@@ -80,7 +80,7 @@ const AppWindow: React.FC<{ active: string; title: string; children: React.React
     <div style={{ flex: 1, position: "relative" }}>
       <div style={{ height: 48, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 28px", borderBottom: `1px solid ${LINE}`, fontSize: 14, color: GREY }}>
         <span>MAS filings / {active}</span>
-        <span style={{ fontFamily: MONO, fontSize: 11, letterSpacing: 1.5 }}>FY2025 · FORM 25A DUE 31 JAN · MAS-TX</span>
+        <span style={{ fontFamily: MONO, fontSize: 11, letterSpacing: 2, color: "#b45309", border: "1px solid #f3c58a", borderRadius: 4, padding: "3px 8px" }}>CONCEPT</span>
       </div>
       <div style={{ padding: "26px 32px 0", fontSize: 30, fontWeight: 800, color: INK, letterSpacing: -0.6 }}>{title}</div>
       <div style={{ position: "absolute", left: 32, right: 32, top: 110, bottom: 30 }}>{children}</div>
@@ -186,7 +186,7 @@ const Opening: React.FC = () => {
       <div style={{ position: "absolute", left: 0, right: 0, top: 140, display: "flex", justifyContent: "center", opacity: p, transform: `translateY(${(1 - p) * 20}px)` }}>
         <Paper label="Form 25A" w={190} sub="annual declaration to MAS" accent={BLUE} />
       </div>
-      <Statement a="One MAS declaration a year, for every fund you run" b="still compiling it by hand?" top={450} size={70} />
+      <Statement a="One MAS declaration a year, covering every fund you run" b="still compiling it by hand?" top={450} size={68} />
     </Stage>
   );
 };
@@ -196,7 +196,7 @@ const Deadline: React.FC = () => {
   const frame = useCurrentFrame();
   const day = Math.floor(lin(frame, 6, 100, 1, 31));
   const hand = frame * 7.5;
-  const tasks: [string, string, number][] = [["Audit fieldwork", "#8d8d8d", 20], ["LP annual letters", "#8d8d8d", 40], ["Form 25A to MAS", RED, 60]];
+  const tasks: [string, string, number][] = [["Audit", "#8d8d8d", 20], ["Nil misconduct return · 14 Jan", "#8d8d8d", 40], ["Form 25A · 31 Jan", RED, 60]];
   return (
     <Stage>
       <div style={{ position: "absolute", left: 300, top: 150, width: 420, height: 420, borderRadius: 999, background: "#fff", boxShadow: "0 30px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)", opacity: pIn(frame, 2, 12) }}>
@@ -216,11 +216,11 @@ const Deadline: React.FC = () => {
             <div style={{ width: 110, height: 110, borderRadius: 24, background: c, boxShadow: `0 18px 44px ${c}66`, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Paper label="" w={48} accent="#fff" />
             </div>
-            <div style={{ fontFamily: SERIF, fontSize: 46, color: INK }}>{k}</div>
+            <div style={{ fontFamily: SERIF, fontSize: 40, color: INK }}>{k}</div>
           </div>
         );
       })}
-      <SerifCap size={50}>Due a month after year end — alongside the audit and the LP letters</SerifCap>
+      <SerifCap size={52}>Due a month after year end — in the same January as the audit</SerifCap>
     </Stage>
   );
 };
@@ -326,8 +326,7 @@ const Screen1: React.FC = () => {
   return (
     <Stage>
       <AppWindow active="Form 25A" title="Form 25A · financial year ended 31 Dec 2025">
-        <div style={{ position: "absolute", left: 0, top: 0, fontFamily: MONO, fontSize: 12, letterSpacing: 2, color: GREY }}>IN · YOUR FILES</div>
-        <div style={{ position: "absolute", left: 800, top: 0, fontFamily: MONO, fontSize: 12, letterSpacing: 2, color: GREY }}>OUT · MAS'S OWN EXCEL FORM</div>
+        
         {files.map((f, i) => {
           const t = ease(frame, 14 + i * 8, 44 + i * 8, 0, 1);
           const x0 = 0, y0 = 40 + i * 150, x1 = 540, y1 = 170;
@@ -351,30 +350,30 @@ const Screen1: React.FC = () => {
           </div>
         </div>
       </AppWindow>
-      <ScreenCap n="01" k="FORM 25A" size={44}>Your cap tables, NAVs and deal log go in — Form 25A comes out</ScreenCap>
+      <ScreenCap n="01" k="FORM 25A" size={46}>Cap tables, NAVs and the deal log in — Form 25A out</ScreenCap>
     </Stage>
   );
 };
 
-/** 8 · Screen 2: every company classified the way MAS defines it. */
+/** 8 · Screen 2: every company classified the way MAS defines it; the fund is inside the cap. */
 const Screen2: React.FC = () => {
   const frame = useCurrentFrame();
   const rows: [string, string, string, boolean, number][] = [
-    ["Acme Robotics", "inc. 2019 · first cheque 2021 · primary", "qualifying", true, 30],
-    ["Orbit Pay", "inc. 2020 · follow-on 2025 — follow-ons stay qualifying", "qualifying", true, 40],
-    ["Nimbus Health", "inc. 2012 · first cheque 2023 — over 10 years", "non-qualifying", false, 50],
-    ["Series B secondary", "bought from an LP — secondaries never qualify", "non-qualifying", false, 60],
+    ["Acme Robotics", "inc. 2019 · first cheque 2021", "qualifying", true, 28],
+    ["Orbit Pay", "inc. 2020 · follow-on 2025", "qualifying", true, 36],
+    ["Nimbus Health", "inc. 2012 · first cheque 2023", "non-qualifying", false, 44],
+    ["Two smaller older companies", "inc. 2010 and 2013", "non-qualifying", false, 52],
   ];
   return (
     <Stage>
-      <AppWindow active="Qualifying test" title="Qualifying test · Fund I · as at 31 Dec 2025">
+      <AppWindow active="Qualifying test" title="Qualifying test · Fund I · 31 Dec 2025">
         <Card x={0} y={0} w={1240} at={4} style={{ background: "#111318", color: "#fff" }}>
-          <div style={{ fontFamily: MONO, fontSize: 12, letterSpacing: 2, color: "#8b90a0" }}>THE DEFINITION · MAS GUIDELINES SFA 04-G05, APPENDIX 7</div>
+          <div style={{ fontFamily: MONO, fontSize: 12, letterSpacing: 2, color: "#8b90a0" }}>MAS'S DEFINITION · GUIDELINES FOR FUND MANAGEMENT COMPANIES</div>
           <div style={{ fontFamily: SERIF, fontSize: 28, marginTop: 12, lineHeight: 1.35 }}>
-            Qualifying: shares issued directly by an unlisted company incorporated no more than 10 years before your first investment. Follow-ons stay qualifying. Older companies and secondaries don't.
+            Qualifying: unlisted, backed directly, under 10 years old at your first cheque. Follow-ons stay qualifying. Secondaries and older companies don't — and they may be at most 20% of committed capital.
           </div>
         </Card>
-        <Card x={0} y={190} w={800} at={24}>
+        <Card x={0} y={210} w={800} at={22}>
           {rows.map(([k, s, v, ok, at]) => (
             <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${LINE}`, opacity: pIn(frame, at, 12) }}>
               <div>
@@ -385,10 +384,10 @@ const Screen2: React.FC = () => {
             </div>
           ))}
         </Card>
-        <Card x={840} y={190} w={400} h={296} at={66}>
+        <Card x={840} y={210} w={400} h={276} at={60}>
           <div style={{ fontSize: 14, color: GREY }}>Non-qualifying ÷ committed capital</div>
-          <div style={{ fontSize: 92, fontWeight: 800, color: BLUE, letterSpacing: -3, marginTop: 8, lineHeight: 1 }}>20.5%</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18, fontSize: 18, color: RED, fontWeight: 600 }}><Check at={80} bad /> Over the 20% cap — fix before you declare</div>
+          <div style={{ fontSize: 92, fontWeight: 800, color: BLUE, letterSpacing: -3, marginTop: 8, lineHeight: 1 }}>10.5%</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18, fontSize: 18, color: INK, fontWeight: 600 }}><Check at={74} /> Inside the 20% cap</div>
         </Card>
       </AppWindow>
       <ScreenCap n="02" k="QUALIFYING TEST" size={46}>Every company classified the way MAS defines it</ScreenCap>
@@ -396,7 +395,7 @@ const Screen2: React.FC = () => {
   );
 };
 
-/** 9 · Screen 3: checked before every term sheet. */
+/** 9 · Screen 3: checked before you sign. */
 const Screen3: React.FC = () => {
   const frame = useCurrentFrame();
   const g = ease(frame, 30, 70, 0.105, 0.205);
@@ -405,8 +404,8 @@ const Screen3: React.FC = () => {
     <Stage>
       <AppWindow active="Deal check" title="Deal check · new term sheet · Fund I">
         <Card x={0} y={0} w={840} at={4}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: INK }}>Proposed: Series B secondary · S$6.0m · bought from an existing investor</div>
-          <div style={{ fontSize: 14, color: GREY, marginTop: 4 }}>Non-qualifying share of Fund I's committed capital, before and after</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: INK }}>Series B secondary · S$6.0m · bought from an existing investor</div>
+          <div style={{ fontSize: 14, color: GREY, marginTop: 4 }}>Fund I non-qualifying share, before and after</div>
           <div style={{ position: "relative", height: 70, marginTop: 26 }}>
             <div style={{ position: "absolute", left: 0, top: 10, width: W, height: 50, borderRadius: 12, background: "#f1f1f1" }} />
             <div style={{ position: "absolute", left: 0, top: 10, width: W * g, height: 50, borderRadius: 12, background: g > 0.2 ? RED : BLUE }} />
@@ -414,58 +413,47 @@ const Screen3: React.FC = () => {
             <div style={{ position: "absolute", left: W * 0.2 + 10, top: -2, fontSize: 13, fontWeight: 800, color: RED }}>20% cap</div>
             <div style={{ position: "absolute", left: W + 16, top: 18, fontFamily: MONO, fontSize: 26, fontWeight: 800, color: g > 0.2 ? RED : BLUE }}>{(g * 100).toFixed(1)}%</div>
           </div>
-          <div style={{ marginTop: 22, fontSize: 16, color: INK2, lineHeight: 1.5, opacity: pIn(frame, 72, 12) }}>This deal would take Fund I from 10.5% to 20.5% non-qualifying — over MAS's cap.</div>
         </Card>
-        <Card x={880} y={0} w={360} at={78}>
+        <Card x={880} y={0} w={360} at={74}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ width: 44, height: 44, borderRadius: 999, background: RED, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <svg width={26} height={26} viewBox="0 0 24 24" fill="#fff"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-6V11c0-3.1-1.6-5.6-4.5-6.3V4a2.5 2.5 0 0 0-5 0v.7C6.6 5.4 5 7.9 5 11v5l-2 2v1h18v-1l-2-2z" /></svg>
             </span>
-            <div style={{ fontSize: 17, fontWeight: 700, color: INK }}>Before you sign</div>
+            <div style={{ fontSize: 17, fontWeight: 700, color: INK }}>Over the cap if you sign</div>
           </div>
-          <div style={{ fontSize: 16, color: INK2, marginTop: 14, lineHeight: 1.45 }}>Take the primary tranche only (S$3.5m → 16.4%), or run the secondary from Fund II (4.2% today).</div>
-        </Card>
-        <Card x={0} y={300} w={1240} at={90}>
-          <div style={{ display: "flex", gap: 40 }}>
-            {[["Fund I", "10.5%", BLUE], ["Fund II", "4.2%", BLUE], ["Fund III", "0.0%", BLUE]].map(([f, v, c]) => (
-              <div key={f} style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, color: GREY }}>{f} · non-qualifying share</div>
-                <div style={{ fontFamily: MONO, fontSize: 28, fontWeight: 700, color: c as string, marginTop: 4 }}>{v}</div>
-              </div>
-            ))}
-          </div>
+          <div style={{ fontSize: 16, color: INK2, marginTop: 14, lineHeight: 1.45 }}>Primary tranche only (new shares, qualifying) → stays 10.5%. Or run the secondary from Fund II.</div>
         </Card>
       </AppWindow>
-      <ScreenCap n="03" k="DEAL CHECK" size={44}>Checked before every term sheet, so no deal breaks the 20% cap</ScreenCap>
+      <ScreenCap n="03" k="DEAL CHECK" size={46}>Checked before you sign</ScreenCap>
     </Stage>
   );
 };
 
-/** 10 · Screen 4: the year — Form 25A within a month of year end; Form 23A within 14 days of any change. */
+/** 10 · Screen 4: the year. */
 const Screen4: React.FC = () => {
   const frame = useCurrentFrame();
   const items: [string, string, string, string, number][] = [
-    ["31 DEC", "Year end", "NAVs, cap tables and deal log frozen", "#fff", 6],
-    ["31 JAN", "Form 25A", "one declaration, every fund, via MAS-Tx", "#eef2ff", 18],
-    ["ANY TIME", "Form 23A", "within 14 days of a new fund, director or office", "#fff", 30],
-    ["ALL YEAR", "Deal checks", "the 20% cap tested before each term sheet", "#fff", 42],
+    ["31 DEC", "Year end", "NAVs and cap tables frozen", "#fff", 6],
+    ["14 JAN", "Nil misconduct return", "annual declaration to MAS", "#fff", 16],
+    ["31 JAN", "Form 25A", "every fund, one declaration, via MAS-Tx", "#eef2ff", 26],
+    ["ANY TIME", "Form 23A", "within 14 days of a change in directors, shareholders or office", "#fff", 36],
   ];
   return (
     <Stage>
-      <AppWindow active="Filing calendar" title="Your MAS year as a VC manager · financial year ending 31 Dec">
+      <AppWindow active="Filing calendar" title="Your MAS year · financial year ending 31 Dec">
         <div style={{ display: "flex", gap: 14 }}>
           {items.map(([k, t, s, bg, at]) => (
-            <Card key={k} x={0} y={0} w={296} h={300} at={at} style={{ position: "relative", background: bg }}>
+            <Card key={k} x={0} y={0} w={296} h={290} at={at} style={{ position: "relative", background: bg }}>
               <div style={{ fontFamily: MONO, fontSize: 13, letterSpacing: 2, color: bg === "#fff" ? GREY : BLUE }}>{k}</div>
-              <div style={{ fontSize: 26, fontWeight: 800, color: INK, marginTop: 14 }}>{t}</div>
+              <div style={{ fontSize: 24, fontWeight: 800, color: INK, marginTop: 14, lineHeight: 1.2 }}>{t}</div>
               <div style={{ fontSize: 15, color: INK2, marginTop: 10, lineHeight: 1.45 }}>{s}</div>
               <div style={{ position: "absolute", left: 22, bottom: 22 }}><Check at={at + 24} /></div>
             </Card>
           ))}
         </div>
-        <div style={{ position: "absolute", left: 0, top: 340, display: "flex", alignItems: "center", gap: 12, fontSize: 20, color: INK2, opacity: pIn(frame, 62, 12) }}><Check at={66} /> No capital test, no quarterly forms — the VCFM regime asks for this, and Core keeps it current all year</div>
+        <div style={{ position: "absolute", left: 0, top: 330, display: "flex", alignItems: "center", gap: 12, fontSize: 20, color: INK2, opacity: pIn(frame, 56, 12) }}><Check at={60} /> No capital test, no quarterly forms under the VCFM regime</div>
       </AppWindow>
-      <ScreenCap n="04" k="THE WHOLE YEAR" size={44}>One declaration a month after year end — kept current all year</ScreenCap>
+      <ScreenCap n="04" k="THE WHOLE YEAR" size={46}>One declaration a year, kept current all year</ScreenCap>
     </Stage>
   );
 };
@@ -509,7 +497,7 @@ const Sign: React.FC = () => {
     <Stage>
       <div style={{ position: "absolute", left: 560, top: 110, width: 800, height: 620, borderRadius: 14, background: "#fff", boxShadow: "0 24px 60px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06)", padding: "40px 48px", opacity: pIn(frame, 2, 14) }}>
         <div style={{ fontFamily: SERIF, fontSize: 30, color: INK }}>Form 25A · FY2025</div>
-        <div style={{ fontSize: 16, color: GREY, marginTop: 4 }}>three funds · prepared by Core · every figure traced to a cap table or NAV</div>
+        <div style={{ fontSize: 16, color: GREY, marginTop: 4 }}>prepared by Core · every figure traced to a cap table or NAV</div>
         {[0.85, 0.6, 0.75, 0.5, 0.7].map((x, i) => (
           <div key={i} style={{ height: 10, width: `${x * 100}%`, background: "#e6e6e6", borderRadius: 5, marginTop: 24 }} />
         ))}
@@ -546,7 +534,7 @@ const End: React.FC = () => {
       <div style={{ position: "absolute", left: 0, right: 0, top: 650, display: "flex", justifyContent: "center", opacity: b }}>
         <span style={{ padding: "20px 40px", borderRadius: 999, background: "#111318", color: "#fff", fontSize: 26, fontWeight: 700 }}>Book a demo →</span>
       </div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 760, textAlign: "center", fontFamily: SERIF, fontSize: 26, color: "#5c6478", opacity: b }}>Runs in your VPC or on-prem. Your data never leaves.</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 760, textAlign: "center", fontFamily: SERIF, fontSize: 26, color: "#5c6478", opacity: b }}>You choose what leaves the firm, down to nothing at all.</div>
     </Stage>
   );
 };
@@ -556,20 +544,17 @@ const End: React.FC = () => {
 type S = { id: string; dur: number; body: React.FC };
 
 export const MASVC_SCENES: S[] = [
-  { id: "opening", dur: 4.0, body: Opening },
+  { id: "opening", dur: 3.6, body: Opening },
   { id: "deadline", dur: 3.0, body: Deadline },
-  { id: "by-hand", dur: 3.4, body: ByHand },
-  { id: "rule", dur: 3.4, body: Rule },
-  { id: "wrong-but-fine", dur: 3.8, body: WrongButFine },
-  { id: "core", dur: 1.8, body: MeetCore },
-  { id: "screen-1", dur: 4.0, body: Screen1 },
+  { id: "by-hand", dur: 3.2, body: ByHand },
+  { id: "core", dur: 1.6, body: MeetCore },
+  { id: "screen-1", dur: 3.8, body: Screen1 },
   { id: "screen-2", dur: 4.0, body: Screen2 },
-  { id: "screen-3", dur: 3.8, body: Screen3 },
-  { id: "screen-4", dur: 3.4, body: Screen4 },
-  { id: "compare", dur: 3.0, body: Compare },
-  { id: "sign", dur: 3.4, body: Sign },
-  { id: "close", dur: 2.0, body: Close },
-  { id: "end", dur: 3.4, body: End },
+  { id: "screen-3", dur: 4.0, body: Screen3 },
+  { id: "screen-4", dur: 3.2, body: Screen4 },
+  { id: "sign", dur: 3.0, body: Sign },
+  { id: "close", dur: 1.8, body: Close },
+  { id: "end", dur: 3.2, body: End },
 ];
 
 const frames = (s: S) => Math.round(s.dur * FPS);
