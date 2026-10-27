@@ -553,19 +553,19 @@ const End: React.FC = () => {
 type S = { id: string; dur: number; body: React.FC };
 
 export const MASFINAL_SCENES: S[] = [
-  { id: "opening", dur: 4.0, body: Opening },
-  { id: "escalation", dur: 3.4, body: Escalation },
-  { id: "by-hand", dur: 3.6, body: ByHand },
-  { id: "capital-test", dur: 4.6, body: CapitalTest },
-  { id: "wrong-but-fine", dur: 4.6, body: WrongButFine },
+  { id: "opening", dur: 4.2, body: Opening },
+  { id: "escalation", dur: 3.6, body: Escalation },
+  { id: "by-hand", dur: 3.8, body: ByHand },
+  { id: "capital-test", dur: 4.4, body: CapitalTest },
+  { id: "wrong-but-fine", dur: 4.8, body: WrongButFine },
   { id: "core", dur: 1.0, body: MeetCore },
-  { id: "screen-1", dur: 4.0, body: Screen1 },
-  { id: "screen-2", dur: 4.0, body: Screen2 },
-  { id: "screen-3", dur: 3.8, body: Screen3 },
-  { id: "screen-4", dur: 3.4, body: Screen4 },
-  { id: "compare", dur: 2.6, body: Compare },
-  { id: "sign", dur: 3.6, body: Sign },
-  { id: "close", dur: 1.8, body: Close },
+  { id: "screen-1", dur: 4.4, body: Screen1 },
+  { id: "screen-2", dur: 4.6, body: Screen2 },
+  { id: "screen-3", dur: 4.2, body: Screen3 },
+  { id: "screen-4", dur: 4.0, body: Screen4 },
+  { id: "compare", dur: 3.4, body: Compare },
+  { id: "sign", dur: 3.8, body: Sign },
+  { id: "close", dur: 2.0, body: Close },
   { id: "end", dur: 3.2, body: End },
 ];
 
