@@ -555,7 +555,6 @@ type S = { id: string; dur: number; body: React.FC };
 export const MASFINAL_SCENES: S[] = [
   { id: "opening", dur: 4.2, body: Opening },
   { id: "escalation", dur: 3.6, body: Escalation },
-  { id: "by-hand", dur: 3.8, body: ByHand },
   { id: "capital-test", dur: 4.4, body: CapitalTest },
   { id: "wrong-but-fine", dur: 4.8, body: WrongButFine },
   { id: "core", dur: 1.0, body: MeetCore },
