@@ -89,3 +89,38 @@ The zoom scene uses a frozen frame of the report:
 ffmpeg -ss 16.0 -i public/clips/core-demo-draft7.mp4 -frames:v 1 public/tracker.png
 ```
 
+
+## MAS film — Singapore back-office (30s)
+
+Composition `Mas` (`src/mas.tsx`): the Singapore counterpart of the Korean FSS film
+(`../video-wooricard-fss`, same house look — navy stage, blue grid, mono kickers, four-step flow bar), in
+English, for fund managers that report to MAS. Target: VC / fund-management back office in Singapore.
+
+| # | Scene | What happens |
+|---|-------|--------------|
+| 1 | Hook | Marina Bay at night. "Your MAS returns, done in minutes." Form 1 · Form 2 (MASNET, quarterly) / Form 25A (MAS-Tx, annual) |
+| 2 | The clock | "Every quarter. 14 days after quarter end." 30 Sep → 14 Oct; Forms 1–6 annual within 5 months; VCFM Form 25A within 1 month; the July 2025 licence revocation that cited unfiled quarterly returns |
+| 3 | Collect | Ledger · fund admin NAV · bank statements · Excel → one source |
+| 4 | Map | "Cash at bank / CASH_EQV / Bank balances" → the Form 1 line item, mapped once |
+| 5 | Check | Light stage: ledger vs Form 1 in S$, one mismatch flagged and traced, everything else passes |
+| 6 | Lodge | One checked data set → Form 1 and Form 2, READY for MASNET |
+| 7 | Payoff | 2 hours → 2 minutes, per form, per quarter |
+| 8 | Outro | TREASURER wordmark · "MAS returns, collected to lodged." · treasurer.net |
+
+Facts were checked on mas.gov.sg on 27 Oct 2026: *FAQs on Lodgement of Financial Returns* (Forms 1–9,
+deadlines), *Form 25A – Annual Declaration by a Venture Capital Fund Manager* (one month from FYE, MAS-Tx),
+*Enforcement actions 2025 – revokes the capital markets services licence* (3 Jul 2025; quarterly returns for
+FY2024 and the quarter ended 31 Mar 2025 not submitted, among other breaches). The CHECK table is illustrative
+and labelled so. "2 hours → 2 minutes" is the team's own claim from the 26 Oct 2026 strategy meeting.
+
+B-roll: two Pexels clips (free for commercial use, no credit required), not committed —
+`npm run sg-broll` fetches and re-encodes them into `public/clips/` (reads `PEXELS_API_KEY` from the
+environment or `../video-wooricard-fss/.env`):
+
+- 30570498 — Singapore city skyline at night, reflections (Timo Volz)
+- 33702866 — Aerial view of Singapore's skyline (Florian Delée)
+
+```bash
+npm run sg-broll
+COMP=Mas OUT=treasurer-mas-30s.mp4 npm run render
+```
