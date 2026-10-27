@@ -220,35 +220,46 @@ position agreed on 27 Oct 2026, not a shipped feature.
 COMP=MasReturns OUT=treasurer-mas-returns.mp4 npm run render
 ```
 
-### MasFinal — the cut we ship (40.1s) ← current
+### MasFinal — the cut we ship (40.3s) ← current
 
-Composition `MasFinal` (`src/mas-final.tsx`), in the look of the HK demo-ver draft: Georgia serif throughout
-(statements and every caption), plain white, Core's app window that stays put while its content crossfades,
-a before/after bar, a sign-and-file scene, the Core end card. 0.47s crossfades.
+Composition `MasFinal` (`src/mas-final.tsx`). Georgia serif throughout, plain white, Core's app window that
+stays put while its content crossfades, a before/after bar, a sign-and-submit scene, the Core end card.
+Captions leave before each 0.47s crossfade and arrive after it, so two captions are never on screen together.
 
 | t | Scene | Line | Picture |
 |---|---|---|---|
 | 0:00 | opening | Two MAS forms to fill every quarter end / *still doing it by hand?* | Form 1 (balance sheet) and Form 2 (capital test) |
 | 0:04 | escalation | Miss the deadline and it escalates | Clock keeps spinning, Day 14 → 60; a reminder → then scrutiny → then a fine |
-| 0:06 | by-hand | One person in finance retypes every number, every quarter | Ledger · Bank · Admin → Priya, your finance person → numbers hop into Excel |
-| 0:10 | capital-test | The capital test — every quarter MAS checks your capital stays above its minimum | Two bars: MAS's minimum (5% of average income, S$0.28m) vs your capital (S$3.2m); the 120% line |
-| 0:13 | breaks | Built by hand in Excel, one wrong cell and the number MAS sees is wrong | The FY23 tab gets deleted; the sheet cracks, splits and falls; 1,143% → #REF! |
-| 0:16 | core | CORE by TREASURER | Black card |
-| 0:17 | screen-1 | 01 · Your ledger, bank and admin files go in — the two MAS forms come out | Files shrink into the Core disc; Form 1, Form 2 emerge with ✓; Export for MAS-Tx |
-| 0:21 | screen-2 | 02 · The capital test, computed exactly the way MAS writes it | The rule written out (SFA 04-N13 3.1.1 / 4.1.2); the numbers; 1,143% ✓ |
-| 0:25 | screen-3 | 03 · Tracked monthly, so you're warned months before you hit MAS's limit | "Your capital ratio, month by month" vs the MAS limit line; Warning · June; why it's falling |
-| 0:28 | screen-4 | 04 · Two forms each quarter, the audited set once a year — all from one mapping | Q1–Q4 cards (2 forms, by the 14th) + Year end (audited set, by 31 May) |
-| 0:31 | compare | From twelve days to one | By hand: 12-day red bar · With Core: 1-day blue bar |
-| 0:34 | sign | You review and sign — Core files it with MAS | Signature draws on the forms; FILED · MAS-Tx stamp |
-| 0:37 | close | Less retyping, more running the fund | Serif |
+| 0:06 | by-hand | One person in finance retypes every number, every quarter | Ledger · Bank · Admin → Priya → numbers hop into a real-looking sheet |
+| 0:10 | capital-test | The capital test — every quarter MAS checks your capital against its minimum | Bars: MAS's minimum (5% of average income, S$0.28m) vs your capital (S$3.2m); the 120% notify line; 3.2m ÷ 0.28m = 1,143% |
+| 0:13 | wrong-but-fine | Excel doesn't know MAS's rules — a wrong number looks right until MAS checks | Sheet shows 1,290% ✓ with no deductions; MAS's rule (Form 2 (II)(2)) deducts prepaid rent, office fit-out, a related-company loan → 1,143% ✗ "what you filed was wrong" |
+| 0:17 | core | CORE by TREASURER | Black card |
+| 0:18 | screen-1 | 01 · Your ledger, bank and admin files go in — the two MAS forms come out | Files into the Core disc; Form 1, Form 2 out with ✓; Export for MAS-Tx |
+| 0:22 | screen-2 | 02 · The capital test, computed exactly the way MAS writes it | Rule: capital must not fall below 5% × 3-yr average income; under 120% of that, tell MAS immediately (SFA 04-N13 3.1.1 / 4.1.2); numbers; 1,143% ✓ |
+| 0:26 | screen-3 | 03 · Tracked monthly, so you're warned months before you'd have to tell MAS | Monthly ratio vs the 120% notify line; Warning · June; why it's falling (dividend, two loss quarters) |
+| 0:29 | screen-4 | 04 · Two forms each quarter, the audited set once a year — all from one mapping | Q1–Q4 (2 forms, by the 14th) + Year end (audited set, by 31 May for a Dec FYE) |
+| 0:32 | compare | From twelve days to one | By hand: 12-day red bar · With Core: 1-day blue bar (illustrative) |
+| 0:35 | sign | You review and sign — it's ready to submit on MAS-Tx | Signature draws; READY · MAS-Tx stamp |
+| 0:38 | close | Less retyping, more running the fund | Serif |
 | 0:39 | end | CORE by TREASURER · Book a demo → · Runs in your VPC or on-prem. Your data never leaves. | |
 
-Facts: Form 1/2 quarterly within 14 days via MAS-Tx and the audited set within 5 months of FYE (Reg 27 FMR);
-ORR = 5% of 3-year average annual gross income, floor S$100,000 (SFA 04-N13 4.1.2–4.1.4); FR must not fall
-below TRR and MAS must be told immediately below 120% (3.1.1). **Everything after the Core card is
-positioning:** Core today is a research product (cited answers, morning brief, rumor check, local deployment);
-the form-filling engine exists for the Korean FSS 업무보고서 and has no MAS template yet; monthly tracking and
-"Core files it" are not built. Team call, 27 Oct 2026. Names and numbers are illustrative.
+**Fact base (mas.gov.sg, checked 27 Oct 2026).** Form 1 / Form 2 quarterly within 14 days and the audited set
+within 5 months of FYE, online via MAS-Tx (form pages; Reg 27 SF(FMR)R; late lodgement is an offence liable
+to a fine, Reg 27(7)/(10) per MAS's FAQ). ORR = 5% of 3-year average annual gross income (2% above S$10m),
+floor S$100,000 or S$50,000 for A/I-only (SFA 04-N13 4.1.2–4.1.4). FR must not fall below TRR; notify MAS
+immediately below 120% (3.1.1). Deductions from financial resources include non-current assets, pre-paid
+expenses and unsecured amounts due from related corporations (Form 2 (II)(2)). CMS licence revoked 3 Jul 2025
+citing unfiled quarterly returns among other breaches.
+
+**Who it is true for.** Licensed fund management companies (retail and A/I LFMCs), which since 1 Aug 2024
+includes every former RFMC. **Not** managers under the VCFM regime: they are exempt from Part III of the
+SF(FMR)R, hold no risk-based capital requirement, and file only Form 25A once a year (Guidelines SFA 04-G05
+Annex A7; VCFM compliance toolkit, Jan 2023). A VCFM audience needs a different film.
+
+**What is positioning, not product.** Everything after the Core card: Core today is a research product; the
+form engine exists for the Korean FSS 업무보고서 with no MAS template; monthly tracking is not built.
+"Twelve days to one" is illustrative. Names and figures are invented. The end-card line about VPC/on-prem is
+Treasurer's own and holds only for the local-model configurations.
 
 ```bash
 COMP=MasFinal OUT=treasurer-mas-final.mp4 npm run render

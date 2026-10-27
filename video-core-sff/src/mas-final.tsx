@@ -8,7 +8,7 @@
  * total risk requirement and MAS must be told immediately below 120%. Names and numbers are illustrative.
  */
 import React from "react";
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { Lockup, OMark } from "./Lockup";
@@ -23,9 +23,17 @@ const ease = (frame: number, a: number, b: number, from: number, to: number) =>
 
 /* ------------------------------------------------------------------ bits */
 
-const Statement: React.FC<{ a: string; b?: string; at?: number; size?: number; top?: number }> = ({ a, b, at = 4, size = 74, top }) => {
+/** Text leaves before the crossfade starts and arrives after it ends, so two captions are never on screen together. */
+const useTextWindow = () => {
   const frame = useCurrentFrame();
-  const p1 = pIn(frame, at, 16), p2 = pIn(frame, at + 16, 16);
+  const { durationInFrames } = useVideoConfig();
+  return 1 - pIn(frame, durationInFrames - CUT - 6, 6);
+};
+
+const Statement: React.FC<{ a: string; b?: string; at?: number; size?: number; top?: number }> = ({ a, b, at = 16, size = 74, top }) => {
+  const frame = useCurrentFrame();
+  const out = useTextWindow();
+  const p1 = pIn(frame, at, 16) * out, p2 = pIn(frame, at + 16, 16) * out;
   return (
     <div style={{ position: "absolute", left: 0, right: 0, top: top ?? (b ? 400 : 470), textAlign: "center", fontFamily: SERIF }}>
       <div style={{ fontSize: size, color: INK, letterSpacing: -1, opacity: p1, transform: `translateY(${(1 - p1) * 10}px)` }}>{a}</div>
@@ -34,9 +42,9 @@ const Statement: React.FC<{ a: string; b?: string; at?: number; size?: number; t
   );
 };
 
-const SerifCap: React.FC<{ at?: number; size?: number; children: React.ReactNode }> = ({ at = 6, size = 54, children }) => {
+const SerifCap: React.FC<{ at?: number; size?: number; children: React.ReactNode }> = ({ at = 16, size = 54, children }) => {
   const frame = useCurrentFrame();
-  const p = pIn(frame, at, 16);
+  const p = pIn(frame, at, 16) * useTextWindow();
   return <div style={{ position: "absolute", left: 0, right: 0, top: 850, textAlign: "center", fontFamily: SERIF, fontSize: size, color: INK, letterSpacing: -0.5, opacity: p, transform: `translateY(${(1 - p) * 10}px)`, whiteSpace: "nowrap" }}>{children}</div>;
 };
 
@@ -72,9 +80,9 @@ const AppWindow: React.FC<{ active: string; title: string; children: React.React
   </div>
 );
 
-const ScreenCap: React.FC<{ n: string; k: string; children: React.ReactNode; at?: number; size?: number }> = ({ n, k, children, at = 6, size = 46 }) => {
+const ScreenCap: React.FC<{ n: string; k: string; children: React.ReactNode; at?: number; size?: number }> = ({ n, k, children, at = 16, size = 46 }) => {
   const frame = useCurrentFrame();
-  const p = pIn(frame, at, 14);
+  const p = pIn(frame, at, 14) * useTextWindow();
   return (
     <div style={{ position: "absolute", left: 0, right: 0, top: 900, textAlign: "center", opacity: p }}>
       <div style={{ fontFamily: MONO, fontSize: 18, letterSpacing: 5, color: BLUE, fontWeight: 700 }}>{n} · {k}</div>
@@ -192,26 +200,54 @@ const ByHand: React.FC = () => {
         <div key={f} style={{ position: "absolute", left: 160, top: 170 + i * 165, opacity: pIn(frame, 2 + i * 6, 12) }}><Paper label={f} w={190} accent={INK2} /></div>
       ))}
       <Person x={720} y={420} at={6} label="Priya, your finance person" />
-      <div style={{ position: "absolute", left: 960, top: 190, width: 760, borderRadius: 14, background: "#fff", boxShadow: "0 18px 50px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06)", overflow: "hidden", opacity: pIn(frame, 4, 12) }}>
-        <div style={{ height: 44, background: "#e8f5e9", borderBottom: `1px solid ${LINE}`, display: "flex", alignItems: "center", padding: "0 16px", fontFamily: MONO, fontSize: 14, color: GREY }}>Q3_MAS_forms_working.xlsx</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-          {Array.from({ length: 12 }).map((_, i) => {
-            const t = pIn(frame, 14 + i * 5, 6);
-            return (
-              <div key={i} style={{ height: 72, borderBottom: `1px solid ${LINE}`, borderRight: `1px solid ${LINE}`, display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "0 18px", fontFamily: MONO, fontSize: 22, color: INK, background: t > 0 && t < 1 ? "rgba(47,107,255,0.10)" : "transparent" }}>
-                <span style={{ opacity: t }}>{(((i * 7919) % 900000) + 100000).toLocaleString("en-US")}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      <Sheet x={960} y={150} w={780} name="Q3_MAS_forms_working.xlsx" cell="C5" formula="=SUM(C1:C4)" rows={[["Cash at bank — DBS SGD", "2,904,117", "from TB"], ["Cash at bank — USD", "1,224,683", "from TB"], ["Fees receivable", "912,415", "from admin"], ["Other assets", "88,470", "from TB"], ["Total assets", "5,129,685", "typed"], ["Capital", "3,200,118", "typed"]]} tabs={["Form 1", "Form 2", "TB Sep", "Bank", "Admin"]} cellAt={(i) => 16 + i * 9} style={{ opacity: pIn(frame, 4, 12) }} />
       {Array.from({ length: 6 }).map((_, i) => {
         const t = ease(frame, 10 + i * 10, 34 + i * 10, 0, 1);
-        const y0 = 230 + (i % 3) * 165, y1 = 230 + Math.floor(i / 2) * 72;
-        return <div key={i} style={{ position: "absolute", left: 360 + t * 640, top: y0 + (y1 - y0) * t - Math.sin(t * Math.PI) * 90, fontFamily: MONO, fontSize: 24, fontWeight: 700, color: BLUE, opacity: t > 0 && t < 0.96 ? 1 : 0 }}>{(((i * 7919) % 900000) + 100000).toLocaleString("en-US")}</div>;
+        const y0 = 230 + (i % 3) * 165, y1 = 270 + i * 44;
+        const vals = ["2,904,117", "1,224,683", "912,415", "88,470", "5,129,685", "3,200,118"];
+        return <div key={i} style={{ position: "absolute", left: 360 + t * 900, top: y0 + (y1 - y0) * t - Math.sin(t * Math.PI) * 90, fontFamily: MONO, fontSize: 24, fontWeight: 700, color: BLUE, opacity: t > 0 && t < 0.96 ? 1 : 0 }}>{vals[i]}</div>;
       })}
       <SerifCap>One person in finance retypes every number, every quarter</SerifCap>
     </Stage>
+  );
+};
+
+/** A spreadsheet that looks like one: column letters, row numbers, formula bar, sheet tabs. */
+const COLS = ["A", "B", "C", "D"];
+const Sheet: React.FC<{ x: number; y: number; w: number; name: string; formula: string; cell: string; rows: [string, string, string?][]; tabs: string[]; deadTab?: string; dead?: number; highlight?: number; style?: React.CSSProperties; cellAt?: (i: number) => number }> = ({ x, y, w, name, formula, cell, rows, tabs, deadTab, dead = 0, highlight, style, cellAt }) => {
+  const frame = useCurrentFrame();
+  const colW = [60, (w - 60) * 0.5, (w - 60) * 0.3, (w - 60) * 0.2];
+  return (
+    <div style={{ position: "absolute", left: x, top: y, width: w, background: "#fff", borderRadius: 10, border: "1px solid #c9c9c9", overflow: "hidden", fontFamily: SANS, ...style }}>
+      <div style={{ height: 40, background: "#217346", color: "#fff", display: "flex", alignItems: "center", padding: "0 16px", fontSize: 15, fontWeight: 700 }}>{name}</div>
+      <div style={{ height: 40, display: "flex", alignItems: "center", borderBottom: "1px solid #d4d4d4", fontFamily: MONO, fontSize: 15 }}>
+        <span style={{ width: 70, textAlign: "center", color: INK2, borderRight: "1px solid #d4d4d4" }}>{cell}</span>
+        <span style={{ padding: "0 12px", color: GREY }}>fx</span>
+        <span style={{ color: INK, whiteSpace: "nowrap", overflow: "hidden" }}>{formula}</span>
+      </div>
+      <div style={{ display: "flex", background: "#f3f3f3", borderBottom: "1px solid #d4d4d4" }}>
+        {["", ...COLS.slice(1)].map((c, i) => <div key={i} style={{ width: colW[i], height: 28, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: GREY, borderRight: "1px solid #d4d4d4" }}>{i === 0 ? "" : COLS[i]}</div>)}
+      </div>
+      {rows.map(([a, b, c], i) => {
+        const t = cellAt ? pIn(frame, cellAt(i), 6) : 1;
+        const hi = highlight === i;
+        const broken = dead > 0.5 && b.startsWith("=");
+        return (
+          <div key={i} style={{ display: "flex", borderBottom: "1px solid #e4e4e4", background: hi ? "rgba(47,107,255,0.08)" : "transparent" }}>
+            <div style={{ width: colW[0], height: 44, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: GREY, background: "#f3f3f3", borderRight: "1px solid #d4d4d4" }}>{i + 1}</div>
+            <div style={{ width: colW[1], height: 44, display: "flex", alignItems: "center", padding: "0 12px", fontSize: 17, color: INK2, borderRight: "1px solid #e4e4e4" }}>{a}</div>
+            <div style={{ width: colW[2], height: 44, display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "0 12px", fontFamily: MONO, fontSize: 17, color: broken ? RED : INK, fontWeight: broken ? 800 : 400, borderRight: "1px solid #e4e4e4", opacity: t, outline: hi ? `2px solid ${BLUE}` : "none", outlineOffset: -2 }}>{broken ? "#REF!" : b.startsWith("=") ? b.slice(1) : b}</div>
+            <div style={{ width: colW[3], height: 44, display: "flex", alignItems: "center", padding: "0 10px", fontSize: 13, color: GREY, whiteSpace: "nowrap", overflow: "hidden" }}>{c ?? ""}</div>
+          </div>
+        );
+      })}
+      <div style={{ display: "flex", gap: 2, padding: "6px 8px", background: "#f3f3f3", borderTop: "1px solid #d4d4d4" }}>
+        {tabs.map((t) => {
+          const isDead = t === deadTab;
+          return <span key={t} style={{ fontSize: 13, padding: "5px 12px", background: isDead ? `rgba(216,35,42,${0.08 + dead * 0.25})` : t === tabs[0] ? "#fff" : "#e6e6e6", color: isDead ? RED : INK2, border: "1px solid #d4d4d4", borderRadius: 3, textDecoration: isDead && dead > 0.5 ? "line-through" : "none", opacity: isDead ? 1 - dead * 0.5 : 1 }}>{t}</span>;
+        })}
+      </div>
+    </div>
   );
 };
 
@@ -238,45 +274,38 @@ const CapitalTest: React.FC = () => {
       <Row y={170} label="MAS's minimum capital" sub="5% of your average income" w={minW} color="#8d8d8d" at={6} val="S$0.28m" off={70} />
       <Row y={420} label="Your capital" sub="paid-up capital and retained profit" w={youW} color={BLUE} at={22} val="S$3.2m" />
       <div style={{ position: "absolute", left: 160 + 216, top: 222, height: 380, width: 4, background: RED, opacity: line }} />
-      <div style={{ position: "absolute", left: 160 + 232, top: 612, fontFamily: SERIF, fontSize: 26, color: RED, opacity: line, whiteSpace: "nowrap" }}>120% of the minimum — your capital must stay above this line</div>
-      <SerifCap size={52}>The capital test — every quarter MAS checks your capital stays above its minimum</SerifCap>
+      <div style={{ position: "absolute", left: 160 + 232, top: 612, fontFamily: SERIF, fontSize: 26, color: RED, opacity: line, whiteSpace: "nowrap" }}>below 120% of the minimum you must tell MAS immediately</div>
+      <div style={{ position: "absolute", left: 160, top: 690, fontFamily: SERIF, fontSize: 34, color: INK, opacity: pIn(frame, 66, 12) * useTextWindow() }}>
+        Your capital ÷ MAS's minimum = <span style={{ color: BLUE }}>1,143%</span> <span style={{ color: GREY, fontSize: 26, fontStyle: "italic" }}>· 3.2m ÷ 0.28m · comfortably above 120%</span>
+      </div>
+      <SerifCap size={52}>The capital test — every quarter MAS checks your capital against its minimum</SerifCap>
     </Stage>
   );
 };
 
-/** 5 · Done by hand in Excel, one wrong cell breaks it (literally). */
-const Breaks: React.FC = () => {
+/** 5 · Excel doesn't know MAS's rules: the deductions MAS requires are missing, the ratio looks fine, and the wrong number gets filed. */
+const WrongButFine: React.FC = () => {
   const frame = useCurrentFrame();
-  const del = pIn(frame, 26, 10); // the FY23 tab gets deleted
-  const crackAt = 40;
-  const c = pIn(frame, crackAt, 10);
-  const fall = ease(frame, crackAt + 8, crackAt + 40, 0, 1);
-  const shake = frame >= crackAt && frame < crackAt + 8 ? Math.sin(frame * 4) * 8 : 0;
-  const Half: React.FC<{ side: "l" | "r" }> = ({ side }) => (
-    <div style={{ position: "absolute", left: 300, top: 150, width: 1320, height: 420, clipPath: side === "l" ? "polygon(0 0, 52% 0, 46% 100%, 0 100%)" : "polygon(52% 0, 100% 0, 100% 100%, 46% 100%)", transform: side === "l" ? `translate(${-fall * 60 + shake}px, ${fall * 40}px) rotate(${-fall * 6}deg)` : `translate(${fall * 80 + shake}px, ${fall * 120}px) rotate(${fall * 9}deg)`, transformOrigin: side === "l" ? "0% 100%" : "100% 100%", opacity: 1 - fall * 0.3 }}>
-      <div style={{ width: 1320, height: 420, borderRadius: 18, background: "#f7f7f7", border: "1px solid #dcdcdc", overflow: "hidden" }}>
-        <div style={{ height: 54, background: "#e8f5e9", borderBottom: `1px solid ${LINE}`, display: "flex", alignItems: "center", padding: "0 24px", fontFamily: MONO, fontSize: 18, color: INK2 }}>capital_test.xlsx &nbsp;·&nbsp; fx =MAX(0.05*AVERAGE(<span style={{ color: RED, textDecoration: del > 0.5 ? "line-through" : "none" }}>'FY23'!R9</span>,'FY24'!R9,'FY25'!R9),100000)/…</div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 48px", height: 300 }}>
-          <div style={{ fontFamily: SERIF, fontSize: 40, color: INK2 }}>Capital test <span style={{ color: GREY, fontSize: 26 }}>· built by hand, 14 linked tabs</span></div>
-          <div style={{ fontFamily: MONO, fontSize: 90, fontWeight: 900, color: c > 0 ? RED : INK }}>{c > 0 ? "#REF!" : "1,143%"}</div>
-        </div>
-        <div style={{ display: "flex", gap: 6, padding: "0 24px", borderTop: `1px solid ${LINE}`, height: 66, alignItems: "center" }}>
-          {["Summary", "FY23", "FY24", "FY25", "Deductions", "TB Sep", "Bank"].map((t) => (
-            <span key={t} style={{ fontFamily: MONO, fontSize: 14, padding: "6px 12px", borderRadius: 6, background: t === "FY23" ? `rgba(216,35,42,${0.1 + del * 0.3})` : "#eaeaea", color: t === "FY23" ? RED : INK2, textDecoration: t === "FY23" && del > 0.5 ? "line-through" : "none" }}>{t}</span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  const rule = pIn(frame, 44, 12); // MAS's rule arrives
+  const fixed = frame >= 70;
+  const rows: [string, string, string?][] = [
+    ["MAS's minimum capital", "279,950", "5% of 3-yr average income"],
+    ["Paid-up capital + retained profit", "3,612,588", "from TB"],
+    ...(rule > 0 ? ([["− Prepaid rent and insurance", "−88,470", "MAS: deduct"], ["− Office fit-out", "−124,000", "MAS: deduct"], ["− Loan to a related company", "−200,000", "MAS: deduct"]] as [string, string, string?][]) : []),
+    ["Your capital", fixed ? "3,200,118" : "3,612,588", fixed ? "after deductions" : "no deductions"],
+    ["Ratio = capital ÷ minimum", fixed ? "1,143%" : "1,290%", fixed ? "=C6/C1" : "=C3/C1"],
+  ];
   return (
     <Stage>
-      <Half side="l" />
-      <Half side="r" />
-      <svg width={1920} height={1080} style={{ position: "absolute", left: 0, top: 0, pointerEvents: "none" }}>
-        <path d="M 986 150 L 972 230 L 1000 290 L 970 370 L 992 440 L 964 510 L 980 570" stroke={RED} strokeWidth={6} fill="none" strokeLinecap="round" strokeDasharray={600} strokeDashoffset={600 * (1 - c)} opacity={1 - fall} />
-      </svg>
-      <div style={{ position: "absolute", left: 300, top: 600, fontFamily: SERIF, fontSize: 28, color: RED, opacity: del }}>one tab deleted → the number MAS sees is wrong</div>
-      <SerifCap size={50}>Built by hand in Excel, one wrong cell and the number MAS sees is wrong</SerifCap>
+      <Sheet x={300} y={110} w={1320} name="capital_test.xlsx" cell={fixed ? "C7" : "C4"} formula={fixed ? "=C6/C1" : "=C3/C1"} rows={rows} tabs={["Summary", "FY23", "FY24", "FY25", "TB Sep"]} highlight={rows.length - 1} style={{ opacity: pIn(frame, 2, 12) }} />
+      {/* the green tick on the wrong number */}
+      <div style={{ position: "absolute", left: 1640, top: 110 + 80 + 28 + (rows.length - 1) * 44 + 4, width: 40, height: 40, borderRadius: 999, background: fixed ? RED : GREEN, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 900, opacity: pIn(frame, 20, 10) }}>{fixed ? "✗" : "✓"}</div>
+      {/* MAS's rule stamp */}
+      <div style={{ position: "absolute", left: 1180, top: 40, padding: "12px 20px", border: `4px solid ${RED}`, borderRadius: 10, color: RED, fontFamily: SERIF, fontSize: 24, transform: `rotate(-6deg) scale(${1.4 - rule * 0.4})`, opacity: rule, whiteSpace: "nowrap" }}>MAS's rule · Form 2 (II)(2): deduct these</div>
+      <div style={{ position: "absolute", left: 300, top: 640, fontFamily: SERIF, fontSize: 30, color: fixed ? RED : INK2, opacity: pIn(frame, 24, 10) * useTextWindow() }}>
+        {fixed ? "What you filed: 1,290%. What MAS's rule gives: 1,143%. No error message, nothing to undo." : "Looks fine — green tick, no error."}
+      </div>
+      <SerifCap size={48}>Excel doesn't know MAS's rules — a wrong number looks right until MAS checks</SerifCap>
     </Stage>
   );
 };
@@ -343,7 +372,7 @@ const Screen2: React.FC = () => {
   const frame = useCurrentFrame();
   const rows: [string, string, string, number][] = [
     ["Average income, last 3 years", "4.91m · 5.60m · 6.28m", "5,599,000", 30],
-    ["× 5%  (MAS's minimum capital requirement)", "floor S$100,000", "279,950", 42],
+    ["× 5%  (MAS's minimum capital requirement)", "operational risk requirement", "279,950", 42],
     ["Your capital", "paid-up capital + retained profit − deductions", "3,200,118", 54],
   ];
   return (
@@ -352,7 +381,7 @@ const Screen2: React.FC = () => {
         <Card x={0} y={0} w={1240} at={4} style={{ background: "#111318", color: "#fff" }}>
           <div style={{ fontFamily: MONO, fontSize: 12, letterSpacing: 2, color: "#8b90a0" }}>THE RULE · MAS NOTICE SFA 04-N13, PARAS 3.1.1 AND 4.1.2</div>
           <div style={{ fontFamily: SERIF, fontSize: 30, marginTop: 12, lineHeight: 1.35 }}>
-            Your capital ÷ (5% × your 3-year average income) must stay above <span style={{ color: "#7da2ff" }}>120%</span> — fall below and you must tell MAS immediately
+            Your capital must not fall below 5% × your 3-year average income — and if it dips under <span style={{ color: "#7da2ff" }}>120%</span> of that, you must tell MAS immediately
           </div>
         </Card>
         <Card x={0} y={190} w={760} at={24}>
@@ -369,7 +398,7 @@ const Screen2: React.FC = () => {
         <Card x={800} y={190} w={440} h={296} at={60}>
           <div style={{ fontSize: 14, color: GREY }}>3,200,118 ÷ 279,950</div>
           <div style={{ fontSize: 92, fontWeight: 800, color: BLUE, letterSpacing: -3, marginTop: 8, lineHeight: 1 }}>1,143%</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18, fontSize: 18, color: INK, fontWeight: 600 }}><Check at={74} /> Well above 120% — nothing to report</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18, fontSize: 18, color: INK, fontWeight: 600 }}><Check at={74} /> Well above 120% — nothing to notify</div>
         </Card>
       </AppWindow>
       <ScreenCap n="02" k="CAPITAL TEST">The capital test, computed exactly the way MAS writes it</ScreenCap>
@@ -393,7 +422,7 @@ const Screen3: React.FC = () => {
           <div style={{ fontSize: 15, fontWeight: 700, color: INK }}>Capital ÷ requirement, recomputed every month-end</div>
           <svg width={800} height={370} style={{ position: "absolute", left: 0, top: 30 }}>
             <line x1={X0} y1={y120} x2={X0 + W} y2={y120} stroke={RED} strokeWidth={3} strokeDasharray="10 8" />
-            <text x={X0} y={y120 - 12} fontFamily={SANS} fontSize={17} fontWeight={800} fill={RED}>MAS limit · 120%</text>
+            <text x={X0} y={y120 - 12} fontFamily={SANS} fontSize={17} fontWeight={800} fill={RED}>120% · must tell MAS below this</text>
             <path d={path} stroke={BLUE} strokeWidth={5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
             {pts.slice(0, n).map((v, i) => <circle key={i} cx={X0 + (i / 11) * W} cy={Y0 - (v / ymax) * H} r={6} fill={BLUE} />)}
             {n >= 12 ? <circle cx={X0 + W} cy={Y0 - (150 / ymax) * H} r={14} fill="none" stroke={RED} strokeWidth={3} opacity={0.6 + 0.4 * Math.abs(Math.sin(frame / 5))} /> : null}
@@ -407,14 +436,14 @@ const Screen3: React.FC = () => {
             </span>
             <div style={{ fontSize: 17, fontWeight: 700, color: INK }}>Warning · June</div>
           </div>
-          <div style={{ fontSize: 17, color: INK2, marginTop: 14, lineHeight: 1.4 }}>At this pace you cross the MAS limit in September. Add capital or hold the dividend now.</div>
+          <div style={{ fontSize: 17, color: INK2, marginTop: 14, lineHeight: 1.4 }}>At this pace you drop under 120% in September and must notify MAS. Add capital or hold the dividend now.</div>
         </Card>
         <Card x={880} y={230} w={360} at={76}>
           <div style={{ fontSize: 15, fontWeight: 700, color: INK }}>Why it's falling</div>
-          <div style={{ fontSize: 15, color: INK2, marginTop: 8, lineHeight: 1.4 }}>Fee income up → the 5% requirement rises; dividend paid in May → capital down.</div>
+          <div style={{ fontSize: 15, color: INK2, marginTop: 8, lineHeight: 1.4 }}>Dividend paid in May and two loss-making quarters → retained profit, and so your capital, down.</div>
         </Card>
       </AppWindow>
-      <ScreenCap n="03" k="MONTHLY TRACKING">Tracked monthly, so you're warned months before you hit MAS's limit</ScreenCap>
+      <ScreenCap n="03" k="MONTHLY TRACKING">Tracked monthly, so you're warned months before you'd have to tell MAS</ScreenCap>
     </Stage>
   );
 };
@@ -473,6 +502,7 @@ const Compare: React.FC = () => {
           );
         })}
       </div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 560, textAlign: "center", fontFamily: SERIF, fontStyle: "italic", fontSize: 24, color: GREY, opacity: pIn(frame, 50, 12) * useTextWindow() }}>a typical quarter, illustrative</div>
       <SerifCap size={60}>From twelve days to one</SerifCap>
     </Stage>
   );
@@ -498,9 +528,9 @@ const Sign: React.FC = () => {
           </svg>
           <div style={{ fontFamily: SERIF, fontSize: 18, color: INK2 }}>David Tan, Managing Partner · 1 Oct</div>
         </div>
-        <div style={{ position: "absolute", right: 48, bottom: 70, padding: "14px 22px", border: `5px solid ${GREEN}`, borderRadius: 12, color: GREEN, fontFamily: MONO, fontSize: 26, fontWeight: 800, letterSpacing: 3, transform: `rotate(-10deg) scale(${1.6 - stamp * 0.6})`, opacity: stamp }}>FILED · MAS-Tx</div>
+        <div style={{ position: "absolute", right: 48, bottom: 70, padding: "14px 22px", border: `5px solid ${GREEN}`, borderRadius: 12, color: GREEN, fontFamily: MONO, fontSize: 24, fontWeight: 800, letterSpacing: 3, transform: `rotate(-10deg) scale(${1.6 - stamp * 0.6})`, opacity: stamp }}>READY · MAS-Tx</div>
       </div>
-      <SerifCap size={56}>You review and sign — Core files it with MAS</SerifCap>
+      <SerifCap size={56}>You review and sign — it's ready to submit on MAS-Tx</SerifCap>
     </Stage>
   );
 };
@@ -538,13 +568,13 @@ export const MASFINAL_SCENES: S[] = [
   { id: "escalation", dur: 3.0, body: Escalation },
   { id: "by-hand", dur: 3.4, body: ByHand },
   { id: "capital-test", dur: 3.2, body: CapitalTest },
-  { id: "breaks", dur: 3.4, body: Breaks },
+  { id: "wrong-but-fine", dur: 4.0, body: WrongButFine },
   { id: "core", dur: 1.8, body: MeetCore },
   { id: "screen-1", dur: 4.0, body: Screen1 },
-  { id: "screen-2", dur: 4.0, body: Screen2 },
+  { id: "screen-2", dur: 3.8, body: Screen2 },
   { id: "screen-3", dur: 3.6, body: Screen3 },
   { id: "screen-4", dur: 3.4, body: Screen4 },
-  { id: "compare", dur: 3.4, body: Compare },
+  { id: "compare", dur: 3.2, body: Compare },
   { id: "sign", dur: 3.6, body: Sign },
   { id: "close", dur: 2.0, body: Close },
   { id: "end", dur: 3.4, body: End },
