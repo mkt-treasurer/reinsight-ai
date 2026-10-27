@@ -12,6 +12,7 @@ import { MasCore, MASCORE_FRAMES } from "./mas-core";
 import { MasAi, MASAI_FRAMES } from "./mas-ai";
 import { MasReturns, MASRET_FRAMES } from "./mas-returns";
 import { MasFinal, MASFINAL_FRAMES } from "./mas-final";
+import { MasVc, MASVC_FRAMES } from "./mas-vc";
 import { FPS, H, W } from "./theme";
 import { totalFrames } from "./timeline";
 
@@ -26,6 +27,7 @@ export const RemotionRoot: React.FC = () => (
       height={H}
       defaultProps={{ music: false }}
     />
+    <Composition id="MasVc" component={MasVc} durationInFrames={MASVC_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="MasFinal" component={MasFinal} durationInFrames={MASFINAL_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="MasReturns" component={MasReturns} durationInFrames={MASRET_FRAMES} fps={FPS} width={W} height={H} />
     <Composition id="MasAi" component={MasAi} durationInFrames={MASAI_FRAMES} fps={FPS} width={W} height={H} />
